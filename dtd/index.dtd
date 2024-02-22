@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This index.dtd was authored by Pip Arnott at TNA.
+     It has been tested as working with vol 5 of SotR.
+     It is not the same as the one provided by BHO.    -->
+<!ENTITY % BHOent PUBLIC "-//BHO//ENTITIES" "bhoa.ent">
+%BHOent;
+
+<!ELEMENT index     (title, subtitle, intro?, section+)>
+<!ATTLIST index     id CDATA #REQUIRED>
+<!ATTLIST index     pubid CDATA #REQUIRED>
+<!ATTLIST index     publish (true | false) #REQUIRED>
+
+<!ELEMENT title     (#PCDATA)>
+<!ELEMENT subtitle  (#PCDATA)>
+
+<!ELEMENT intro     (para+)>
+
+<!ELEMENT section   (head, entry+)>
+<!ATTLIST section   id ID #REQUIRED>
+
+<!ELEMENT head      (#PCDATA | key | emph)*>
+
+<!ELEMENT key       (#PCDATA)>
+
+<!ELEMENT entry     (head, (sub* | (table, sub*)*))>
+
+<!ELEMENT table     (tr)*>
+<!ATTLIST table     id ID #REQUIRED>
+
+<!ELEMENT tr        (th | td)*>
+
+<!ELEMENT th        (#PCDATA)>
+<!ATTLIST th        cols CDATA #IMPLIED>
+<!ATTLIST th        rows CDATA #IMPLIED>
+
+<!ELEMENT td        (#PCDATA | emph | br)*>
+<!ATTLIST td        cols CDATA #IMPLIED>
+<!ATTLIST td        rows CDATA #IMPLIED>
+
+<!ELEMENT para      (#PCDATA | emph)*>
+<!ATTLIST para      id ID #REQUIRED>
+
+<!ELEMENT sub       (#PCDATA | emph)*>
+
+<!ELEMENT emph      (#PCDATA | emph)*>
+<!ATTLIST emph      type (i | p) #REQUIRED>
+
+<!ELEMENT br        EMPTY>

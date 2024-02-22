@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This report.dtd was authored by Pip Arnott at TNA.
+     It has been tested as working with vol 5 of SotR.
+     It is not the same as the one provided by BHO.    -->
+<!ENTITY % BHOent PUBLIC "-//BHO//ENTITIES" "bhoa.ent">
+%BHOent;
+
+<!ELEMENT report    (title, subtitle, section+)>
+<!ATTLIST report    id CDATA #REQUIRED>
+<!ATTLIST report    pubid CDATA #REQUIRED>
+<!ATTLIST report    publish (true | false) #REQUIRED>
+
+<!ELEMENT title     (#PCDATA)>
+<!ELEMENT subtitle  (#PCDATA | emph | ref)*>
+
+<!ELEMENT section   (head, (para | section | figure | table)*, note*)>
+<!ATTLIST section   id ID #REQUIRED>
+
+<!ELEMENT head      (#PCDATA | emph | ref)*>
+
+<!ELEMENT para      (#PCDATA | emph | ref | br)*>
+<!ATTLIST para      id ID #REQUIRED>
+
+<!ELEMENT emph      (#PCDATA | ref)*>
+<!ATTLIST emph      type (i | p) #REQUIRED>
+
+<!ELEMENT ref       (#PCDATA)>
+<!ATTLIST ref       idref IDREF #REQUIRED>
+
+<!ELEMENT br        EMPTY>
+
+<!ELEMENT figure    (caption)?>
+<!ATTLIST figure    id ID #REQUIRED>
+<!ATTLIST figure    number CDATA #REQUIRED>
+<!ATTLIST figure    graphic CDATA #REQUIRED>
+
+<!ELEMENT caption   (#PCDATA)>
+
+<!ELEMENT table     (tr)*>
+<!ATTLIST table     id ID #REQUIRED>
+
+<!ELEMENT tr        (th | td)*>
+
+<!ELEMENT th        (#PCDATA | emph | ref | br)*>
+<!ATTLIST th        cols CDATA #IMPLIED>
+<!ATTLIST th        rows CDATA #IMPLIED>
+
+<!ELEMENT td        (#PCDATA | emph | ref | br)*>
+<!ATTLIST td        cols CDATA #IMPLIED>
+<!ATTLIST td        rows CDATA #IMPLIED>
+
+<!ELEMENT note      (#PCDATA | emph)*>
+<!ATTLIST note      id ID #REQUIRED>
+<!ATTLIST note      number CDATA #REQUIRED>
