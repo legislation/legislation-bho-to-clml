@@ -738,7 +738,7 @@
 
   <xsl:template match="tr" mode="pass6">
     <tr xmlns="http://www.w3.org/1999/xhtml">
-      <xsl:apply-templates/>
+      <xsl:apply-templates mode="pass6"/>
     </tr>
   </xsl:template>
 
@@ -793,10 +793,10 @@
   <xsl:template match="figure" mode="pass6-p"/>
 
   <!--<xsl:template match="figure" mode="pass6-p1para">
-    <xsl:apply-templates/>
+    <xsl:apply-templates mode="pass6"/>
   </xsl:template>
   <xsl:template match="figure" mode="pass6-p">
-    <xsl:apply-templates/>
+    <xsl:apply-templates mode="pass6"/>
   </xsl:template>-->
 
   <xsl:template match="figure" mode="pass6-resource">
