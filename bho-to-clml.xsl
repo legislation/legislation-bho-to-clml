@@ -9,8 +9,8 @@
   version="3.0">
 
   <xsl:param name="lookupFile" select="'lookup.xml'"/>
-  <xsl:param name="useXNotes" select="true()"/>
 
+  <!-- -/- VARIABLES -/- -->
   <xsl:variable name="reportId" as="xs:string?" select="/report/@id"/>
   <xsl:variable name="docUri" select="document-uri()"/>
   <xsl:variable name="lookup" select="doc($lookupFile)"/>
@@ -105,14 +105,54 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-
-  <xsl:function name="local:make-f-id" as="xs:string">
-    <xsl:param name="idref" as="xs:string" required="true"/>
-    <xsl:variable name="numberFormat" as="xs:string">
+  
+  <!-- -/- FUNCTIONS -/- -->
+  <!-- local:find-opening-bracket just counts back through the brackets until the number of closed
+  and opened brackets = 0. At that point, we have our opening bracket (because the brackets 
+  balance, so every opened bracket has a matching closing bracket).
+  -->
+  <xsl:function name="local:find-opening-bracket">
+    <xsl:param name="closing-bracket" as="element()"/>
+    <xsl:variable name="closing-bracket" as="element()" select="$closing-bracket/self::local:bracket[@type='close']"/>
+    <xsl:iterate select="reverse($closing-bracket/preceding::local:bracket)">
+      <xsl:param name="depth" as="xs:integer" select="-1"/>
+      <xsl:on-completion>
+        <xsl:message terminate="yes">
+          <xsl:text>closing bracket with num </xsl:text>
+          <xsl:value-of select="$closing-bracket/@num"/>
+          <xsl:text> doesn't have a matching opening bracket</xsl:text>
+        </xsl:message>
+      </xsl:on-completion>
+      <xsl:variable name="newDepth" as="xs:integer">
+        <xsl:choose>
+          <xsl:when test="self::local:bracket[@type='open']">
+            <xsl:sequence select="$depth + 1"/>
+          </xsl:when>
+          <xsl:when test="self::local:bracket[@type='close']">
+            <xsl:sequence select="$depth - 1"/>
+          </xsl:when>
+        </xsl:choose>
+      </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$useXNotes">c000000</xsl:when>
-        <xsl:otherwise>f00000</xsl:otherwise>
+        <xsl:when test="$newDepth eq 0">
+          <xsl:sequence select="."/>
+          <xsl:break/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:next-iteration>
+            <xsl:with-param name="depth" select="$newDepth"/>
+          </xsl:next-iteration>
+        </xsl:otherwise>
       </xsl:choose>
+    </xsl:iterate>
+  </xsl:function>
+
+  <!-- local:make-id turns BHO-style IDs for commentaries and footnotes into legislation.gov.uk-style IDs -->
+  <xsl:function name="local:make-id" as="xs:string">
+    <xsl:param name="idref" as="xs:string" required="true"/>
+    <xsl:param name="type" as="xs:string" required="true"/>
+    <xsl:variable name="numberFormat" as="xs:string">
+      <xsl:value-of select="concat($type, '000000')"/>
     </xsl:variable>
     <xsl:analyze-string select="$idref" regex="^n([1-9][0-9]{{0,4}})$">
       <xsl:matching-substring>
@@ -133,6 +173,7 @@
     </xsl:analyze-string>
   </xsl:function>
 
+  <!-- local:node-kind is a helper function for outputting the node kind in error messages -->
   <xsl:function name="local:node-kind" as="xs:string">
     <xsl:param name="node" as="node()"/>
     <xsl:choose>
@@ -151,8 +192,212 @@
       <xsl:otherwise>unknown</xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+    
+  <!-- -/- TEMPLATES -/- -->
+  <!-- Root template: run the document through the 6 passes -->
+  <xsl:template match="/">
+    <xsl:variable name="pass1">
+      <xsl:apply-templates select="." mode="pass1"/>
+    </xsl:variable>
+    <xsl:variable name="pass2">
+      <xsl:apply-templates select="$pass1" mode="pass2"/>
+    </xsl:variable>
+    <xsl:variable name="pass3">
+      <xsl:apply-templates select="$pass2" mode="pass3"/>
+    </xsl:variable>
+    <xsl:variable name="pass4">
+      <xsl:apply-templates select="$pass3" mode="pass4"/>
+    </xsl:variable>
+    <xsl:variable name="pass5">
+      <xsl:apply-templates select="$pass4" mode="pass5"/>
+    </xsl:variable>
+    <xsl:apply-templates select="$pass5" mode="pass6"/>
+  </xsl:template>
+  
+  <!-- PASS 1: Turn [(brackets)] in text into <bracket> elements so we can identify them later -->
+  <xsl:template match="text()" mode="pass1" priority="+1">
+    <xsl:variable name="node" select="."/>
+    <xsl:analyze-string select="." regex="[\[\]\(\)]">
+      <xsl:matching-substring>
+        <local:bracket type="{if (. = ('[', '(')) then 'open' else 'close'}" shape="{if (. = ('(', ')')) then 'round' else 'square'}">
+          <xsl:value-of select="."/>
+        </local:bracket>
+      </xsl:matching-substring>
+      <xsl:non-matching-substring>
+        <local:text>
+          <xsl:value-of select="."/>
+        </local:text>
+      </xsl:non-matching-substring>
+    </xsl:analyze-string>
+  </xsl:template>
+  
+  <xsl:template match="node()" mode="pass1">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="node()" mode="pass1"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <!-- PASS 2: Add pair numbers to opening brackets, so we can track where each bracket pair starts -->
+  <xsl:template match="local:bracket[@type='open']" mode="pass2" priority="+1">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:attribute name="num">
+        <xsl:number level="any"/>
+      </xsl:attribute>
+      <xsl:attribute name="opens-pair">
+        <xsl:number count="local:bracket[@type='open']" level="any"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="node()" mode="pass2"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="local:bracket[@type='close']" mode="pass2" priority="+1">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:attribute name="num">
+        <xsl:number level="any"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="node()" mode="pass2"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="node()" mode="pass2">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="node()" mode="pass2"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <!-- PASS 3: Add pair numbers to closing brackets, so we can match opening and closing bracket pairs later -->
+  <xsl:template match="local:bracket[@type='close']" mode="pass3" priority="+1">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:attribute name="closes-pair">
+        <xsl:value-of select="local:find-opening-bracket(.)/@opens-pair"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="node()" mode="pass3"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="node()" mode="pass3">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="node()" mode="pass3"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <!-- PASS 4: Wrap els and text between matching opening and closing brackets in a <bracketed> el -->
+  <xsl:template match="local:bracket[@type='open']" mode="pass4" priority="+1">
+    <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
+    <xsl:variable name="opens-pair" select="@opens-pair"/>
+    <local:bracketed>
+      <xsl:copy-of select="@shape"/>
+      <xsl:attribute name="pair" select="$opens-pair"/>
+      <xsl:apply-templates select="following-sibling::node()[1]" mode="pass4">
+        <xsl:with-param name="current-pair" select="$opens-pair"/>
+      </xsl:apply-templates>
+    </local:bracketed>
+    <xsl:apply-templates select="(descendant::local:bracket|following::local:bracket)[@type='close' and @closes-pair = $opens-pair][1]/((descendant::node()|following-sibling::node()) except child::text()[1])[1]" mode="pass4">
+      <xsl:with-param name="current-pair" select="$current-pair"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  
+  <xsl:template match="local:bracket[@type='close']" mode="pass4" priority="+1"/>
+  
+  <xsl:template match="local:text" mode="pass4">
+    <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
+    <xsl:copy-of select="text()"/>
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="pass4">
+      <xsl:with-param name="current-pair" select="$current-pair"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  
+  <xsl:template match="node()" mode="pass4">
+    <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="descendant::node()[1]" mode="pass4">
+        <xsl:with-param name="current-pair" select="$current-pair"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="pass4">
+      <xsl:with-param name="current-pair" select="$current-pair"/>
+    </xsl:apply-templates>
+  </xsl:template>
+  
+  <!-- PASS 5: Handle the <bracketed> elements:
+   * Round brackets that contain a child <ref> just output the <ref>
+     - we use this to create <CommentaryRef Ref=""> later
+   * Square brackets that contain a <ref> take the @idref from the <ref> and put it on the <bracket>
+     - we use this to create <Addition CommentaryRef=""> later
+   * Round or square brackets that don't contain a <ref> get output as text in [(brackets)] again
+     - to restore any brackets in the text that don't denote a commentary or footnote!
+-->
+  <xsl:template match="local:bracketed" mode="pass5">
+    <xsl:variable name="ref" select="child::ref/@idref"/>
+    <xsl:if test="count($ref) gt 1">
+      <xsl:message terminate="yes">
+        <xsl:call-template name="errmsg">
+          <xsl:with-param name="failNode" select="."/>
+          <xsl:with-param name="message">
+            <xsl:text>bracketed el with pair </xsl:text>
+            <xsl:value-of select="@pair"/>
+            <xsl:text> and string content &quot;</xsl:text>
+            <xsl:value-of select="string()"/>
+            <xsl:text>&quot; has multiple refs: </xsl:text>
+            <xsl:value-of select="string-join($ref, ' ')"/>
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:message>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@shape = 'round'">
+        <xsl:choose>
+          <xsl:when test="$ref">
+            <xsl:apply-templates mode="pass5-ref"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>(</xsl:text>
+            <xsl:apply-templates mode="pass5"/>
+            <xsl:text>)</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+          <xsl:when test="$ref">
+            <xsl:copy>
+              <xsl:attribute name="idref" select="$ref"/>
+              <xsl:apply-templates mode="pass5"/>
+            </xsl:copy>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>[</xsl:text>
+            <xsl:apply-templates mode="pass5"/>
+            <xsl:text>]</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="ref" mode="pass5-ref" priority="+1">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="ref" mode="pass5" priority="+1"/>
+  
+  <xsl:template match="node()" mode="pass5">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="node()" mode="pass5"/>
+    </xsl:copy>
+  </xsl:template>
 
-  <xsl:template match="/report">
+  <xsl:template match="/report" mode="pass6">
     <Legislation SchemaVersion="1.0"
       xsi:schemaLocation="http://www.legislation.gov.uk/namespaces/legislation https://www.legislation.gov.uk/schema/legislation.xsd"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -161,7 +406,7 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/"
       xmlns="http://www.legislation.gov.uk/namespaces/legislation">
 
-      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="@*" mode="pass6"/>
 
       <ukm:Metadata>
         <dc:title><xsl:value-of select="$legtitleFixed"/></dc:title>
@@ -204,62 +449,53 @@
         </PrimaryPrelims>
 
         <Body>
-          <xsl:apply-templates select="descendant::section"/>
+          <xsl:apply-templates select="descendant::section" mode="pass6"/>
         </Body>
       </Primary>
 
       <xsl:if test="descendant::note">
-        <xsl:choose>
-          <xsl:when test="$useXNotes">
-            <Commentaries>
-              <xsl:apply-templates select="descendant::note"/>
-            </Commentaries>
-          </xsl:when>
-          <xsl:otherwise>
-            <Footnotes>
-              <xsl:apply-templates select="descendant::note"/>
-            </Footnotes>
-          </xsl:otherwise>
-        </xsl:choose>
+        <Commentaries>
+          <xsl:apply-templates select="descendant::note" mode="pass6"/>
+        </Commentaries>
       </xsl:if>
 
       <xsl:if test="descendant::figure">
         <Resources>
-          <xsl:apply-templates select="descendant::figure" mode="resource"/>
+          <xsl:apply-templates select="descendant::figure" mode="pass6-resource"/>
         </Resources>
       </xsl:if>
 
     </Legislation>
   </xsl:template>
 
-  <xsl:template match="report/@id"/>
-  <xsl:template match="report/@pubid"/>
-  <xsl:template match="report/@publish"/>
+  <xsl:template match="report/@id" mode="pass6"/>
+  <xsl:template match="report/@pubid" mode="pass6"/>
+  <xsl:template match="report/@publish" mode="pass6"/>
 
-  <xsl:template match="section">
+  <xsl:template match="section" mode="pass6">
     <P1group>
-      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="@*" mode="pass6"/>
       <Title>
         <xsl:if test="head/node()">
-          <xsl:apply-templates select="head" mode="title"/>
+          <xsl:apply-templates select="head" mode="pass6-title"/>
         </xsl:if>
       </Title>
       <xsl:choose>
         <xsl:when test="matches(head, '^[IVXLC]+\W?\s')">
           <P1>
-            <xsl:apply-templates select="head" mode="pnumber"/>
-            <xsl:apply-templates mode="p1para"/>
+            <xsl:apply-templates select="head" mode="pass6-pnumber"/>
+            <xsl:apply-templates mode="pass6-p1para"/>
           </P1>
         </xsl:when>
         <xsl:otherwise>
           <P>
             <xsl:choose>
               <xsl:when test="para">
-                <xsl:apply-templates mode="p"/>
+                <xsl:apply-templates mode="pass6-p"/>
               </xsl:when>
               <xsl:otherwise>
                 <!-- if no child paras, just output whatever is here -->
-                <xsl:apply-templates select="node() except head"/>
+                <xsl:apply-templates select="node() except head" mode="pass6"/>
                 <xsl:message>
                   <xsl:call-template name="errmsg">
                     <xsl:with-param name="failNode" select="."/>
@@ -276,21 +512,21 @@
     </P1group>
   </xsl:template>
 
-  <xsl:template match="section/@id"/>
+  <xsl:template match="section/@id" mode="pass6"/>
 
-  <xsl:template match="section" mode="p1para"/>
-  <xsl:template match="section" mode="p"/>
+  <xsl:template match="section" mode="pass6-p1para"/>
+  <xsl:template match="section" mode="pass6-p"/>
 
-  <xsl:template match="head" mode="p1para"/>
-  <xsl:template match="head" mode="p"/>
+  <xsl:template match="head" mode="pass6-p1para"/>
+  <xsl:template match="head" mode="pass6-p"/>
 
-  <xsl:template match="note" mode="p1para"/>
-  <xsl:template match="note" mode="p"/>
+  <xsl:template match="note" mode="pass6-p1para"/>
+  <xsl:template match="note" mode="pass6-p"/>
 
   <!-- C[Hh]? ?[Aa] ?[Pp]([Tt][Ee][Rr])?\s* || ([\[(][^\])]+[\])]\s*)? -->
-  <xsl:template match="head" mode="title">
+  <xsl:template match="head" mode="pass6-title">
     <xsl:variable name="this" select="."/>
-    <xsl:apply-templates select="@*"/>
+    <xsl:apply-templates select="@*" mode="pass6"/>
     <xsl:analyze-string select="string()" flags="s"
       regex="^([IVXLC0-9]+\.?\s*)?(.*)$">
       <xsl:matching-substring>
@@ -313,9 +549,9 @@
     </xsl:analyze-string>
   </xsl:template>
 
-  <xsl:template match="head" mode="pnumber">
+  <xsl:template match="head" mode="pass6-pnumber">
     <xsl:variable name="this" select="."/>
-    <xsl:apply-templates select="@*"/>
+    <xsl:apply-templates select="@*" mode="pass6"/>
     <xsl:analyze-string select="string()" flags="s" regex="^([IVXLC0-9]+)(\W)?\s*.*$">
       <xsl:matching-substring>
         <xsl:variable name="num" select="regex-group(1)"/>
@@ -338,12 +574,12 @@
     </xsl:analyze-string>
   </xsl:template>
 
-  <xsl:template match="head/text()"/>
+  <xsl:template match="head/text()" mode="pass6"/>
 
-  <xsl:template match="head/text()" mode="p"/>
+  <xsl:template match="head/text()" mode="pass6-p"/>
 
-  <xsl:template match="para" mode="p1para">
-    <xsl:apply-templates select="@*"/>
+  <xsl:template match="para" mode="pass6-p1para">
+    <xsl:apply-templates select="@*" mode="pass6"/>
     <P1para>
       <xsl:call-template name="processText">
         <xsl:with-param name="node" select="node()"/>
@@ -352,8 +588,8 @@
     </P1para>
   </xsl:template>
 
-  <xsl:template match="para" mode="p">
-    <xsl:apply-templates select="@*"/>
+  <xsl:template match="para" mode="pass6-p">
+    <xsl:apply-templates select="@*" mode="pass6"/>
     <xsl:call-template name="processText">
       <xsl:with-param name="node" select="node()"/>
       <xsl:with-param name="wrapInTextEls" select="true()"/>
@@ -365,12 +601,13 @@
       select="following-sibling::*[self::table or self::figure] except
               following-sibling::element()[
                 not(self::table or self::figure)
-              ]/following-sibling::*[self::table or self::figure]"/>
+              ]/following-sibling::*[self::table or self::figure]"
+      mode="pass6"/>
   </xsl:template>
 
-  <xsl:template match="para/@id"/>
+  <xsl:template match="para/@id" mode="pass6"/>
 
-  <xsl:template match="note">
+  <xsl:template match="note" mode="pass6">
     <xsl:variable name="noteContent">
       <Para>
         <xsl:call-template name="processText">
@@ -379,39 +616,28 @@
         </xsl:call-template>
       </Para>
     </xsl:variable>
-    <xsl:choose>
-      <xsl:when test="$useXNotes">
-        <Commentary id="{local:make-f-id(@id)}" Type="X">
-          <xsl:apply-templates select="@* except @id"/>
-          <xsl:sequence select="$noteContent"/>
-        </Commentary>
-      </xsl:when>
-      <xsl:otherwise>
-        <Footnote id="{local:make-f-id(@id)}">
-          <xsl:apply-templates select="@* except @id"/>
-          <FootnoteText>
-            <xsl:sequence select="$noteContent"/>
-          </FootnoteText>
-        </Footnote>
-      </xsl:otherwise>
-    </xsl:choose>
+    <Commentary id="{local:make-id(@id, 'c')}" Type="X">
+      <xsl:apply-templates select="@* except @id" mode="pass6"/>
+      <xsl:sequence select="$noteContent"/>
+    </Commentary>
   </xsl:template>
 
-  <xsl:template match="note/@number"/>
-
-  <xsl:template match="ref">
-    <xsl:apply-templates select="@* except @idref"/>
-    <xsl:choose>
-      <xsl:when test="$useXNotes">
-        <CommentaryRef Ref="{local:make-f-id(@idref)}"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <FootnoteRef Ref="{local:make-f-id(@idref)}"/>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:template match="note/@number" mode="pass6"/>
+  
+  <xsl:template match="local:bracketed" mode="pass6">
+    <Addition CommentaryRef="{local:make-id(@idref, 'c')}" ChangeId="{local:make-id(@idref, 'c')}-{generate-id()}">
+      <xsl:call-template name="processText">
+        <xsl:with-param name="node" select="node()"/>
+      </xsl:call-template>
+    </Addition>
   </xsl:template>
 
-  <xsl:template match="emph[@type='i']">
+  <xsl:template match="ref" mode="pass6">
+    <xsl:apply-templates select="@* except @idref" mode="pass6"/>
+    <CommentaryRef Ref="{local:make-id(@idref, 'c')}"/>
+  </xsl:template>
+
+  <xsl:template match="emph[@type='i']" mode="pass6">
     <xsl:choose>
       <xsl:when test="node()">
         <xsl:variable name="outputNodeName">
@@ -433,7 +659,7 @@
           </xsl:choose>
         </xsl:variable>
         <xsl:element name="{$outputNodeName}" namespace="http://www.legislation.gov.uk/namespaces/legislation">
-          <xsl:apply-templates select="@* except @type"/>
+          <xsl:apply-templates select="@* except @type" mode="pass6"/>
           <xsl:call-template name="processText">
             <xsl:with-param name="node" select="node()"/>
           </xsl:call-template>
@@ -451,8 +677,8 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="emph[@type='p']">
-    <xsl:apply-templates select="@* except @type"/>
+  <xsl:template match="emph[@type='p']" mode="pass6">
+    <xsl:apply-templates select="@* except @type" mode="pass6"/>
     <Superior>
       <xsl:call-template name="processText">
         <xsl:with-param name="node" select="node()"/>
@@ -460,22 +686,22 @@
     </Superior>
   </xsl:template>
 
-  <xsl:template match="table" mode="p1para">
-    <xsl:apply-templates select="."/>
+  <xsl:template match="table" mode="pass6-p1para">
+    <xsl:apply-templates select="." mode="pass6"/>
   </xsl:template>
 
-  <xsl:template match="table" mode="p"/>
+  <xsl:template match="table" mode="pass6-p"/>
 
-  <xsl:template match="table">
+  <xsl:template match="table" mode="pass6">
     <xsl:variable name="tableNumber" as="xs:integer">
       <xsl:number count="table" level="any"/>
     </xsl:variable>
     <Tabular id="{format-number($tableNumber, 't00000')}">
-      <xsl:apply-templates select="@* except @id"/>
+      <xsl:apply-templates select="@* except @id" mode="pass6"/>
       <table xmlns="http://www.w3.org/1999/xhtml">
         <!-- no thead as some SotR tables have headers half way down -->
         <tbody>
-          <xsl:apply-templates select="node()"/>
+          <xsl:apply-templates select="node()" mode="pass6"/>
         </tbody>
       </table>
     </Tabular>
@@ -487,20 +713,20 @@
     </tr>
   </xsl:template>
 
-  <xsl:template match="(table|tr)/text()[not(normalize-space())]"/>
+  <xsl:template match="(table|tr)/text()[not(normalize-space())]" mode="pass6"/>
 
-  <xsl:template match="th">
+  <xsl:template match="th" mode="pass6">
     <th xmlns="http://www.w3.org/1999/xhtml">
-      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="@*" mode="pass6"/>
       <xsl:call-template name="processText">
         <xsl:with-param name="node" select="node()"/>
       </xsl:call-template>
     </th>
   </xsl:template>
 
-  <xsl:template match="td">
+  <xsl:template match="td" mode="pass6">
     <td xmlns="http://www.w3.org/1999/xhtml">
-      <xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="@*" mode="pass6"/>
       <xsl:if test="descendant::element() or text()[normalize-space()]">
         <xsl:call-template name="processText">
           <xsl:with-param name="node" select="node()"/>
@@ -511,40 +737,40 @@
     </td>
   </xsl:template>
 
-  <xsl:template match="(th|td)/@rows">
+  <xsl:template match="(th|td)/@rows" mode="pass6">
     <xsl:attribute name="rowspan" select="data()"/>
   </xsl:template>
 
-  <xsl:template match="(th|td)/@cols">
+  <xsl:template match="(th|td)/@cols" mode="pass6">
     <xsl:attribute name="colspan" select="data()"/>
   </xsl:template>
 
-  <xsl:template match="figure">
+  <xsl:template match="figure" mode="pass6">
     <xsl:variable name="figureNumber" as="xs:integer">
       <xsl:number count="figure" level="any"/>
     </xsl:variable>
-    <xsl:apply-templates select="@*"/>
+    <xsl:apply-templates select="@*" mode="pass6"/>
     <Figure id="{format-number($figureNumber, 'g00000')}">
-      <xsl:apply-templates select="caption"/>
+      <xsl:apply-templates select="caption" mode="pass6"/>
       <Image ResourceRef="{format-number($figureNumber, 'r00000')}"/>
     </Figure>
   </xsl:template>
 
-  <xsl:template match="figure/@id"/>
-  <xsl:template match="figure/@number"/>
-  <xsl:template match="figure/@graphic"/>
+  <xsl:template match="figure/@id" mode="pass6"/>
+  <xsl:template match="figure/@number" mode="pass6"/>
+  <xsl:template match="figure/@graphic" mode="pass6"/>
 
-  <xsl:template match="figure" mode="p1para"/>
-  <xsl:template match="figure" mode="p"/>
+  <xsl:template match="figure" mode="pass6-p1para"/>
+  <xsl:template match="figure" mode="pass6-p"/>
 
-  <!--<xsl:template match="figure" mode="p1para">
+  <!--<xsl:template match="figure" mode="pass6-p1para">
     <xsl:apply-templates/>
   </xsl:template>
-  <xsl:template match="figure" mode="p">
+  <xsl:template match="figure" mode="pass6-p">
     <xsl:apply-templates/>
   </xsl:template>-->
 
-  <xsl:template match="figure" mode="resource">
+  <xsl:template match="figure" mode="pass6-resource">
     <xsl:variable name="imglang" select="'enm'"/>
     <xsl:variable name="figureNumber" as="xs:integer">
       <xsl:number count="figure" level="any"/>
@@ -575,7 +801,7 @@
     </Para>
   </xsl:template>
 
-  <xsl:template match="@*">
+  <xsl:template match="@*" mode="pass6">
     <!-- fallback - helps us discover and deal with unexpected attributes -->
     <xsl:message terminate="yes">
       <xsl:call-template name="errmsg">
@@ -585,7 +811,7 @@
     </xsl:message>
   </xsl:template>
 
-  <xsl:template match="node() | text()">
+  <xsl:template match="node() | text()" mode="pass6">
     <!-- fallback - helps us discover and deal with unexpected doc structure -->
     <xsl:message terminate="yes">
       <xsl:call-template name="errmsg">
@@ -595,11 +821,11 @@
     </xsl:message>
   </xsl:template>
 
-  <xsl:template match="section/text()[not(normalize-space())]"/>
-  <xsl:template match="section/text()[not(normalize-space())]" mode="p1para"/>
-  <xsl:template match="section/text()[not(normalize-space())]" mode="p"/>
+  <xsl:template match="section/text()[not(normalize-space())]" mode="pass6"/>
+  <xsl:template match="section/text()[not(normalize-space())]" mode="pass6-p1para"/>
+  <xsl:template match="section/text()[not(normalize-space())]" mode="pass6-p"/>
 
-  <xsl:template match="node() | text()" mode="p">
+  <xsl:template match="node() | text()" mode="pass6-p">
     <!-- fallback - helps us discover and deal with unexpected doc structure -->
     <xsl:message terminate="yes">
       <xsl:call-template name="errmsg">
@@ -653,19 +879,19 @@
           <xsl:param name="cumulText" as="xs:string?"/>
           <xsl:param name="cumulNodes" as="node()*"/>
           <xsl:param name="cumulChildNodes" as="node()*"/>
-
+  
           <xsl:on-completion>
             <xsl:sequence select="$cumulNodes"/>
-
+  
             <!-- there will be no accumulated child nodes if the last node
               is text; if there is text and also accumulated child nodes,
               then the text will have accumulated *before* the child nodes -->
             <xsl:value-of select="$cumulText"/>
-            <xsl:apply-templates select="$cumulChildNodes"/>
+            <xsl:apply-templates select="$cumulChildNodes" mode="pass6"/>
           </xsl:on-completion>
-
+  
           <xsl:choose>
-            <xsl:when test="self::emph or self::ref">
+            <xsl:when test="self::emph or self::ref or self::local:bracketed">
               <xsl:next-iteration>
                 <xsl:with-param name="cumulText" select="$cumulText"/>
                 <xsl:with-param name="cumulNodes" select="$cumulNodes"/>
@@ -673,42 +899,19 @@
                   select="($cumulChildNodes, .)"/>
               </xsl:next-iteration>
             </xsl:when>
-
+  
             <xsl:when test="self::text()">
-              <!-- process accumulated text to fix brackets -->
-              <xsl:variable name="newCumulText">
-                <xsl:choose>
-                  <!-- strip leading bracket around footnote(s) -->
-                  <xsl:when
-                    test="matches($cumulText, '[(\[]\s*') and
-                    matches(., '\s*[\])]') and
-                    $cumulChildNodes and
-                    (every $n in $cumulChildNodes satisfies $n/self::ref)">
-                    <xsl:value-of select="replace($cumulText, '[(\[]\s*', '')"/>
-                  </xsl:when>
-
-                  <!-- remove whitespace inside brackets -->
-                  <xsl:when test="matches($cumulText, '([(\[])\s+')">
-                    <xsl:value-of select="replace(., '([(\[])\s+', '$1')"/>
-                  </xsl:when>
-
-                  <xsl:otherwise>
-                    <xsl:value-of select="$cumulText"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:variable>
-
               <!-- process current text to fix whitespace and titles -->
               <xsl:variable name="newThisText">
                 <xsl:choose>
                   <!-- remove empty text nodes -->
                   <xsl:when test="not(normalize-space())"/>
-
+  
                   <!-- if in title mode, remove section and chapter numbers and citations -->
                   <xsl:when
                     test="$title = true() and
                           not($cumulNodes[self::text()]) and
-                          not(normalize-space($newCumulText))">
+                          not(normalize-space($cumulText))">
                     <xsl:analyze-string select="." flags="s"
                       regex="^([Cc][Hh]? ?[Aa] ?([Pp][Tt][Ee][Rr])?\s*)?([IVXLC0-9]+\.?\s*)(.*)$">
                       <xsl:matching-substring>
@@ -719,44 +922,21 @@
                       </xsl:non-matching-substring>
                     </xsl:analyze-string>
                   </xsl:when>
-
+  
                   <xsl:otherwise>
                     <xsl:value-of select="."/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:variable>
-
-              <!-- process current text to fix brackets -->
-              <xsl:variable name="newThisText">
-                <xsl:choose>
-                  <!-- strip trailing bracket around footnote(s) -->
-                  <xsl:when
-                    test="matches($cumulText, '[(\[]\s*') and
-                    matches($newThisText, '\s*[\])]') and
-                    $cumulChildNodes and
-                    (every $n in $cumulChildNodes satisfies $n/self::ref)">
-                    <xsl:value-of select="replace($newThisText, '\s*[\])]', '')"/>
-                  </xsl:when>
-
-                  <!-- remove whitespace inside brackets -->
-                  <xsl:when test="matches($newThisText, '\s+([\])])')">
-                    <xsl:value-of select="replace($newThisText, '\s+([\])])', '$1')"/>
-                  </xsl:when>
-
-                  <xsl:otherwise>
-                    <xsl:value-of select="$newThisText"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:variable>
-
+  
               <xsl:next-iteration>
                 <xsl:with-param name="cumulText">
                   <xsl:choose>
-                    <xsl:when test="$newCumulText and not($cumulChildNodes)">
+                    <xsl:when test="$cumulText and not($cumulChildNodes)">
                       <!-- if no child nodes accumulated, continue
                         accumulating text -->
                       <xsl:value-of
-                        select="concat($newCumulText, $newThisText)"/>
+                        select="concat($cumulText, $newThisText)"/>
                     </xsl:when>
                     <xsl:otherwise>
                       <!-- if child nodes accumulated, restart text
@@ -767,18 +947,18 @@
                 </xsl:with-param>
                 <xsl:with-param name="cumulNodes">
                   <xsl:sequence select="$cumulNodes"/>
-                  <xsl:if test="$newCumulText and $cumulChildNodes">
+                  <xsl:if test="$cumulText and $cumulChildNodes">
                     <!-- if child nodes accumulated, output the
                         currently accumulated text before them -->
-                    <xsl:value-of select="$newCumulText"/>
+                    <xsl:value-of select="$cumulText"/>
                   </xsl:if>
-                  <xsl:apply-templates select="$cumulChildNodes"/>
+                  <xsl:apply-templates select="$cumulChildNodes" mode="pass6"/>
                 </xsl:with-param>
                 <!-- clear any child nodes accumulated before this text -->
                 <xsl:with-param name="cumulChildNodes" select="()"/>
               </xsl:next-iteration>
             </xsl:when>
-
+  
             <!-- fallback - to check we've handled all possible children -->
             <xsl:otherwise>
               <xsl:message terminate="yes">
