@@ -8,7 +8,8 @@
   exclude-result-prefixes="xs xhtml leg local"
   version="3.0">
 
-  <xsl:param name="lookupFile" select="'lookup.xml'"/>
+  <xsl:param name="lookupFile" select="'lookup.xml'" static="yes"/>
+  <xsl:param name="stageToOutput" select="'pass6'" static="yes"/>
 
   <!-- -/- VARIABLES -/- -->
   <xsl:variable name="reportId" as="xs:string?" select="/report/@id"/>
@@ -23,6 +24,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
+          <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="failNode" select="/"/>
             <xsl:with-param name="message">no entry in lookup file for this item</xsl:with-param>
@@ -76,6 +78,7 @@
       </xsl:matching-substring>
       <xsl:non-matching-substring>
         <xsl:message terminate="yes">
+          <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="message">
               <xsl:text>couldn't make prelims regnal year because I </xsl:text>
@@ -118,9 +121,17 @@
       <xsl:param name="depth" as="xs:integer" select="-1"/>
       <xsl:on-completion>
         <xsl:message terminate="yes">
-          <xsl:text>closing bracket with num </xsl:text>
-          <xsl:value-of select="$closing-bracket/@num"/>
-          <xsl:text> doesn't have a matching opening bracket</xsl:text>
+          <xsl:text>FATAL ERROR: </xsl:text>
+          <xsl:call-template name="errmsg">
+            <xsl:with-param name="failNode" select="$closing-bracket"/>
+            <xsl:with-param name="message">
+              <xsl:text>closing bracket with num </xsl:text>
+              <xsl:value-of select="$closing-bracket/@num"/>
+              <xsl:text> with preceding text &quot;</xsl:text>
+              <xsl:value-of select="$closing-bracket/preceding::text()[1]"/>
+              <xsl:text>&quot; doesn't have a matching opening bracket</xsl:text>
+            </xsl:with-param>
+          </xsl:call-template>
         </xsl:message>
       </xsl:on-completion>
       <xsl:variable name="newDepth" as="xs:integer">
@@ -161,6 +172,7 @@
       </xsl:matching-substring>
       <xsl:non-matching-substring>
         <xsl:message terminate="yes">
+          <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="message">
               <xsl:text>id/idref </xsl:text>
@@ -211,7 +223,10 @@
     <xsl:variable name="pass5">
       <xsl:apply-templates select="$pass4" mode="pass5"/>
     </xsl:variable>
-    <xsl:apply-templates select="$pass5" mode="pass6"/>
+    <xsl:variable name="pass6">
+      <xsl:apply-templates select="$pass5" mode="pass6"/>
+    </xsl:variable>
+    <xsl:sequence _select="${$stageToOutput}"/>
   </xsl:template>
   
   <!-- PASS 1: Turn [(brackets)] in text into <bracket> elements so we can identify them later -->
@@ -337,7 +352,8 @@
   <xsl:template match="local:bracketed" mode="pass5">
     <xsl:variable name="ref" select="child::ref/@idref"/>
     <xsl:if test="count($ref) gt 1">
-      <xsl:message terminate="yes">
+      <xsl:message>
+        <xsl:text>Warning: </xsl:text>
         <xsl:call-template name="errmsg">
           <xsl:with-param name="failNode" select="."/>
           <xsl:with-param name="message">
@@ -351,7 +367,9 @@
         </xsl:call-template>
       </xsl:message>
     </xsl:if>
+    
     <xsl:choose>
+      <!-- We treat <ref> in round brackets as a CommentaryRef -->
       <xsl:when test="@shape = 'round'">
         <xsl:choose>
           <xsl:when test="$ref">
@@ -364,12 +382,18 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <xsl:otherwise>
+      <!-- We treat <ref> in square brackets as an <Addition> -->
+      <xsl:when test="@shape = 'square'">
         <xsl:choose>
           <xsl:when test="$ref">
             <xsl:copy>
-              <xsl:attribute name="idref" select="$ref"/>
+              <xsl:attribute name="idref" select="subsequence($ref, 1, 1)"/>
               <xsl:apply-templates mode="pass5"/>
+
+              <!-- if there's multiple refs, we stick them at the end -->
+              <xsl:if test="count($ref) gt 1">
+                <xsl:apply-templates select="subsequence($ref, 2)" mode="pass5-ref"/>
+              </xsl:if>
             </xsl:copy>
           </xsl:when>
           <xsl:otherwise>
@@ -378,7 +402,7 @@
             <xsl:text>]</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-      </xsl:otherwise>
+      </xsl:when>
     </xsl:choose>
   </xsl:template>
   
@@ -497,6 +521,7 @@
                 <!-- if no child paras, just output whatever is here -->
                 <xsl:apply-templates select="node() except head" mode="pass6"/>
                 <xsl:message>
+                  <xsl:text>Warning: </xsl:text>
                   <xsl:call-template name="errmsg">
                     <xsl:with-param name="failNode" select="."/>
                     <xsl:with-param name="message">
@@ -537,6 +562,7 @@
       </xsl:matching-substring>
       <xsl:non-matching-substring>
         <xsl:message terminate="yes">
+          <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="failNode" select="$this"/>
             <xsl:with-param name="message">
@@ -562,6 +588,7 @@
       </xsl:matching-substring>
       <xsl:non-matching-substring>
         <xsl:message terminate="yes">
+          <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="failNode" select="$this"/>
             <xsl:with-param name="message">
@@ -646,6 +673,7 @@
             <xsl:when test="@type = 'p'">Superior</xsl:when>
             <xsl:otherwise>
               <xsl:message terminate="yes">
+                <xsl:text>FATAL ERROR: </xsl:text>
                 <xsl:call-template name="errmsg">
                   <xsl:with-param name="failNode" select="."/>
                   <xsl:with-param name="message">
@@ -668,6 +696,7 @@
       <xsl:otherwise>
         <!-- occasionally emph appears empty - output nothing except a warning and continue -->
         <xsl:message>
+          <xsl:text>Warning: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="failNode" select="."/>
             <xsl:with-param name="message">unexpectedly empty element</xsl:with-param>
@@ -707,7 +736,7 @@
     </Tabular>
   </xsl:template>
 
-  <xsl:template match="tr">
+  <xsl:template match="tr" mode="pass6">
     <tr xmlns="http://www.w3.org/1999/xhtml">
       <xsl:apply-templates/>
     </tr>
@@ -776,15 +805,17 @@
       <xsl:number count="figure" level="any"/>
     </xsl:variable>
     <xsl:message><!-- TODO fix img lang - check what it should be for each doc and add to lookup.xml -->
+      <xsl:text>Warning: </xsl:text>
       <xsl:call-template name="errmsg">
         <xsl:with-param name="failNode" select="."/>
-        <xsl:with-param name="message">WARNING: need to check image lang is actually 'enm'</xsl:with-param>
+        <xsl:with-param name="message">need to check image lang is actually 'enm'</xsl:with-param>
       </xsl:call-template>
     </xsl:message>
     <Resource id="{format-number($figureNumber, 'r00000')}">
       <ExternalVersion URI="{replace($leg, '/id/', '/')}/images/aep_{$legyr}{format-number($legnum, '0000')}_{$imglang}_{format-number($figureNumber, '000')}"/>
     </Resource>
     <!--<xsl:message terminate="yes">
+      <xsl:text>FATAL ERROR: </xsl:text>
       <xsl:call-template name="errmsg">
         <xsl:with-param name="failNode" select="."/>
         <xsl:with-param name="message">figure transform not implemented yet for figure</xsl:with-param>
@@ -792,7 +823,7 @@
     </xsl:message>-->
   </xsl:template>
 
-  <xsl:template match="caption">
+  <xsl:template match="caption" mode="pass6">
     <Para>
       <xsl:call-template name="processText">
         <xsl:with-param name="node" select="node()"/>
@@ -804,6 +835,7 @@
   <xsl:template match="@*" mode="pass6">
     <!-- fallback - helps us discover and deal with unexpected attributes -->
     <xsl:message terminate="yes">
+      <xsl:text>FATAL ERROR: </xsl:text>
       <xsl:call-template name="errmsg">
         <xsl:with-param name="failNode" select="."/>
         <xsl:with-param name="message">unmatched attr</xsl:with-param>
@@ -814,6 +846,7 @@
   <xsl:template match="node() | text()" mode="pass6">
     <!-- fallback - helps us discover and deal with unexpected doc structure -->
     <xsl:message terminate="yes">
+      <xsl:text>FATAL ERROR: </xsl:text>
       <xsl:call-template name="errmsg">
         <xsl:with-param name="failNode" select="."/>
         <xsl:with-param name="message">unmatched node</xsl:with-param>
@@ -828,6 +861,7 @@
   <xsl:template match="node() | text()" mode="pass6-p">
     <!-- fallback - helps us discover and deal with unexpected doc structure -->
     <xsl:message terminate="yes">
+      <xsl:text>FATAL ERROR: </xsl:text>
       <xsl:call-template name="errmsg">
         <xsl:with-param name="failNode" select="."/>
         <xsl:with-param name="message">unmatched node</xsl:with-param>
@@ -853,6 +887,7 @@
       <xsl:when test="$wrapInTextEls = true()">
         <xsl:if test="$title = true()">
           <xsl:message terminate="yes">
+            <xsl:text>FATAL ERROR: </xsl:text>
             <xsl:call-template name="errmsg">
               <xsl:with-param name="failNode" select="."/>
               <xsl:with-param name="message">
@@ -962,6 +997,7 @@
             <!-- fallback - to check we've handled all possible children -->
             <xsl:otherwise>
               <xsl:message terminate="yes">
+                <xsl:text>FATAL ERROR: </xsl:text>
                 <xsl:call-template name="errmsg">
                   <xsl:with-param name="failNode" select="."/>
                   <xsl:with-param name="message">
