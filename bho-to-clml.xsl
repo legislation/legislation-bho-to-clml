@@ -108,7 +108,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  
+
   <!-- -/- FUNCTIONS -/- -->
   <!-- local:find-opening-bracket just counts back through the brackets until the number of closed
   and opened brackets = 0. At that point, we have our opening bracket (because the brackets 
@@ -204,7 +204,7 @@
       <xsl:otherwise>unknown</xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-    
+
   <!-- -/- TEMPLATES -/- -->
   <!-- Root template: run the document through the 6 passes -->
   <xsl:template match="/">
@@ -228,7 +228,7 @@
     </xsl:variable>
     <xsl:sequence _select="${$stageToOutput}"/>
   </xsl:template>
-  
+
   <!-- PASS 1: Turn [(brackets)] in text into <bracket> elements so we can identify them later -->
   <xsl:template match="text()" mode="pass1" priority="+1">
     <xsl:variable name="node" select="."/>
@@ -245,14 +245,14 @@
       </xsl:non-matching-substring>
     </xsl:analyze-string>
   </xsl:template>
-  
+
   <xsl:template match="node()" mode="pass1">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates select="node()" mode="pass1"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <!-- PASS 2: Add pair numbers to opening brackets, so we can track where each bracket pair starts -->
   <xsl:template match="local:bracket[@type='open']" mode="pass2" priority="+1">
     <xsl:copy>
@@ -266,7 +266,7 @@
       <xsl:apply-templates select="node()" mode="pass2"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="local:bracket[@type='close']" mode="pass2" priority="+1">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
@@ -276,14 +276,14 @@
       <xsl:apply-templates select="node()" mode="pass2"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="node()" mode="pass2">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates select="node()" mode="pass2"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <!-- PASS 3: Add pair numbers to closing brackets, so we can match opening and closing bracket pairs later -->
   <xsl:template match="local:bracket[@type='close']" mode="pass3" priority="+1">
     <xsl:copy>
@@ -294,14 +294,14 @@
       <xsl:apply-templates select="node()" mode="pass3"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="node()" mode="pass3">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates select="node()" mode="pass3"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <!-- PASS 4: Wrap els and text between matching opening and closing brackets in a <bracketed> el -->
   <xsl:template match="local:bracket[@type='open']" mode="pass4" priority="+1">
     <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
@@ -317,9 +317,9 @@
       <xsl:with-param name="current-pair" select="$current-pair"/>
     </xsl:apply-templates>
   </xsl:template>
-  
+
   <xsl:template match="local:bracket[@type='close']" mode="pass4" priority="+1"/>
-  
+
   <xsl:template match="local:text" mode="pass4">
     <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
     <xsl:copy-of select="text()"/>
@@ -327,7 +327,7 @@
       <xsl:with-param name="current-pair" select="$current-pair"/>
     </xsl:apply-templates>
   </xsl:template>
-  
+
   <xsl:template match="node()" mode="pass4">
     <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
     <xsl:copy>
@@ -340,7 +340,7 @@
       <xsl:with-param name="current-pair" select="$current-pair"/>
     </xsl:apply-templates>
   </xsl:template>
-  
+
   <!-- PASS 5: Handle the <bracketed> elements:
    * Round brackets that contain a child <ref> just output the <ref>
      - we use this to create <CommentaryRef Ref=""> later
@@ -367,7 +367,7 @@
         </xsl:call-template>
       </xsl:message>
     </xsl:if>
-    
+
     <xsl:choose>
       <!-- We treat <ref> in round brackets as a CommentaryRef -->
       <xsl:when test="@shape = 'round'">
@@ -405,15 +405,15 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  
+
   <xsl:template match="ref" mode="pass5-ref" priority="+1">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="ref" mode="pass5" priority="+1"/>
-  
+
   <xsl:template match="node()" mode="pass5">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
@@ -650,7 +650,7 @@
   </xsl:template>
 
   <xsl:template match="note/@number" mode="pass6"/>
-  
+
   <xsl:template match="local:bracketed" mode="pass6">
     <Addition CommentaryRef="{local:make-id(@idref, 'c')}" ChangeId="{local:make-id(@idref, 'c')}-{generate-id()}">
       <xsl:call-template name="processText">
@@ -914,17 +914,17 @@
           <xsl:param name="cumulText" as="xs:string?"/>
           <xsl:param name="cumulNodes" as="node()*"/>
           <xsl:param name="cumulChildNodes" as="node()*"/>
-  
+
           <xsl:on-completion>
             <xsl:sequence select="$cumulNodes"/>
-  
+
             <!-- there will be no accumulated child nodes if the last node
               is text; if there is text and also accumulated child nodes,
               then the text will have accumulated *before* the child nodes -->
             <xsl:value-of select="$cumulText"/>
             <xsl:apply-templates select="$cumulChildNodes" mode="pass6"/>
           </xsl:on-completion>
-  
+
           <xsl:choose>
             <xsl:when test="self::emph or self::ref or self::local:bracketed">
               <xsl:next-iteration>
@@ -934,14 +934,14 @@
                   select="($cumulChildNodes, .)"/>
               </xsl:next-iteration>
             </xsl:when>
-  
+
             <xsl:when test="self::text()">
               <!-- process current text to fix whitespace and titles -->
               <xsl:variable name="newThisText">
                 <xsl:choose>
                   <!-- remove empty text nodes -->
                   <xsl:when test="not(normalize-space())"/>
-  
+
                   <!-- if in title mode, remove section and chapter numbers and citations -->
                   <xsl:when
                     test="$title = true() and
@@ -957,13 +957,13 @@
                       </xsl:non-matching-substring>
                     </xsl:analyze-string>
                   </xsl:when>
-  
+
                   <xsl:otherwise>
                     <xsl:value-of select="."/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:variable>
-  
+
               <xsl:next-iteration>
                 <xsl:with-param name="cumulText">
                   <xsl:choose>
@@ -993,7 +993,7 @@
                 <xsl:with-param name="cumulChildNodes" select="()"/>
               </xsl:next-iteration>
             </xsl:when>
-  
+
             <!-- fallback - to check we've handled all possible children -->
             <xsl:otherwise>
               <xsl:message terminate="yes">
