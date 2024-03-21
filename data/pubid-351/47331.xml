@@ -2,7 +2,7 @@
 <!DOCTYPE report SYSTEM "../dtd/report.dtd">
 <report id="47331" pubid="351" publish="true">
 	<title>Charles II, 1662</title>
-	<subtitle>Chapter XXVIII. An Act for the [regulating <emph type="p">t</emph>] of the Pilchard Fishing in the Counties of Devon and Cornwall [Rot. Parl. 14 C. II. p. 3. nu. 13.]</subtitle>
+	<subtitle>Chapter XXVIII. An Act for the [regulating <ref idref="n1">1</ref>] of the Pilchard Fishing in the Counties of Devon and Cornwall [Rot. Parl. 14 C. II. p. 3. nu. 13.]</subtitle>
 	<section id="s1">
 		<head>Recital of Benefits arising from the Fishery; and that many destru&bholigct;ive Abuses had crept in.</head>
 		<para id="p1">
@@ -30,7 +30,7 @@ without bail or mainprize.</para>
 Partners or Adventurers in the Craft of Fishery and in the Boates and Saynes thereunto belonging shall presume
 from and after the day before limited to make or cause to be made any Pilchards or Fumathoes in Cask to be sold
 or transported except he or they shall openly buy the aforesaid Fish of the respe&bholigct;ive Owners Partners and
-[Adventures<ref idref="n1">1</ref>] in the said Pilchard Craft or with theire expresse allowance leave and consent that they shall in such
+[Adventures<ref idref="n2">1</ref>] in the said Pilchard Craft or with theire expresse allowance leave and consent that they shall in such
 case forfeit all and singuler such Pilchards and Fumathoes so made and every Cask thereof or theire full value
 the one halfe to the King and the other halfe to him or them that shall soe sue for the same by Bill Plaint or
 other Information and upon legal proof recover the same.</para>
@@ -57,6 +57,7 @@ Owner of such Boats or Sellars to be gone that then upon complaint made unto any
 every such person or persons refusing so to do shall pay five shillings to the poore of the Parish where such
 offence was committed or shall be set in the Stocks for the space of Five houres.</para>
 			<note id="n1" number="1">Regulation <emph type="i">O</emph>.</note>
+			<note id="n2" number="2">Adventurers <emph type="i">O</emph>.</note>
 		</section>
 	</section>
 </report>

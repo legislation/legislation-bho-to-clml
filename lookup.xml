@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <reports>
-  <report id="47193" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/1" year="1627" regnal="Cha1/3" chapter="1" title="The Petition of Right" />
+  <report id="47193" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/1" year="1627" regnal="Cha1/3" chapter="1" title="The Petition of Right" titleSource="chron" />
   <report id="47194" leg="http://www.legislation.gov.uk/id/aep/Cha2/12/14" year="1660" regnal="Cha2/12" chapter="14" title="An Act for a perpetual Anniversary Thanksgiving on the nine and twentieth Day of May." />
-  <report id="47197" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/1" year="1625" regnal="Cha1/1" chapter="1" title="The Sunday Observance Act 1625" />
+  <report id="47197" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/1" year="1625" regnal="Cha1/1" chapter="1" title="The Sunday Observance Act 1625" titleSource="conferred" />
   <report id="47198" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/2" year="1625" regnal="Cha1/1" chapter="2" title="An Act to enable the King to make Leases of Lands, Parcel of His Highness Duchy of Cornwall, or annexed to the same." />
   <report id="47199" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/3" year="1625" regnal="Cha1/1" chapter="3" title="An Act for the Ease in obtaining of Licenses of Alienation, and in the Pleading of Alienations with Licence, or of Pardons of Alienations without Licence, in the Court of Exchequer and elsewhere." />
   <report id="47200" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/4" year="1625" regnal="Cha1/1" chapter="4" title="An Act for the further Restraint of Tipling in Inns, Alehouses and other Victualling-houses." />
   <report id="47201" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/5" year="1625" regnal="Cha1/1" chapter="5" title="An Act for the Confirmation of Subsidies granted by the Clergy." />
   <report id="47202" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/6" year="1625" regnal="Cha1/1" chapter="6" title="An Act for entire Subsidies granted by the Temporalty." />
   <report id="47203" leg="http://www.legislation.gov.uk/id/aep/Cha1/1/7" year="1625" regnal="Cha1/1" chapter="7" title="An Act that this Session of Parliament shall not determine by His Majesty's Royal Assent to this and some other Acts." />
-  <report id="47204" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/1" year="1627" regnal="Cha1/3" chapter="1" title="The Petition of Right" />
+  <report id="47204" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/1" year="1627" regnal="Cha1/3" chapter="1" title="The Petition of Right" titleSource="conferred" />
   <report id="47205" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/2" year="1627" regnal="Cha1/3" chapter="2" title="An Act for the further Reformation of sundry Abuses committed on the Lord's Day, commonly called Sunday." />
   <report id="47206" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/3" year="1627" regnal="Cha1/3" chapter="3" title="An Act to restrain the passing or sending of any to be Popishly bred beyond the Seas." />
   <report id="47207" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/4" year="1627" regnal="Cha1/3" chapter="4" title="An Act for the better suppressing of unlicensed Alehouse keepers." />
@@ -26,7 +26,7 @@
   <report id="47218" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/7" year="1640" regnal="Cha1/16" chapter="7" title="An Act to prevent Inconveniences which may happen by the untimely adjourning, proroguing or dissolving of this present Parliament." />
   <report id="47219" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/8" year="1640" regnal="Cha1/16" chapter="8" title="A Subsidy granted to the King of Tonnage, Poundage and other Sums of Money payable upon Merchandize exported and imported." />
   <report id="47220" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/9" year="1640" regnal="Cha1/16" chapter="9" title="An Act for the Speedy Provision of Money for Disbanding the Armies, and Settling the Peace of the two Kingdoms of England and Scotland." />
-  <report id="47221" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/10" year="1640" regnal="Cha1/16" chapter="10" title="The Habeas Corpus Act 1640" />
+  <report id="47221" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/10" year="1640" regnal="Cha1/16" chapter="10" title="The Habeas Corpus Act 1640" titleSource="conferred" />
   <report id="47222" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/11" year="1640" regnal="Cha1/16" chapter="11" title="An Act for a Repeal of a Branch of a Statute primo Elizabeth, concerning Commissioners for Causes Ecclesiastical." />
   <report id="47223" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/12" year="1640" regnal="Cha1/16" chapter="12" title="A Subsidy granted to the King of Tonnage and Poundage, and other Sums of Money payable upon Merchandize exported and imported." />
   <report id="47224" leg="http://www.legislation.gov.uk/id/aep/Cha1/16/13" year="1640" regnal="Cha1/16" chapter="13" title="An Act for the securing of such Monies as are or shall be due to the Inhabitants of the County of York, and the other adjoining Counties, wherein His Majesty's Army is or hath been billeted, for the Billet of the Soldiers of the said Army, as also to certain Officers of the said Army who so forbear part of their Pay according to an Order in that Behalf made in the Commons House of Parliament this present Session, for such Part of their Pay as they shall to forbear." />
@@ -273,8 +273,8 @@
   <report id="47465" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/5" year="1677" regnal="Cha2/29" chapter="5" title="An Act for taking affidavits in the Country, to be made use of in the Court of King's Bench, Common Pleas and Exchequer." />
   <report id="47466" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/6" year="1677" regnal="Cha2/29" chapter="6" title="An Act for the naturalizing of Children of His Majesty's English Subjects, born in foreign Countries during the late Troubles." />
   <report id="47467" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/7" year="1677" regnal="Cha2/29" chapter="7" title="The Sunday Observance Act 1677" />
-  <report id="47468" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/8" year="1677" regnal="Cha2/29" chapter="8" title="The Augmentation of Benefices Act 1677" />
-  <report id="47469" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/9" year="1677" regnal="Cha2/29" chapter="9" title="The Ecclesiastical Jurisdiction Act 1677" />
+  <report id="47468" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/8" year="1677" regnal="Cha2/29" chapter="8" title="The Augmentation of Benefices Act 1677" titleSource="conferred" />
+  <report id="47469" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/9" year="1677" regnal="Cha2/29" chapter="9" title="The Ecclesiastical Jurisdiction Act 1677" titleSource="conferred" />
   <report id="47470" leg="http://www.legislation.gov.uk/id/aep/Cha2/29/10" year="1677" regnal="Cha2/29" chapter="10" title="An Act for the better repairing and maintaining the Pier of Great Yarmouth." />
   <report id="47471" leg="http://www.legislation.gov.uk/id/aep/Cha2/29-30/1" year="1677" regnal="Cha2/29-30" chapter="1" title="An Act for raising Money by a Poll and otherwise, to enable His Majesty to enter into an actual War against the French King, and for prohibiting several French Commodities." />
   <report id="47472" leg="http://www.legislation.gov.uk/id/aep/Cha2/29-30/2" year="1677" regnal="Cha2/29-30" chapter="2" title="An Act for continuance of two former Acts for preventing of Theft and Rapine upon the Northerne Borders of England" />
@@ -288,8 +288,8 @@
   <report id="47480" leg="http://www.legislation.gov.uk/id/aep/Cha2/30/st1/8" year="1678" regnal="Cha2/30/st1" chapter="8" title="An Act for the Admeasurement of Keels and Boats carrying Coals." />
   <report id="47481" leg="http://www.legislation.gov.uk/id/aep/Cha2/30/st1/9" year="1678" regnal="Cha2/30/st1" chapter="9" title="An Act for Preservation of Fishing in the River of Severn" />
   <report id="47482" leg="http://www.legislation.gov.uk/id/aep/Cha2/30/2" year="1678" regnal="Cha2/30" chapter="2" title="An Act for the more effectuall preserving the Kings Person and Government by disableing Papists from sitting in either House of Parlyament" />
-  <report id="47483" leg="http://www.legislation.gov.uk/id/aep/Cha2/31/1" year="1679" regnal="Cha2/31" chapter="1" title="The Billeting Act 1679" />
-  <report id="47484" leg="http://www.legislation.gov.uk/id/aep/Cha2/31/2" year="1679" regnal="Cha2/31" chapter="2" title="The Habeas Corpus Act 1679" />
+  <report id="47483" leg="http://www.legislation.gov.uk/id/aep/Cha2/31/1" year="1679" regnal="Cha2/31" chapter="1" title="The Billeting Act 1679" titleSource="conferred" />
+  <report id="47484" leg="http://www.legislation.gov.uk/id/aep/Cha2/31/2" year="1679" regnal="Cha2/31" chapter="2" title="The Habeas Corpus Act 1679" titleSource="conferred" />
   <report id="47485" leg="http://www.legislation.gov.uk/id/aep/Cha2/31/3" year="1679" regnal="Cha2/31" chapter="3" title="An Act for Re-ingrossing of the Records of Fines burnt or lost in the late Fire in the Temple." />
   <report id="47486" leg="http://www.legislation.gov.uk/id/aep/Cha2/32/1" year="1680" regnal="Cha2/32" chapter="1" title="An additional Act for burying in Woollen." />
   <report id="47487" leg="http://www.legislation.gov.uk/id/aep/Cha2/32/2" year="1680" regnal="Cha2/32" chapter="2" title="An Act prohibiting the Importation of Cattle from Ireland." />

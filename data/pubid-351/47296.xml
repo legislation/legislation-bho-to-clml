@@ -2,7 +2,7 @@
 <!DOCTYPE report SYSTEM "../dtd/report.dtd">
 <report id="47296" pubid="351" publish="true">
 	<title>Charles II, 1661</title>
-	<subtitle>CHAPTER XII. An Act for Explanation of a Clause contained in (<emph type="p">2</emph>) Act of Parliament made in the seventeenth yeare of the late
+	<subtitle>CHAPTER XII. An Act for Explanation of a Clause contained in (<ref idref="n1">2</ref>) Act of Parliament made in the seventeenth yeare of the late
 King Charles Entituled An Act for Repeal of a Branch of a Statute Primo Elizabethe concerning Commissioners
 for Causes Ecclesiasticall. [Rot. Parl. 13 C. II. p. 1. nu. 12.]</subtitle>
 	<section id="s1">
@@ -18,7 +18,7 @@ Power Authority or Jurisdi&bholigct;ion by any Grant Licence or Commission of th
 or by any Power or Authoritie derived from the King His Heires or Successors or otherwise (shall from and after
 the first day of August which then should be in the yeare of our Lord God One thousand six hundred forty one)
 award impose or infli&bholigct; any Pain Penalty Fine Amercement Imprisonment or other corporall punishment upon
-any [of <ref idref="n1">1</ref>] the Kings Subje&bholigct;s for any contempt misdemeanor crime offence matter or thing whatsoever belonging to
+any [of <ref idref="n2">1</ref>] the Kings Subje&bholigct;s for any contempt misdemeanor crime offence matter or thing whatsoever belonging to
 Spirituall or Ecclesiasticall Cognizance or Jurisdi&bholigct;ion whereupon some doubt hath beene made that all ordinary
 power of Coertion and Proceeding&bholngs; in Causes Ecclesiasticall were taken away whereby the ordinary course of
 Justice in Causes Ecclesiasticall hath been obstru&bholigct;ed Be it therefore declared and ena&bholigct;ed by the Kings most
@@ -66,8 +66,8 @@ hundred and thirty nine nor to abridge or diminish the Kings Majesties Supremacy
 affaires nor to confirm the Canons made in the yeare One thousand six hundred and forty nor any of them nor any
 other Ecclesiasticall Lawes or Canons not formerly confirmed allowed or ena&bholigct;ed by Parliament or by the established
 Lawes of the Land as they stood in the yeare of the Lord One thousand six hundred thirty and nine<ref idref="n3">3</ref>]</para>
-			<note id="n1" number="1">an <emph type="i">O</emph>.</note>
-			<note id="n2" number="2">interlined on the Roll.</note>
+			<note id="n1" number="2">an <emph type="i">O</emph>.</note>
+			<note id="n2" number="3">interlined on the Roll.</note>
 			<note id="n3" number="3">annexed to the Original Act in a separate Schedule.</note>
 		</section>
 	</section>

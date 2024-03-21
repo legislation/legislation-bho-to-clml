@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://saxon.sf.net/ns/configuration">
+  <xsltPackages>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl" version="1.0" sourceLocation="common.xsl"/>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/pass1.xsl" version="1.0" sourceLocation="pass1.xsl"/>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/pass2.xsl" version="1.0" sourceLocation="pass2.xsl"/>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/pass3.xsl" version="1.0" sourceLocation="pass3.xsl"/>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/pass4.xsl" version="1.0" sourceLocation="pass4.xsl"/>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/pass5.xsl" version="1.0" sourceLocation="pass5.xsl"/>
+    <package name="http://www.legislation.gov.uk/packages/bho-to-clml/pass6.xsl" version="1.0" sourceLocation="pass6.xsl"/>
+  </xsltPackages>
+</configuration>
