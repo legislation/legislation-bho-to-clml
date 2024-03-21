@@ -10,19 +10,19 @@
   default-mode="pass2"
   exclude-result-prefixes="xs bho-to-clml common pass2 local"
   version="3.0">
-  
+
   <!-- PASS 2: Add pair numbers to opening brackets, so we can track where each bracket pair starts -->
-  
+
   <!-- -/- MODES -/- -->
   <xsl:mode name="pass2" visibility="public"/>
-  
+
   <!-- -/- PACKAGE IMPORTS -/- -->
   <xsl:use-package name="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl" version="1.0">
     <xsl:override>
       <xsl:variable name="common:moduleName" select="tokenize(base-uri(document('')), '/')[last()]"/>
     </xsl:override>
   </xsl:use-package>
-  
+
   <!-- -/- TEMPLATES -/- -->
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracket[@type='open']" priority="+1">
     <xsl:choose>
@@ -31,9 +31,12 @@
         printed text, so we can't handle it using our fancy bracket
         handling code - just output it as plain text instead -->
       <xsl:when test="preceding-sibling::node()[1]/self::processing-instruction('bignore')">
-        <xsl:value-of select="."/>
+        <local:text>
+          <!-- wrap in <local:text> so later steps process correctly -->
+          <xsl:value-of select="."/>
+        </local:text>
       </xsl:when>
-      
+
       <xsl:otherwise>
         <xsl:copy>
           <xsl:copy-of select="@*"/>
@@ -48,7 +51,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracket[@type='close']" priority="+1">
     <xsl:choose>
       <!-- if the immediately following sibling is a <?bignore?>,
@@ -56,9 +59,12 @@
         printed text, so we can't handle it using our fancy bracket
         handling code - just output it as plain text instead -->
       <xsl:when test="following-sibling::node()[1]/self::processing-instruction('bignore')">
-        <xsl:value-of select="."/>
+        <!-- wrap in <local:text> so later steps process correctly -->
+        <local:text>
+          <xsl:value-of select="."/>
+        </local:text>
       </xsl:when>
-      
+
       <xsl:otherwise>
         <xsl:copy>
           <xsl:copy-of select="@*"/>
@@ -70,7 +76,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
   <!-- -/-/-/- Explicit structure templates -/-/-/- -->
   <!-- These handle the expected paths in the structure so there's an explicit
     rule for everything we expect, which means anything we don't expect falls
@@ -78,23 +84,23 @@
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracket/text()" priority="+1">
     <xsl:copy/>
   </xsl:template>
-  
+
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:text" priority="+1">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:text/text()" priority="+1">
     <xsl:copy/>
   </xsl:template>
-  
+
   <xsl:template match="/report/(self::*|title|subtitle)">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/report/subtitle/(emph|ref)">
+  <xsl:template match="/report/subtitle/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
@@ -129,12 +135,17 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="/report/(section|section/section)/table/tr/(th|td)/(emph|ref|br)">
+    <xsl:copy>
+      <xsl:apply-templates select="@* | node()"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="/report/(section|section/section)/note/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="(report|section|para|note|table)/@id">
     <xsl:copy/>
   </xsl:template>
@@ -153,12 +164,15 @@
   <xsl:template match="(th|td)/(@cols|@rows)">
     <xsl:copy/>
   </xsl:template>
-  
+
   <!-- -/-/-/- Fallback templates -/-/-/- -->
   <!-- These templates explicitly ignore things we know should be there but don't
     want to handle, or catch anything we didn't expect and haven't handled - this
     makes the stylesheet's behaviour much more predictable by explicitly flagging
     any situation we haven't handled -->
+
+  <xsl:template match="processing-instruction('bignore')"/>
+
   <!-- Final fallbacks - helps us discover and deal with unexpected doc structure -->
   <xsl:template match="@*">
     <xsl:message terminate="yes">
@@ -169,7 +183,7 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="node() | text()">
     <xsl:message terminate="yes">
       <xsl:text>FATAL ERROR: </xsl:text>
@@ -179,5 +193,5 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
 </xsl:package>

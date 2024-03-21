@@ -14,7 +14,7 @@
 
   <!-- -/- PARAMETERS -/- -->
   <xsl:param name="lookupFile" select="'lookup.xml'" static="yes"/>
-  
+
   <!-- -/- MODES -/- -->
   <!-- These exist to allow debugging by overriding the "initial mode"
     setting in the XSLT processor. Doing so will output the document
@@ -26,7 +26,7 @@
   <xsl:mode name="bho-pass4" visibility="public"/>
   <xsl:mode name="bho-pass5" visibility="public"/>
   <xsl:mode/> <!-- for the unnamed mode -->
-  
+
   <!-- -/- PACKAGE IMPORTS -/- -->
   <xsl:use-package name="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl">
     <xsl:override>
@@ -55,7 +55,7 @@
       <xsl:variable name="bho-to-clml:lookupFile" select="$lookupFile" visibility="private"/>
     </xsl:override>
   </xsl:use-package>
-  
+
   <!-- -/- VARIABLES -/- -->
   <xsl:variable name="reportId" as="xs:string?" select="/report/@id"/>
   <xsl:variable name="docUri" as="xs:string" select="document-uri()"/>
@@ -65,40 +65,40 @@
   <xsl:template match="/" mode="bho-pass1">
     <xsl:apply-templates mode="pass1"/>
   </xsl:template>
-  
+
   <xsl:template match="/" mode="bho-pass2">
     <xsl:variable name="prev">
       <xsl:apply-templates select="." mode="pass1"/>
     </xsl:variable>
     <xsl:apply-templates select="$prev/node()" mode="pass2"/>
   </xsl:template>
-  
+
   <xsl:template match="/" mode="bho-pass3">
     <xsl:variable name="prev">
       <xsl:apply-templates select="." mode="bho-pass2"/>
     </xsl:variable>
     <xsl:apply-templates select="$prev/node()" mode="pass3"/>
   </xsl:template>
-  
+
   <xsl:template match="/" mode="bho-pass4">
     <xsl:variable name="prev">
       <xsl:apply-templates select="." mode="bho-pass3"/>
     </xsl:variable>
     <xsl:apply-templates select="$prev/node()" mode="pass4"/>
   </xsl:template>
-  
+
   <xsl:template match="/" mode="bho-pass5">
     <xsl:variable name="prev">
       <xsl:apply-templates select="." mode="bho-pass4"/>
     </xsl:variable>
     <xsl:apply-templates select="$prev/node()" mode="pass5"/>
   </xsl:template>
-  
+
   <xsl:template match="/">
     <xsl:variable name="prev">
       <xsl:apply-templates select="." mode="bho-pass5"/>
     </xsl:variable>
     <xsl:apply-templates select="$prev/node()" mode="pass6"/>
   </xsl:template>
-  
+
 </xsl:package>

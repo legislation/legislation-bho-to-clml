@@ -6,7 +6,7 @@
   package-version="1.0"
   exclude-result-prefixes="xs common"
   version="3.0">
-  
+
   <!-- -/- VARIABLES -/- -->
   <!-- Note these are abstract and must be overridden when using any
     package that *uses this package*! In practice, this means when
@@ -16,7 +16,7 @@
   <xsl:variable name="common:reportId" visibility="abstract"/>
   <xsl:variable name="common:docUri" visibility="abstract"/>
   <xsl:variable name="common:moduleName" visibility="abstract"/>
-  
+
   <!-- -/- FUNCTIONS -/- -->
   <!-- common:node-kind is a helper function for outputting the node kind in error messages -->
   <xsl:function name="common:node-kind" as="xs:string" visibility="public">
@@ -37,12 +37,12 @@
       <xsl:otherwise>unknown</xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  
+
   <!-- -/- TEMPLATES -/- -->
   <xsl:template name="common:errmsg" visibility="public">
-    <xsl:param name="failNode" as="node()" required="false"/>
+    <xsl:param name="failNode" as="node()?" required="false"/>
     <xsl:param name="message" as="xs:string" required="yes"/>
-    
+
     <xsl:text>in module </xsl:text>
     <xsl:value-of select="$common:moduleName"/>
     <xsl:text>: report id </xsl:text>

@@ -10,19 +10,19 @@
   default-mode="pass3"
   exclude-result-prefixes="xs local"
   version="3.0">
-  
+
   <!-- PASS 3: Add pair numbers to closing brackets, so we can match opening and closing bracket pairs later -->
-  
+
   <!-- -/- MODES -/- -->
   <xsl:mode name="pass3" visibility="public"/>
-  
+
   <!-- -/- PACKAGE IMPORTS -/- -->
   <xsl:use-package name="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl" version="1.0">
     <xsl:override>
       <xsl:variable name="common:moduleName" select="tokenize(base-uri(document('')), '/')[last()]"/>
     </xsl:override>
   </xsl:use-package>
-  
+
   <!-- -/- FUNCTIONS -/- -->
   <!-- pass3:find-opening-bracket just counts back through the brackets until the number of closed
   and opened brackets = 0. At that point, we have our opening bracket (because the brackets 
@@ -71,7 +71,7 @@
       </xsl:choose>
     </xsl:iterate>
   </xsl:function>
-  
+
   <!-- -/- TEMPLATES -/- -->
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracket[@type='close']" priority="+1">
     <xsl:copy>
@@ -82,7 +82,7 @@
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <!-- -/-/-/- Explicit structure templates -/-/-/- -->
   <!-- These handle the expected paths in the structure so there's an explicit
     rule for everything we expect, which means anything we don't expect falls
@@ -92,35 +92,30 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="local:bracket/(@type|@shape|@num|@opens-pair)">
     <xsl:copy/>
   </xsl:template>
-  
+
   <xsl:template match="local:bracket/text()">
     <xsl:copy/>
   </xsl:template>
-  
-  <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracket/text()" priority="+1">
-    <xsl:copy/>
-  </xsl:template>
-  
+
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:text" priority="+1">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:text/text()" priority="+1">
     <xsl:copy/>
   </xsl:template>
-  
+
   <xsl:template match="/report/(self::*|title|subtitle)">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/report/subtitle/(emph|ref)">
+  <xsl:template match="/report/subtitle/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
@@ -155,12 +150,17 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="/report/(section|section/section)/table/tr/(th|td)/(emph|ref|br)">
+    <xsl:copy>
+      <xsl:apply-templates select="@* | node()"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="/report/(section|section/section)/note/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="(report|section|para|note|table)/@id">
     <xsl:copy/>
   </xsl:template>
@@ -179,7 +179,7 @@
   <xsl:template match="(th|td)/(@cols|@rows)">
     <xsl:copy/>
   </xsl:template>
-  
+
   <!-- -/-/-/- Fallback templates -/-/-/- -->
   <!-- These templates explicitly ignore things we know should be there but don't
     want to handle, or catch anything we didn't expect and haven't handled - this
@@ -195,7 +195,7 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="node() | text()">
     <xsl:message terminate="yes">
       <xsl:text>FATAL ERROR: </xsl:text>
@@ -205,5 +205,5 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
 </xsl:package>

@@ -13,9 +13,9 @@
   default-mode="pass6"
   exclude-result-prefixes="xs local"
   version="3.0">
-  
+
   <!-- PASS 6: Turn the BHO XML into CLML -->
-  
+
   <!-- -/- MODES -/- -->
   <xsl:mode name="pass6" visibility="public"/>
   <xsl:mode name="pass6-title"/>
@@ -26,23 +26,23 @@
   <xsl:mode name="pass6-p1para"/>
   <xsl:mode name="pass6-p"/>
   <xsl:mode name="pass6-text-wrap"/>
-  
+
   <!-- -/- PACKAGE IMPORTS -/- -->
   <xsl:use-package name="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl" version="1.0">
     <xsl:override>
       <xsl:variable name="common:moduleName" select="tokenize(base-uri(document('')), '/')[last()]"/>
     </xsl:override>
   </xsl:use-package>
-  
+
   <!-- -/- VARIABLES -/- -->
   <!-- Note these are abstract and must be overridden when using any
     package that *uses this package*! -->
   <xsl:variable name="common:reportId" as="xs:string?" visibility="abstract"/>
   <xsl:variable name="common:docUri" visibility="abstract"/>
   <xsl:variable name="bho-to-clml:lookupFile" visibility="abstract"/>
-  
+
   <xsl:variable name="lookup" select="doc($bho-to-clml:lookupFile)"/>
-  
+
   <!-- must select as element() or we get a doc fragment -->
   <xsl:variable name="report" as="element()">
     <xsl:choose>
@@ -53,7 +53,6 @@
         <xsl:message terminate="yes">
           <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="common:errmsg">
-            <xsl:with-param name="failNode" select="/"/>
             <xsl:with-param name="message">no entry in lookup file for this item</xsl:with-param>
           </xsl:call-template>
         </xsl:message>
@@ -67,15 +66,15 @@
   <xsl:variable name="legtitle" as="xs:string" select="$report/@title"/>
   <xsl:variable name="legtitlesource" as="xs:string" select="$report/@titleSource"/>
   <xsl:variable name="legtitlecomment" as="xs:string" select="$report/@titleComment"/>
-  
+
   <xsl:variable name="legregregex"
     select="'^([A-Z][a-z]+)([1-9])?((and)(1)?([A-Z][a-z]+)([1-9])?)?/([1-9][0-9]?)(-([1-9][0-9]?))?(-([1-9][0-9]?))?(/([Ss][a-z]+)([1-9]))?$'"/>
-  
+
   <xsl:variable name="legregaltfn">
     <!-- & => and, any seq of non-alphanum chars to _ (underscore) -->
     <xsl:value-of select="replace(replace($legreg, '&#38;', 'and'), '[^a-zA-Z0-9]+', '_')"/>
   </xsl:variable>
-  
+
   <xsl:variable name="legregaltprelim">
     <xsl:analyze-string select="$legreg" regex="{$legregregex}">
       <xsl:matching-substring>
@@ -119,10 +118,10 @@
       </xsl:non-matching-substring>
     </xsl:analyze-string>
   </xsl:variable>
-  
+
   <xsl:variable name="legregalt"
     select="replace($legregaltprelim, '[^a-zA-Z0-9]+', '_')"/>
-  
+
   <!-- TODO - remove this as we're not going to use these titles any more -->
   <xsl:variable name="legtitleFixed">
     <xsl:choose>
@@ -138,7 +137,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  
+
   <!-- -/- FUNCTIONS -/- -->
   <!-- local:make-id turns BHO-style IDs for commentaries and footnotes into legislation.gov.uk-style IDs -->
   <xsl:function name="local:make-id" as="xs:string">
@@ -166,7 +165,7 @@
       </xsl:non-matching-substring>
     </xsl:analyze-string>
   </xsl:function>
-  
+
   <!-- -/- TEMPLATES -/- -->
   <xsl:template match="/report">
     <Legislation SchemaVersion="1.0"
@@ -576,7 +575,7 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="head|subtitle" mode="pass6-title">
     <!-- turn the title contents into a "template" string that has non-text nodes
       replaced with placeholders, so we can do string ops on the template and then
@@ -592,7 +591,7 @@
             <xsl:sequence select="$currentNodes"/>
           </local:nodes>
         </xsl:on-completion>
-        
+
         <xsl:next-iteration>
           <xsl:with-param name="currentTemplate">
             <xsl:choose>
@@ -606,16 +605,16 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:with-param>
-          
+
           <!-- add the current node to our list of nodes (unless it's text) -->
           <xsl:with-param name="currentNodes" select="($currentNodes, if (not(self::text())) then . else ())"/>
-          
+
           <!-- only non-text nodes will go into the node list, so don't count text nodes -->
           <xsl:with-param name="nodeIndex" select="$nodeIndex + (if (not(self::text())) then 1 else 0)"/>
         </xsl:next-iteration>
       </xsl:iterate>
     </xsl:variable>
-    
+
     <!-- do the string ops on the title -->
     <xsl:variable name="transformed" as="xs:string">
       <xsl:analyze-string select="$templated/local:template/@value" flags="s"
@@ -628,20 +627,20 @@
         </xsl:non-matching-substring>
       </xsl:analyze-string>
     </xsl:variable>
-    
+
     <xsl:analyze-string select="$transformed" regex="%%([0-9]+)%%">
       <!-- replace %%placeholder%% with its corresponding node -->
       <xsl:matching-substring>
         <xsl:sequence select="($templated/local:nodes/node())[position() eq xs:int(regex-group(1))]"/>
       </xsl:matching-substring>
-      
+
       <!-- output text in the template as-is -->
       <xsl:non-matching-substring>
         <xsl:value-of select="."/>
       </xsl:non-matching-substring>
     </xsl:analyze-string>
   </xsl:template>
-  
+
   <xsl:template match="@* | node()" mode="pass6-title">
     <!-- fallback - helps us discover and deal with unexpected doc structure -->
     <xsl:message terminate="yes">
@@ -652,11 +651,11 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="node()" mode="pass6-text-wrap">
     <xsl:param name="overrideStart" as="node()*" select="()"/>
     <xsl:param name="overrideEnd" as="node()*" select="()"/>
-    
+
     <xsl:variable name="nodes" select="($overrideStart, (node()), $overrideEnd)"/>
     <xsl:for-each-group
       select="$nodes"
@@ -679,24 +678,24 @@
       </Text>
     </xsl:for-each-group>
   </xsl:template>
-  
+
   <xsl:template match="leg:*" mode="pass6-text" priority="+1">
     <!-- any leg:* elements should be ones we've inserted via override, so just copy them -->
     <xsl:copy-of select="."/>
   </xsl:template>
-  
+
   <xsl:template match="text()" mode="pass6-text" priority="+1">
     <!-- keep only non-empty text nodes -->
     <xsl:if test="normalize-space()">
       <xsl:sequence select="."/>
     </xsl:if>
   </xsl:template>
-  
+
   <xsl:template match="emph|ref" mode="pass6-text" priority="+1">
     <!-- process emph and ref within text as normal -->
     <xsl:apply-templates select="." mode="pass6"/>
   </xsl:template>
-  
+
   <!-- -/-/-/- Explicit structure templates -/-/-/- -->
   <!-- These handle the expected paths in the structure so there's an explicit
     rule for everything we expect, which means anything we don't expect falls
@@ -704,7 +703,7 @@
   <!--<xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/text()" priority="+1">
     <xsl:copy/>
   </xsl:template>
-  
+
   <xsl:template match="/report/(title|subtitle|section)">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
@@ -745,7 +744,7 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>-->
-  
+
   <!-- -/-/-/- Fallback templates -/-/-/- -->
   <!-- These templates explicitly ignore things we know should be there but don't
     want to handle, or catch anything we didn't expect and haven't handled - this
@@ -754,13 +753,13 @@
   <xsl:template match="/report/(self::*|section|section/section)/text()[not(normalize-space())]"/>
   <xsl:template match="/report/(section|section/section)/table/(self::*|tr)/text()[not(normalize-space())]"/>
   <xsl:template match="/report/(section|section/section)/figure/text()[not(normalize-space())]"/>
-  
+
   <xsl:template match="/report/@id"/>
   <xsl:template match="/report/@pubid"/>
   <xsl:template match="/report/@publish"/>
-  
+
   <xsl:template match="/report/(section|section/section)/@id"/>
-  
+
   <!-- Final fallbacks - helps us discover and deal with unexpected doc structure -->
   <xsl:template match="@*">
     <xsl:message terminate="yes">
@@ -771,7 +770,7 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="node() | text()">
     <xsl:message terminate="yes">
       <xsl:text>FATAL ERROR: </xsl:text>
@@ -781,5 +780,5 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
 </xsl:package>

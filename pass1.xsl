@@ -10,9 +10,9 @@
   default-mode="pass1"
   exclude-result-prefixes="xs bho-to-clml common pass1 local"
   version="3.0">
-  
+
   <!-- PASS 1: Turn [(brackets)] in text into <bracket> elements so we can identify them later -->
-  
+
   <xsl:mode name="pass1" visibility="public"/>
 
   <!-- -/- PACKAGE IMPORTS -/- -->
@@ -21,9 +21,9 @@
       <xsl:variable name="common:moduleName" select="tokenize(base-uri(document('')), '/')[last()]"/>
     </xsl:override>
   </xsl:use-package>
-  
+
   <!-- -/- TEMPLATES -/- -->
-  
+
   <!-- The main template, turns [(brackets)] in text into <bracket> els so we can
     identify them later on -->
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/text()" priority="+1">
@@ -41,7 +41,7 @@
       </xsl:non-matching-substring>
     </xsl:analyze-string>
   </xsl:template>
-  
+
   <!-- -/-/-/- Explicit structure templates -/-/-/- -->
   <!-- These handle the expected paths in the structure so there's an explicit
     rule for everything we expect, which means anything we don't expect falls
@@ -51,7 +51,7 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/report/subtitle/(emph|ref)">
+  <xsl:template match="/report/subtitle/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
@@ -86,12 +86,17 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="/report/(section|section/section)/table/tr/(th|td)/(emph|ref|br)">
+    <xsl:copy>
+      <xsl:apply-templates select="@* | node()"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="/report/(section|section/section)/note/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="(report|section|para|note|table)/@id">
     <xsl:copy/>
   </xsl:template>
@@ -110,7 +115,11 @@
   <xsl:template match="(th|td)/(@cols|@rows)">
     <xsl:copy/>
   </xsl:template>
-  
+
+  <xsl:template match="processing-instruction('bignore')">
+    <xsl:copy/>
+  </xsl:template>
+
   <!-- -/-/-/- Fallback templates -/-/-/- -->
   <!-- These templates explicitly ignore things we know should be there but don't
     want to handle, or catch anything we didn't expect and haven't handled - this
@@ -120,7 +129,7 @@
 
   <xsl:template match="report/@pubid"/>
   <xsl:template match="report/@publish"/>
-  
+
   <!-- Final fallbacks - helps us discover and deal with unexpected doc structure -->
   <xsl:template match="@*">
     <xsl:message terminate="yes">
@@ -131,7 +140,7 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="node() | text()">
     <xsl:message terminate="yes">
       <xsl:text>FATAL ERROR: </xsl:text>
@@ -141,5 +150,5 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
 </xsl:package>

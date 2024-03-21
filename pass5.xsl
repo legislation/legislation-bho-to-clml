@@ -10,7 +10,7 @@
   default-mode="pass5"
   exclude-result-prefixes="xs local"
   version="3.0">
-  
+
   <!-- PASS 5: Handle the <bracketed> elements:
    * Round brackets that contain a child <ref> just output the <ref>
      - we use this to create <CommentaryRef Ref=""> later
@@ -19,20 +19,20 @@
    * Round or square brackets that don't contain a <ref> get output as text in [(brackets)] again
      - to restore any brackets in the text that don't denote a commentary or footnote!
   -->
-  
+
   <!-- -/- MODES -/- -->
   <xsl:mode name="pass5" visibility="public"/>
   <xsl:mode name="pass5-ref"/>
-  
+
   <!-- -/- PACKAGE IMPORTS -/- -->
   <xsl:use-package name="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl" version="1.0">
     <xsl:override>
       <xsl:variable name="common:moduleName" select="tokenize(base-uri(document('')), '/')[last()]"/>
     </xsl:override>
   </xsl:use-package>
-  
+
   <!-- -/- TEMPLATES -/- -->
-  <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracketed">
+  <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note|local:bracketed)/local:bracketed">
     <xsl:variable name="ref" select="child::ref/@idref"/>
     <xsl:if test="count($ref) gt 1">
       <xsl:message>
@@ -50,7 +50,7 @@
         </xsl:call-template>
       </xsl:message>
     </xsl:if>
-    
+
     <xsl:choose>
       <!-- We treat <ref> in round brackets as a CommentaryRef -->
       <xsl:when test="@shape = 'round'">
@@ -72,7 +72,7 @@
             <xsl:copy>
               <xsl:attribute name="idref" select="subsequence($ref, 1, 1)"/>
               <xsl:apply-templates/>
-              
+
               <!-- if there's multiple refs, we stick them at the end -->
               <xsl:if test="count($ref) gt 1">
                 <xsl:apply-templates select="subsequence($ref, 2)" mode="pass5-ref"/>
@@ -88,16 +88,16 @@
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  
+
   <xsl:template match="ref" mode="pass5-ref" priority="+1">
     <!-- copy the ref and its attrs but not its text, which we don't need -->
     <xsl:copy>
       <xsl:copy-of select="@*"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="ref" priority="+1"/>
-  
+
   <!-- -/-/-/- Explicit structure templates -/-/-/- -->
   <!-- These handle the expected paths in the structure so there's an explicit
     rule for everything we expect, which means anything we don't expect falls
@@ -105,17 +105,23 @@
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/text()" priority="+1">
     <xsl:copy/>
   </xsl:template>
-  
-  <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracketed/text()" priority="+1">
+
+  <xsl:template match="local:bracketed/(emph|ref|br)">
+    <xsl:copy>
+      <xsl:apply-templates select="@* | node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="local:bracketed/text()">
     <xsl:copy/>
   </xsl:template>
-  
+
   <xsl:template match="/report/(self::*|title|subtitle)">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="/report/subtitle/(emph|ref)">
+  <xsl:template match="/report/subtitle/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
@@ -150,12 +156,17 @@
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:template match="/report/(section|section/section)/table/tr/(th|td)/(emph|ref|br)">
+    <xsl:copy>
+      <xsl:apply-templates select="@* | node()"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="/report/(section|section/section)/note/emph">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
     </xsl:copy>
   </xsl:template>
-  
+
   <xsl:template match="(report|section|para|note|table)/@id">
     <xsl:copy/>
   </xsl:template>
@@ -174,17 +185,20 @@
   <xsl:template match="(th|td)/(@cols|@rows)">
     <xsl:copy/>
   </xsl:template>
-  
+  <xsl:template match="local:bracketed/(@shape|@pair)">
+    <xsl:copy/>
+  </xsl:template>
+
   <!-- -/-/-/- Fallback templates -/-/-/- -->
   <!-- These templates explicitly ignore things we know should be there but don't
     want to handle, or catch anything we didn't expect and haven't handled - this
     makes the stylesheet's behaviour much more predictable by explicitly flagging
     any situation we haven't handled -->
   <xsl:template match="(report|section)/text()[not(normalize-space())]"/>
-  
+
   <xsl:template match="report/@pubid"/>
   <xsl:template match="report/@publish"/>
-  
+
   <!-- Final fallbacks - helps us discover and deal with unexpected doc structure -->
   <xsl:template match="@*">
     <xsl:message terminate="yes">
@@ -195,7 +209,7 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
   <xsl:template match="node() | text()">
     <xsl:message terminate="yes">
       <xsl:text>FATAL ERROR: </xsl:text>
@@ -205,5 +219,5 @@
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
-  
+
 </xsl:package>
