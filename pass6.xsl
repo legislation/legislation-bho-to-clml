@@ -3,7 +3,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   xmlns:leg="http://www.legislation.gov.uk/namespaces/legislation"
-  xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml/bho-to-clml.xsl"
+  xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml"
   xmlns:common="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl"
   xmlns:pass6="http://www.legislation.gov.uk/packages/bho-to-clml/pass6.xsl"
   xmlns:local="local:"

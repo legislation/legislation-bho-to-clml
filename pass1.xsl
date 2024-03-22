@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:package xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml/bho-to-clml.xsl"
+  xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml"
   xmlns:common="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl"
   xmlns:pass1="http://www.legislation.gov.uk/packages/bho-to-clml/pass1.xsl"
   xmlns:local="local:"
