@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:package xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   xmlns:leg="http://www.legislation.gov.uk/namespaces/legislation"
-  xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml/bho-to-clml.xsl"
+  xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml"
   xmlns:common="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl"
   xmlns:local="local:"
   xmlns="http://www.legislation.gov.uk/namespaces/legislation"
-  name="http://www.legislation.gov.uk/packages/bho-to-clml/bho-to-clml.xsl"
-  package-version="1.0"
   exclude-result-prefixes="xs xhtml leg local"
   version="3.0">
 
@@ -101,4 +99,4 @@
     <xsl:apply-templates select="$prev/node()" mode="pass6"/>
   </xsl:template>
 
-</xsl:package>
+</xsl:stylesheet>
