@@ -701,55 +701,6 @@
     <xsl:apply-templates select="." mode="pass6"/>
   </xsl:template>
 
-  <!-- -/-/-/- Explicit structure templates -/-/-/- -->
-  <!-- These handle the expected paths in the structure so there's an explicit
-    rule for everything we expect, which means anything we don't expect falls
-    through to a fallback rule to either be explicitly ignored or flagged -->
-  <!--<xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/text()" priority="+1">
-    <xsl:copy/>
-  </xsl:template>
-
-  <xsl:template match="/report/(title|subtitle|section)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/subtitle/(self::*|emph|ref)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/(section|section/section)/(self::*|head|para|figure|table|note)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/(section|section/section)/head/(emph|ref)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/(section|section/section)/para/(emph|ref|br)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/(subtitle|section/(head|para)|section/section/(head|para))/(emph/ref|ref)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/(section|section/section)/figure/caption">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="/report/(section|section/section)/table/tr/(self::*|th|td)">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>-->
-
   <!-- -/-/-/- Fallback templates -/-/-/- -->
   <!-- These templates explicitly ignore things we know should be there but don't
     want to handle, or catch anything we didn't expect and haven't handled - this
