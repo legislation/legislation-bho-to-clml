@@ -5,13 +5,18 @@
   xmlns:leg="http://www.legislation.gov.uk/namespaces/legislation"
   xmlns:bho-to-clml="http://www.legislation.gov.uk/packages/bho-to-clml"
   xmlns:common="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl"
+  xmlns:pass1="http://www.legislation.gov.uk/packages/bho-to-clml/pass1.xsl"
+  xmlns:pass2="http://www.legislation.gov.uk/packages/bho-to-clml/pass2.xsl"
+  xmlns:pass3="http://www.legislation.gov.uk/packages/bho-to-clml/pass3.xsl"
+  xmlns:pass4="http://www.legislation.gov.uk/packages/bho-to-clml/pass4.xsl"
+  xmlns:pass5="http://www.legislation.gov.uk/packages/bho-to-clml/pass5.xsl"
   xmlns:pass6="http://www.legislation.gov.uk/packages/bho-to-clml/pass6.xsl"
   xmlns:local="local:"
   xmlns="http://www.legislation.gov.uk/namespaces/legislation"
   name="http://www.legislation.gov.uk/packages/bho-to-clml/pass6.xsl"
   package-version="1.0"
   default-mode="pass6"
-  exclude-result-prefixes="xs local"
+  exclude-result-prefixes="xs xhtml leg bho-to-clml common pass1 pass2 pass3 pass4 pass5 pass6 local"
   version="3.0">
 
   <!-- PASS 6: Turn the BHO XML into CLML -->
@@ -681,7 +686,7 @@
 
   <xsl:template match="leg:*" mode="pass6-text" priority="+1">
     <!-- any leg:* elements should be ones we've inserted via override, so just copy them -->
-    <xsl:copy-of select="."/>
+    <xsl:copy-of select="." copy-namespaces="no"/>
   </xsl:template>
 
   <xsl:template match="text()" mode="pass6-text" priority="+1">

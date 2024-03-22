@@ -7,7 +7,6 @@
   xmlns:common="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl"
   xmlns:local="local:"
   xmlns="http://www.legislation.gov.uk/namespaces/legislation"
-  exclude-result-prefixes="xs xhtml leg local"
   version="3.0">
 
   <!-- -/- PARAMETERS -/- -->
