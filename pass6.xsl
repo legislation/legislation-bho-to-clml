@@ -291,7 +291,7 @@
     <xsl:variable name="this" select="."/>
     <xsl:apply-templates select="@*"/>
     <xsl:analyze-string select="string()" flags="s"
-      regex="^([IVXLC0-9]+(\.? |\.\s*))?(.*)$">
+      regex="^([IVXLC0-9]+(\.? |\.\s*))(.*)$">
       <xsl:matching-substring>
         <xsl:apply-templates select="$this" mode="pass6-title"/>
       </xsl:matching-substring>
@@ -623,9 +623,9 @@
     <!-- do the string ops on the title -->
     <xsl:variable name="transformed" as="xs:string">
       <xsl:analyze-string select="$templated/local:template/@value" flags="s"
-        regex="^([Cc][Hh]? ?[Aa] ?([Pp][Tt][Ee][Rr])?\s*)?([IVXLC0-9]+\.?\s*)(.*)$">
+        regex="^([Cc][Hh]? ?[Aa] ?([Pp][Tt][Ee][Rr])?\s*)?([IVXLC0-9]+(\.? |\.\s*))(.*)$">
         <xsl:matching-substring>
-          <xsl:value-of select="normalize-space(replace(replace(regex-group(4), ' ?\[ ?(O\.|Rot).+$', ''), ' [.,;]', ' '))"/>
+          <xsl:value-of select="normalize-space(replace(replace(regex-group(5), ' ?\[ ?(O\.|Rot).+$', ''), ' [.,;]', ' '))"/>
         </xsl:matching-substring>
         <xsl:non-matching-substring>
           <xsl:value-of select="."/>
@@ -696,7 +696,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="emph|ref" mode="pass6-text" priority="+1">
+  <xsl:template match="emph|ref|local:bracketed" mode="pass6-text" priority="+1">
     <!-- process emph and ref within text as normal -->
     <xsl:apply-templates select="." mode="pass6"/>
   </xsl:template>
