@@ -26,7 +26,22 @@
   <!-- -/- TEMPLATES -/- -->
   <xsl:template match="(head|para|emph|ref|caption|title|subtitle|th|td|note)/local:bracket[@type='open']" priority="+1">
     <xsl:param name="current-pair" as="xs:integer?" tunnel="yes" select="()"/>
-    <xsl:variable name="opens-pair" select="@opens-pair"/>
+    <xsl:variable name="opens-pair" as="xs:integer" select="@opens-pair"/>
+    <xsl:if test="not(//local:bracket[@type='close' and @closes-pair = $opens-pair])">
+      <xsl:message terminate="yes">
+        <xsl:text>FATAL ERROR: </xsl:text>
+        <xsl:call-template name="common:errmsg">
+          <xsl:with-param name="failNode" select="."/>
+          <xsl:with-param name="message">
+            <xsl:text>opening bracket with num </xsl:text>
+            <xsl:value-of select="@num"/>
+            <xsl:text> with following text &quot;</xsl:text>
+            <xsl:value-of select="following::text()[1]"/>
+            <xsl:text>&quot; doesn't have a matching closing bracket</xsl:text>
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:message>
+    </xsl:if>
     <local:bracketed>
       <xsl:copy-of select="@shape"/>
       <xsl:attribute name="pair" select="$opens-pair"/>
