@@ -296,13 +296,14 @@
         <xsl:apply-templates select="$this" mode="pass6-title"/>
       </xsl:matching-substring>
       <xsl:non-matching-substring>
-        <xsl:message terminate="yes">
-          <xsl:text>FATAL ERROR: </xsl:text>
+        <xsl:message>
+          <xsl:text>Attention: </xsl:text>
           <xsl:call-template name="common:errmsg">
             <xsl:with-param name="failNode" select="$this"/>
             <xsl:with-param name="message">
-              <xsl:text>head text pattern failed to match head text </xsl:text>
+              <xsl:text>head text pattern failed to match head text "</xsl:text>
               <xsl:value-of select="."/>
+              <xsl:text>"</xsl:text>
             </xsl:with-param>
           </xsl:call-template>
         </xsl:message>
