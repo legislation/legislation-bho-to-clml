@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: OGL-UK-3.0 -->
 <xsl:package xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:common="http://www.legislation.gov.uk/packages/bho-to-clml/common.xsl"
