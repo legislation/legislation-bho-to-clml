@@ -11,7 +11,7 @@
     <para>Eeny meeny minie moe, <bracketed idref="n005">catch </bracketed><emph><bracketed idref="n005"> a <bracketed idref="n004">tiger</bracketed> by</bracketed></emph><bracketed idref="n005"> its toe.</bracketed></para>
     
     <!-- spanning across two paras, multiple refs in brackets, defunct brackets -->
-    <para>[<bracketed idref="n008">Finally: <bracketed idref="n006">don't</bracketed></bracketed></para>
+    <para>Some brackets get [ignored. [<bracketed idref="n008">Finally: <bracketed idref="n006">don't</bracketed></bracketed></para>
     
     <!-- defunct brackets -->
     <para><bracketed idref="n008"><bracketed idref="n006">forget to floss<ref idref="n007">7</ref></bracketed> </bracketed><emph><bracketed idref="n008">every day</bracketed></emph>, for good] gum health.</para>

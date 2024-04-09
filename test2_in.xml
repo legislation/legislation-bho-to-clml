@@ -7,7 +7,7 @@
     <!-- wholly enclosing <emph> ; defunct brackets -->
     <para>Various [levels <emph>and sublevels</emph> can exist<ref idref="n003">3</ref>], but [basically] it's all the same.</para>
     
-    <!-- both enclosing and inside em -->
+    <!-- both enclosing and inside <emph> -->
     <para>Eeny meeny minie moe, [catch <emph> a [tiger<ref idref="n004">4</ref>] by</emph> its toe<ref idref="n005">5</ref>.]</para>
     
     <!-- ignoring brackets ; spanning across two paras ; multiple refs in brackets -->

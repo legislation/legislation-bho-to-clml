@@ -3,7 +3,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:map="http://www.w3.org/2005/xpath-functions/map"
   xmlns:local="local:"
-  exclude-result-prefixes="xs"
+  exclude-result-prefixes="xs map local"
   version="3.0">
  
   <xsl:accumulator name="brackets-paired" as="map(*)"
@@ -25,8 +25,7 @@
       </xsl:choose>
     </xsl:accumulator-rule>
     
-    <xsl:accumulator-rule match="text()">
-<!--      <xsl:message select="serialize($value, map{'method':'json'})"/>-->
+    <xsl:accumulator-rule match="text()[not(parent::ref)]">
       <xsl:variable name="current-text-node" select="."/>
       <xsl:variable name="current-node-brackets" as="node()*" select="local:process-brackets(.)"/>
       <xsl:message select="'cnb (kind ' || local:node-kind($current-node-brackets) || '): ' || serialize($current-node-brackets,map{'method':'adaptive'})"/>
@@ -44,90 +43,6 @@
       <xsl:message select="'cnb-post-temp: ' || serialize($temp,map{'method':'adaptive'})"/>
       <xsl:message expand-text="yes">kinds within cn: {for-each(map:get($temp, 'current-node'), local:node-kind#1)}</xsl:message>
       <xsl:sequence select="$temp"/>
-      <!--<xsl:iterate select="$current-node-brackets">
-        <xsl:param name="open" select="$_open"/>
-        <xsl:param name="last-opened" select="$_last-opened"/>
-        <xsl:param name="accumulated-nodes" select="()"/>
-        <xsl:param name="within-bracket" select="$_within-bracket"/>
-        
-        <xsl:on-completion>
-          <xsl:map>
-            <xsl:map-entry key="'open'" select="$open"/>
-            <xsl:map-entry key="'last-opened'" select="$last-opened"/>
-            <xsl:map-entry key="'current-node'" select="$accumulated-nodes"/>
-            <xsl:map-entry key="'within-bracket'" select="$within-bracket"/>
-          </xsl:map>
-        </xsl:on-completion>
-        
-        <xsl:choose>
-          <!-\- if the bracket is at start/end of text node and has bignore next to it, just output it as text -\->
-          <!-\-<xsl:when
-            test="self::bracket and (
-            (position() eq 1 and $current-text-node/preceding-sibling::*[1]/self::processing-instruction('bignore')) or
-            (position() eq last() and $current-text-node/following-sibling::*[1]/self::processing-instruction('bignore'))
-            )">
-            <xsl:next-iteration>
-              <xsl:with-param name="accumulated-nodes">
-                <xsl:sequence select="$accumulated-nodes"/>
-                <text><xsl:value-of select="."/></text>
-              </xsl:with-param>
-            </xsl:next-iteration>
-          </xsl:when>-\->
-          
-          <xsl:when test="self::bracket[@type='open']">
-            <xsl:variable name="new-bracket-pair" select="$last-opened + 1"/>
-            <xsl:next-iteration>
-              <xsl:with-param name="open" select="($open, $new-bracket-pair)"/>
-              <xsl:with-param name="last-opened" select="$new-bracket-pair"/>
-              <xsl:with-param name="accumulated-nodes">
-                <xsl:sequence select="$accumulated-nodes"/>
-                <xsl:copy>
-                  <xsl:sequence select="@*"/>
-                  <xsl:attribute name="opens-pair" select="$new-bracket-pair"/>
-                </xsl:copy>
-              </xsl:with-param>
-            </xsl:next-iteration>
-          </xsl:when>
-          
-          <xsl:when test="self::bracket[@type='close']">
-            <xsl:variable name="closing-bracket-pair" select="$open[last()]"/>
-            <xsl:next-iteration>
-              <xsl:with-param name="open" select="$open[position() lt last()]"/>
-              <xsl:with-param name="accumulated-nodes">
-                <xsl:sequence select="$accumulated-nodes"/>
-                <xsl:copy>
-                  <xsl:sequence select="@*"/>
-                  <xsl:attribute name="closes-pair" select="$closing-bracket-pair"/>
-                </xsl:copy>
-              </xsl:with-param>
-            </xsl:next-iteration>
-          </xsl:when>
-          
-          <xsl:when test="self::text">
-            <!-\-<xsl:sequence select="."/>-\->
-            <xsl:next-iteration>
-              <xsl:with-param name="within-bracket">
-                <xsl:choose>
-                  <xsl:when test="$open and normalize-space()">
-                    <xsl:sequence select="map:merge(
-                        ($within-bracket, map:entry($open[last()], .)),
-                        map{'duplicates': 'combine'}
-                      )"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:sequence select="$within-bracket"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:with-param>
-              <xsl:with-param name="accumulated-nodes" select="($accumulated-nodes, .)"/>
-            </xsl:next-iteration>
-          </xsl:when>
-          
-          <xsl:otherwise>
-            <xsl:next-iteration/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:iterate>-->
     </xsl:accumulator-rule>
   </xsl:accumulator>
   
@@ -139,15 +54,6 @@
     <xsl:sequence select="$temp"/>
   </xsl:variable>
   
-  <!--<xsl:variable name="bracketized-map" as="map(*)">
-    <xsl:variable name="maps" as="map(*)*">
-      <xsl:for-each select="/descendant::text()">
-        <xsl:sequence select="map:entry(generate-id(), map:get(accumulator-after('brackets-paired'), 'current-node'))"/>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:sequence select="map:merge($maps)"/>
-  </xsl:variable>-->
-  
   <xsl:template match="@* | node()">
     <xsl:copy>
       <xsl:apply-templates select="@* | node()"/>
@@ -156,13 +62,26 @@
   
   <xsl:template match="text()" priority="+1">
     <xsl:message expand-text="yes">applying for text() with cn: {serialize(accumulator-after('brackets-paired')('current-node'),map{'method':'adaptive'})}</xsl:message>
-    <xsl:apply-templates select="accumulator-after('brackets-paired')('current-node')[1]/node/node()[1]" mode="bracketize">
+    <xsl:apply-templates select="accumulator-after('brackets-paired')('current-node')/node/node()[1]" mode="bracketize">
       <xsl:with-param name="open" as="xs:integer*" tunnel="yes">
         <xsl:for-each select="(preceding-sibling::*, parent::*)[1]">
           <xsl:sequence select="accumulator-before('brackets-paired')('open')"/>
         </xsl:for-each>
       </xsl:with-param>
     </xsl:apply-templates>
+  </xsl:template>
+  
+  <xsl:template match="ref" priority="+1">
+    <xsl:variable name="current-bracket" as="xs:integer?" select="accumulator-after('brackets-paired')('open')[last()]"/>
+    <xsl:variable name="bracket-info" select="local:get-bracket-info($current-bracket)"/>
+    <xsl:choose>
+      <xsl:when test="$current-bracket and map:get($bracket-info, 'kind') eq 'bracketed' and . = map:get($within-bracket-map, $current-bracket)"/>
+      <xsl:otherwise>
+        <xsl:copy>
+          <xsl:copy-of select="@*"/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="text" mode="bracketize">
@@ -273,6 +192,12 @@
     </xsl:apply-templates>
   </xsl:template>
   
+  <xsl:template match="ref" mode="bracketize">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+    </xsl:copy>
+  </xsl:template>
+  
   <xsl:template match="node()" mode="bracketize" priority="-1"/>
   
   <xsl:function name="local:get-bracket-info" as="map(*)" cache="yes" new-each-time="no">
@@ -334,12 +259,9 @@
               <xsl:variable name="new-bracket-pair" as="xs:integer" select="$last-opened + 1"/>
               <xsl:message expand-text="yes">new-bracket-pair: {$new-bracket-pair}</xsl:message>
               <xsl:variable name="new-bracket">
-                <!--<xsl:copy select=".">
-                  <xsl:apply-templates select="@*"/>
-                  <xsl:attribute name="opens-pair" select="$new-bracket-pair"/>
-                </xsl:copy>-->
                 <bracket opens-pair="{$new-bracket-pair}">
                   <xsl:apply-templates select="@*"/>
+                  <xsl:value-of select="."/>
                 </bracket>
               </xsl:variable>
               <xsl:message expand-text="yes"
@@ -350,13 +272,6 @@
                 <xsl:with-param name="last-opened" as="xs:integer" select="$new-bracket-pair" tunnel="yes"/>
                 <xsl:with-param name="accumulated-nodes" as="node()*" tunnel="yes"
                   select="($accumulated-nodes, $new-bracket)"/>
-                
-                <!--<xsl:with-param name="accumulated-nodes" as="node()+" tunnel="yes">
-                  <xsl:sequence select="$accumulated-nodes"/>
-                  <bracket opens-pair="{$new-bracket-pair}">
-                    <xsl:apply-templates select="@*"/>
-                  </bracket>
-                </xsl:with-param>-->
               </xsl:call-template>
             </xsl:when>
             
@@ -366,6 +281,7 @@
                 <xsl:copy select=".">
                   <xsl:apply-templates select="@*"/>
                   <xsl:attribute name="closes-pair" select="$closing-bracket-pair"/>
+                  <xsl:value-of select="."/>
                 </xsl:copy>
               </xsl:variable>
               <xsl:message expand-text="yes"
@@ -375,13 +291,6 @@
                 <xsl:with-param name="open" as="xs:integer*" select="$open[position() lt last()]" tunnel="yes"/>
                 <xsl:with-param name="accumulated-nodes" as="node()*" tunnel="yes"
                   select="($accumulated-nodes, $new-bracket)"/>
-                <!--<xsl:with-param name="accumulated-nodes" as="node()+" tunnel="yes">
-                  <xsl:sequence select="$accumulated-nodes"/>
-                  <xsl:copy select=".">
-                    <xsl:apply-templates select="@*"/>
-                    <xsl:attribute name="closes-pair" select="$closing-bracket-pair"/>
-                  </xsl:copy>
-                </xsl:with-param>-->
               </xsl:call-template>
             </xsl:when>
             
