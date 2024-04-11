@@ -68,49 +68,36 @@
   
   <xsl:template match="text()|ref" priority="+1">
     <xsl:param name="accumulated-node" as="node()?" select="()"/>
+    <!-- Keep track of which brackets are open (by default those open just after descent into
+         the preceding sibling, or just before descent into the parent if no preceding sibling -->
     <xsl:param name="open" as="xs:integer*">
-      <xsl:for-each select="(preceding-sibling::node(), parent::node())[1]">
-        <xsl:sequence select="accumulator-before('brackets-paired')('open')"/>
-      </xsl:for-each>
+      <xsl:choose>
+        <!-- Ignore text() nodes not within a para -->
+        <xsl:when test="not(ancestor::para)"/>
+        <xsl:when test="preceding-sibling::node()">
+          <xsl:for-each select="preceding-sibling::node()[1]">
+            <xsl:sequence select="accumulator-after('brackets-paired')('open')"/>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="parent::node()[1]">
+            <xsl:sequence select="accumulator-before('brackets-paired')('open')"/>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:param>
     
     <xsl:variable name="new-accumulated-node" as="node()">
       <node>
+        <xsl:sequence select="$accumulated-node/node()"/>
         <xsl:choose>
           <xsl:when test="self::text()">
-            <xsl:variable name="new-nodes" select="accumulator-after('brackets-paired')('current-node')/node()"/>
-            <xsl:variable name="terminal-refs" select="$accumulated-node/ref except $accumulated-node/node()[not(self::ref)][last()]/preceding-sibling::node()"/>
-            <xsl:variable name="last-text-node" select="$accumulated-node/node()[last()][self::text]"/>
-            <xsl:variable name="first-new-text-node" select="$new-nodes[position() eq 1 and self::text]"/>
-            <xsl:sequence select="$accumulated-node/node() except ($terminal-refs, $accumulated-node/node()[last()][self::text])"/>
-            <xsl:choose>
-              <xsl:when test="$terminal-refs or $last-text-node">
-                <text>
-                  <xsl:sequence select="($last-text-node/node(), $terminal-refs, $first-new-text-node/node())"/>
-                </text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:sequence select="$first-new-text-node"/>
-              </xsl:otherwise>
-            </xsl:choose>
-            <xsl:sequence select="$new-nodes[not(position() eq 1 and self::text)]"></xsl:sequence>
+            <!-- Include the <text>/<bracket> version of this text node, instead of the original -->
+            <xsl:sequence select="accumulator-after('brackets-paired')('current-node')/node()"/>
           </xsl:when>
           <xsl:when test="self::ref">
-            <xsl:variable name="ref" as="node()" select="."/>
-            <xsl:choose>
-              <xsl:when test="$accumulated-node/node()[last()][self::text]">
-                <xsl:sequence select="$accumulated-node/node()[position() lt last()]"/>
-                <xsl:copy select="$accumulated-node/node()[last()]">
-                  <xsl:copy-of select="@*"/>
-                  <xsl:sequence select="node()"/>
-                  <xsl:sequence select="$ref"/>
-                </xsl:copy>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:sequence select="$accumulated-node/node()"/>
-                <xsl:sequence select="$ref"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <!-- Just include the <ref> directly -->
+            <xsl:sequence select="."/>
           </xsl:when>
         </xsl:choose>
       </node>
@@ -155,7 +142,7 @@
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="text" mode="bracketize">
+  <xsl:template match="text|ref" mode="bracketize">
     <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
     <xsl:param name="wrapping" as="xs:integer*" select="$open"/>
     <xsl:param name="current-pair" as="xs:integer?" select="$open[last()]" tunnel="yes"/>
@@ -163,15 +150,21 @@
     <xsl:variable name="current-node" select="."/>
     
     <xsl:if test="not($current-pair) or $current-pair eq $open[last()]">
+      <xsl:variable name="to-be-output" as="node()+">
+        <xsl:variable name="contiguous-text-and-refs" as="node()+">
+          <xsl:sequence select="$current-node"/>
+          <xsl:sequence select="$current-node/following-sibling::node()[self::text or self::ref] except $current-node/following-sibling::node()[not(self::text or self::ref)][1]/following-sibling::node()"/>
+        </xsl:variable>
+        <xsl:apply-templates select="$contiguous-text-and-refs" mode="bracketize-inner"/>
+      </xsl:variable>
+      
       <xsl:choose>
         <!-- wrap (by default) in all open brackets, or whatever brackets we specify to wrap -->
         <xsl:when test="count($wrapping) gt 0">
           <!-- go from innermost to outermost bracket (if $wrapping specified, only those brackets, otherwise all) -->
           <xsl:iterate select="reverse($wrapping)">
             <!-- the thing initially being wrapped is the text of the <text> node -->
-            <xsl:param name="wrapped">
-              <xsl:apply-templates select="$current-node/(self::node(), following-sibling::node()[self::text] except $current-node/following-sibling::node()[not(self::text)][1]/following-sibling::node())" mode="bracketize-inner"/>
-            </xsl:param>
+            <xsl:param name="wrapped" select="$to-be-output"/>
             
             <xsl:on-completion select="$wrapped"/>
             
@@ -186,46 +179,32 @@
                     <!-- ...wrap whatever is to be wrapped in <bracketed> with this pair's first <ref>'s idref... -->
                     <bracketed idref="{$bracket-info('refs')[last()]/@idref}">
                       <xsl:sequence select="$wrapped"/>
-                      <xsl:apply-templates select="$current-node/following-sibling::node()[not(self::text)][1]" mode="bracketize">
-                        <!-- (but don't wrap in any of the currently open brackets as we've done that here already) -->
+                      <xsl:apply-templates select="$current-node/following-sibling::node()[not(self::text or self::ref)][1]/self::bracket[@type='open']" mode="bracketize">
                         <xsl:with-param name="wrapping" select="()"/>
                         <xsl:with-param name="current-pair" select="$current-pair" tunnel="yes"/>
                       </xsl:apply-templates>
                     </bracketed>
-                    <!-- ...and finally process *any following sibling close bracket** that closes the current pair -->
-                    <xsl:apply-templates
-                      select="$current-node/following-sibling::node()/self::bracket[@type='close' and @closes-pair = $current-pair]" mode="bracketize">
-                      <!-- (but don't wrap in any of the currently open brackets as we've done that here already) -->
-                      <xsl:with-param name="wrapping" select="()"/>
-                    </xsl:apply-templates>
-                    <xsl:apply-templates
-                      select="$current-node/following-sibling::node()/self::bracket[@type='close' and @closes-pair = $current-pair]/following-sibling::node()[1]" mode="bracketize">
-                      <xsl:with-param name="open" as="xs:integer*" select="$open[position() lt last()]" tunnel="yes"/>
-                      <!-- (but don't wrap in any of the currently open brackets as we've done that here already) -->
-                      <xsl:with-param name="wrapping" select="()"/>
-                      <xsl:with-param name="current-pair" select="$open[last() - 1]" tunnel="yes"/>
-                    </xsl:apply-templates>
                   </xsl:when>
-                  
-                  <!-- if this bracket pair should not become <bracketed> (i.e. to go in raw, or be shucked)... -->
                   <xsl:otherwise>
                     <!-- ...output whatever would otherwise have been wrapped... -->
                     <xsl:sequence select="$wrapped"/>
-                    <xsl:apply-templates select="$current-node/following-sibling::node()[not(self::text)][1]" mode="bracketize">
+                    <xsl:apply-templates select="$current-node/following-sibling::node()[not(self::text or self::ref)][1]/self::bracket[@type='open']" mode="bracketize">
                       <xsl:with-param name="wrapping" select="()"/>
                       <xsl:with-param name="current-pair" select="$current-pair" tunnel="yes"/>
                     </xsl:apply-templates>
-                    <!-- ...and finally process **any following sibling close bracket** that closes the current pair ;
-                    the idea is that if brackets ABC are open and then this node has "text]C more]B text]A text" then
-                    this code will produce A[B[C[text]C more]B text]A text -->
-                    <xsl:apply-templates
-                      select="$current-node/following-sibling::node()/self::bracket[@type='close' and @closes-pair = $current-pair]/following-sibling::node()[1]" mode="bracketize">
-                      <xsl:with-param name="open" as="xs:integer*" select="$open[position() lt last()]" tunnel="yes"/>
-                      <xsl:with-param name="wrapping" select="()"/>
-                      <xsl:with-param name="current-pair" select="$open[last() - 1]" tunnel="yes"/>
-                    </xsl:apply-templates>
                   </xsl:otherwise>
                 </xsl:choose>
+                <xsl:apply-templates
+                  select="$current-node/following-sibling::node()/self::bracket[@type='close' and @closes-pair = $current-pair]" mode="bracketize">
+                  <xsl:with-param name="current-pair" select="$current-pair" tunnel="yes"/>
+                </xsl:apply-templates>
+                <xsl:apply-templates
+                  select="$current-node/following-sibling::node()/self::bracket[@type='close' and @closes-pair = $current-pair]/following-sibling::node()[1]" mode="bracketize">
+                  <xsl:with-param name="open" as="xs:integer*" select="$open[position() lt last()]" tunnel="yes"/>
+                  <!-- (but don't wrap in any of the currently open brackets as we've done that here already) -->
+                  <xsl:with-param name="wrapping" select="()"/>
+                  <xsl:with-param name="current-pair" select="$open[last() - 1]" tunnel="yes"/>
+                </xsl:apply-templates>
               </xsl:with-param>
             </xsl:next-iteration>
           </xsl:iterate>
@@ -233,10 +212,9 @@
         
         <!-- if no open brackets, or we've specified to wrap in no brackets, then don't wrap... -->
         <xsl:otherwise>
-          <!-- ...output whatever text is within this <text> node... -->
-          <xsl:sequence select="$current-node/text()"/>
+          <xsl:sequence select="$to-be-output"/>
           <!-- ...and just process any immediately following node -->
-          <xsl:apply-templates select="$current-node/following-sibling::node()[1]" mode="bracketize"/>
+          <xsl:apply-templates select="$current-node/following-sibling::node()[not(self::text or self::ref)][1]" mode="bracketize"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -260,8 +238,12 @@
   </xsl:template>
   
   <xsl:template match="bracket[@type='close']" mode="bracketize">
-    <xsl:if test="local:get-bracket-info(@closes-pair)('kind') eq 'raw'">
-      <xsl:value-of select="."/>
+    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
+    <xsl:param name="current-pair" as="xs:integer?" select="$open[last()]" tunnel="yes"/>
+    <xsl:if test="not($current-pair) or $current-pair = $open[last()]">
+      <xsl:if test="local:get-bracket-info(@closes-pair)('kind') eq 'raw'">
+        <xsl:value-of select="."/>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
   
