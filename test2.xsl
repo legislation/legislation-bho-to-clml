@@ -160,7 +160,7 @@
     <xsl:variable name="current-node" select="."/>
     
     <xsl:if test="not($current-pair) or $current-pair eq $open[last()]">
-      <xsl:variable name="to-be-output" as="node()+">
+      <xsl:variable name="to-be-output" as="node()*">
         <xsl:variable name="contiguous-text-and-refs" as="node()+">
           <xsl:sequence select="$current-node"/>
           <xsl:sequence select="$current-node/following-sibling::node()[self::text or self::ref] except $current-node/following-sibling::node()[not(self::text or self::ref)][1]/following-sibling::node()"/>
@@ -185,7 +185,7 @@
               <xsl:with-param name="wrapped">
                 <xsl:choose>
                   <!-- if this bracket pair should become <bracketed> ... -->
-                  <xsl:when test="$bracket-info('kind') eq 'bracketed'">
+                  <xsl:when test="$bracket-info('kind') eq 'bracketed' and exists($wrapped)">
                     <!-- ...wrap whatever is to be wrapped in <bracketed> with this pair's first <ref>'s idref... -->
                     <bracketed idref="{$bracket-info('refs')[last()]/@idref}">
                       <xsl:sequence select="$wrapped"/>
