@@ -124,13 +124,23 @@
   </xsl:template>
   
   <xsl:template match="text()" mode="bracketize-inner">
-    <xsl:sequence select="."/>
+    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
+    <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
+    <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
+    <xsl:choose>
+      <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and following::node()[1]/self::ref = $bracket-info('refs')[last()]">
+        <xsl:value-of select="replace(., '\s+$', '')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="ref" mode="bracketize-inner">
     <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
     <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
-    <xsl:variable name="bracket-info" select="local:get-bracket-info($current-bracket)"/>
+    <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
     <xsl:choose>
       <!-- filter out the last ref in this bracket -->
       <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and . = $bracket-info('refs')[last()]"/>
