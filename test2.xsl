@@ -174,7 +174,7 @@
           <!-- go from innermost to outermost bracket (if $wrapping specified, only those brackets, otherwise all) -->
           <xsl:iterate select="reverse($wrapping)">
             <!-- the thing initially being wrapped is the text of the <text> node -->
-            <xsl:param name="wrapped" select="$to-be-output"/>
+            <xsl:param name="wrapped" as="node()*" select="$to-be-output"/>
             
             <xsl:on-completion select="$wrapped"/>
             
@@ -182,7 +182,7 @@
             <xsl:variable name="bracket-info" select="local:get-bracket-info($current-pair)"/>
             
             <xsl:next-iteration>
-              <xsl:with-param name="wrapped">
+              <xsl:with-param name="wrapped" as="node()*">
                 <xsl:choose>
                   <!-- if this bracket pair should become <bracketed> ... -->
                   <xsl:when test="$bracket-info('kind') eq 'bracketed' and exists($wrapped)">
@@ -295,9 +295,7 @@
       </xsl:when>
       
       <xsl:otherwise>
-        <xsl:variable name="ctx" select="head($input)"/>
-        
-        <xsl:for-each select="$ctx">
+        <xsl:for-each select="head($input)">
           <xsl:choose>
             <!-- if the bracket is at start/end of text node and has bignore next to it, just output it as text -->
             <xsl:when
@@ -408,20 +406,14 @@
     <xsl:param name="input" as="xs:string"/>
     <xsl:analyze-string select="$input" regex="[\[\]\(\)]">
       <xsl:matching-substring>
-        <xsl:variable name="temp" as="node()">
-          <bracket>
-            <xsl:attribute name="type" select="if (. = ('[', '(')) then 'open' else 'close'"/>
-            <xsl:attribute name="shape" select="if (. = ('[', ']')) then 'square' else 'round'"/>
-            <xsl:value-of select="."/>
-          </bracket>
-        </xsl:variable>
-        <xsl:sequence select="$temp"/>
+        <bracket>
+          <xsl:attribute name="type" select="if (. = ('[', '(')) then 'open' else 'close'"/>
+          <xsl:attribute name="shape" select="if (. = ('[', ']')) then 'square' else 'round'"/>
+          <xsl:value-of select="."/>
+        </bracket>
       </xsl:matching-substring>
       <xsl:non-matching-substring>
-        <xsl:variable name="temp" as="node()">
-          <text><xsl:value-of select="."/></text>
-        </xsl:variable>
-        <xsl:sequence select="$temp"/>
+        <text><xsl:value-of select="."/></text>
       </xsl:non-matching-substring>
     </xsl:analyze-string>
   </xsl:function>
