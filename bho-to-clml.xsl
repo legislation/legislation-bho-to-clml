@@ -15,15 +15,7 @@
   
   <!-- -/- MODES -/- -->
   <xsl:mode use-accumulators="brackets-paired"/>
-  <xsl:mode name="title"/>
-  <xsl:mode name="text"/>
-  <xsl:mode name="head"/>
-  <xsl:mode name="resource"/>
-  <xsl:mode name="pnumber"/>
-  <xsl:mode name="p1para"/>
-  <xsl:mode name="p"/>
-  <xsl:mode name="text-wrap"/>
-
+  
   <!-- -/- VARIABLES -/- -->
   <xsl:variable name="reportId" as="xs:string?" select="/report/@id"/>
   <xsl:variable name="docUri" as="xs:string" select="document-uri()"/>
@@ -46,6 +38,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  
   <xsl:variable name="leg" as="xs:string" select="$report/@leg"/>
   <xsl:variable name="legyr" as="xs:integer" select="$report/@year"/>
   <xsl:variable name="legnum" as="xs:integer" select="$report/@chapter"/>
@@ -188,6 +181,40 @@
       }"/>
   </xsl:function>
   
+  <xsl:function name="local:add-into-accumulated" as="node()*">
+    <xsl:param name="accumulated" as="element()?"/>
+    <xsl:param name="output" as="node()*"/>
+    <xsl:param name="bracket" as="xs:integer*"/>
+    <xsl:param name="wrap" as="xs:boolean"/>
+    
+    <xsl:choose>
+      <xsl:when test="not(exists($output))">
+        <xsl:sequence select="$accumulated"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="add-into-accumulated">
+          <xsl:with-param name="scope" as="element()">
+            <xsl:choose>
+              <xsl:when test="exists($accumulated)">
+                <xsl:sequence select="$accumulated"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <local:accumulated>
+                  <xsl:if test="$wrap">
+                    <Text/>
+                  </xsl:if>
+                </local:accumulated>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:with-param>
+          <xsl:with-param name="bracket" select="$bracket"/>
+          <xsl:with-param name="output" select="$output" tunnel="yes"/>
+          <xsl:with-param name="text-wrap" select="$wrap"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  
   <!-- -/- ACCUMULATORS -/- -->
   <xsl:accumulator name="brackets-paired" as="map(*)"
     initial-value="map{'open': (), 'last-opened': 0, 'all-opened': map{}, 'all-closed': map{}, 'current-node': (), 'within-bracket': map{}}">
@@ -290,6 +317,9 @@
         </PrimaryPrelims>
 
         <Body>
+          <!-- NB: This unnests all nested sections. For most documents that's correct as the nesting is normally inappropriate,
+               but a very small number of docs *should* have nested sections. These will require manual structural fixes - it's
+               too complex to handle here. -->
           <xsl:apply-templates select="descendant::section"/>
         </Body>
       </Primary>
@@ -734,9 +764,11 @@
     
     <xsl:iterate select="$collected/node()">
       <xsl:param name="accumulated" as="element()?"/>
+      <xsl:param name="to-accumulate" as="node()*"/>
       <xsl:param name="open" as="xs:integer*" select="(preceding-sibling::node()|parent::node())[1] ! accumulator-before('brackets-paired')('open')"/>
       
       <xsl:on-completion>
+        <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap)"/>
         <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
       </xsl:on-completion>
       
@@ -750,14 +782,17 @@
           <xsl:choose>
             <xsl:when test="$wrap">
               <xsl:next-iteration>
-                <xsl:with-param name="accumulated" select="local:add-into-accumulated($accumulated, $emph, $open, true())"/>
+                <xsl:with-param name="accumulated" select="local:add-into-accumulated($accumulated, ($to-accumulate, $emph), $open, true())"/>
+                <xsl:with-param name="to-accumulate" select="()"/>
                 <xsl:with-param name="open" select="$open"/>
               </xsl:next-iteration>
             </xsl:when>
             <xsl:otherwise>
+              <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, ($to-accumulate, $emph), $open, false())"/>
               <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
               <xsl:next-iteration>
                 <xsl:with-param name="accumulated" select="()"/>
+                <xsl:with-param name="to-accumulate" select="()"/>
                 <xsl:with-param name="open" select="$open"/>
               </xsl:next-iteration>
             </xsl:otherwise>
@@ -768,6 +803,7 @@
           <xsl:if test="not($wrap)">
             <!-- fatal error: br should not be present if we're not wrapping -->
           </xsl:if>
+          <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap)"/>
           <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
           <xsl:next-iteration>
             <xsl:with-param name="accumulated" as="element()">
@@ -776,6 +812,7 @@
               </local:accumulated>
             </xsl:with-param>
             <xsl:with-param name="open" select="$open"/>
+            <xsl:with-param name="to-accumulate" select="()"/>
           </xsl:next-iteration>
         </xsl:when>
         
@@ -789,8 +826,9 @@
               </xsl:variable>
               <xsl:next-iteration>
                 <xsl:with-param name="accumulated"
-                  select="if (exists($btext)) then local:add-into-accumulated($accumulated, $btext, $open, $wrap) else $accumulated"/>
+                  select="local:add-into-accumulated($accumulated, ($to-accumulate, $btext), $open, $wrap)"/>
                 <xsl:with-param name="open" select="($open, @opens-pair)"/>
+                <xsl:with-param name="to-accumulate" select="()"/>
               </xsl:next-iteration>
             </xsl:when>
             <xsl:when test="@type = 'close'">
@@ -803,12 +841,19 @@
                 <xsl:when test="@closes-pair = $open[last()]">
                   <xsl:next-iteration>
                     <xsl:with-param name="accumulated"
-                      select="if (exists($btext)) then local:add-into-accumulated($accumulated, $btext, $open, $wrap) else $accumulated"/>
+                      select=" local:add-into-accumulated($accumulated, ($to-accumulate, $btext), $open, $wrap)"/>
                     <xsl:with-param name="open" select="$open[position() lt last()]"/>
+                    <xsl:with-param name="to-accumulate" select="()"/>
                   </xsl:next-iteration>
                 </xsl:when>
                 <xsl:otherwise>
-                  <!-- fatal error: closing bracket with no matching opening bracket -->
+                  <xsl:message terminate="yes">
+                    <xsl:text>FATAL ERROR: </xsl:text>
+                    <xsl:call-template name="errmsg">
+                      <xsl:with-param name="failNode" select="."/>
+                      <xsl:with-param name="message">closing bracket with no opening bracket</xsl:with-param>
+                    </xsl:call-template>
+                  </xsl:message>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:when>
@@ -822,47 +867,14 @@
             </xsl:apply-templates>
           </xsl:variable>
           <xsl:next-iteration>
-            <xsl:with-param name="accumulated" select="local:add-into-accumulated($accumulated, $output, $open, $wrap)"/>
+<!--            <xsl:with-param name="accumulated" select="local:add-into-accumulated($accumulated, $output, $open, $wrap)"/>-->
+            <xsl:with-param name="to-accumulate" select="($to-accumulate, $output)"/>
             <xsl:with-param name="open" select="$open"/>
           </xsl:next-iteration>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:iterate>
   </xsl:template>
-  
-  <xsl:function name="local:add-into-accumulated" as="node()*">
-    <xsl:param name="accumulated" as="element()?"/>
-    <xsl:param name="output" as="node()*"/>
-    <xsl:param name="bracket" as="xs:integer*"/>
-    <xsl:param name="wrap" as="xs:boolean"/>
-
-    <xsl:choose>
-      <xsl:when test="not(exists($output))">
-        <xsl:sequence select="$accumulated"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="add-into-accumulated">
-          <xsl:with-param name="scope" as="element()">
-            <xsl:choose>
-              <xsl:when test="exists($accumulated)">
-                <xsl:sequence select="$accumulated"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <local:accumulated>
-                  <xsl:if test="$wrap">
-                    <Text/>
-                  </xsl:if>
-                </local:accumulated>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:with-param>
-          <xsl:with-param name="bracket" select="$bracket"/>
-          <xsl:with-param name="output" select="$output" tunnel="yes"/>
-          <xsl:with-param name="text-wrap" select="$wrap"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
   
   <xsl:template match="local:bracketed" mode="unbracketize" priority="+1">
     <xsl:choose>
@@ -887,7 +899,6 @@
         <xsl:apply-templates mode="unbracketize"/>
       </xsl:otherwise>
     </xsl:choose>
-    
   </xsl:template>
   
   <xsl:template match="node() | @*" mode="unbracketize">
@@ -1026,7 +1037,7 @@
       <xsl:text>FATAL ERROR: </xsl:text>
       <xsl:call-template name="errmsg">
         <xsl:with-param name="failNode" select="."/>
-        <xsl:with-param name="message">unmatched node</xsl:with-param>
+        <xsl:with-param name="message">unmatched/unexpected node</xsl:with-param>
       </xsl:call-template>
     </xsl:message>
   </xsl:template>
