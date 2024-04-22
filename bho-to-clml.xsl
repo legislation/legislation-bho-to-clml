@@ -128,6 +128,9 @@
   <xsl:variable name="within-bracket-map" as="map(*)">
     <xsl:sequence select="accumulator-after('brackets-paired')('within-bracket')"/>
   </xsl:variable>
+  
+  <xsl:variable name="all-opened-brackets" as="map(*)" select="accumulator-after('brackets-paired')('all-opened')"/>
+  <xsl:variable name="all-closed-brackets" as="map(*)" select="accumulator-after('brackets-paired')('all-closed')"/>
 
   <!-- -/- FUNCTIONS -/- -->
   <!-- local:make-id turns BHO-style IDs for commentaries and footnotes into legislation.gov.uk-style IDs -->
@@ -187,7 +190,7 @@
   
   <!-- -/- ACCUMULATORS -/- -->
   <xsl:accumulator name="brackets-paired" as="map(*)"
-    initial-value="map{'open': (), 'last-opened': 0, 'current-node': (), 'within-bracket': map{}}">
+    initial-value="map{'open': (), 'last-opened': 0, 'all-opened': map{}, 'all-closed': map{}, 'current-node': (), 'within-bracket': map{}}">
     
     <!-- Record any <emph>/<ref>/<br> nodes against the bracket they're within (if they are) -->
     <xsl:accumulator-rule match="emph|ref|br" phase="start">
@@ -195,10 +198,7 @@
       <xsl:choose>
         <xsl:when test="$last-open">
           <xsl:variable name="new-within-bracket"
-            select="map:merge(
-            (map:get($value, 'within-bracket'), map:entry($last-open, .)),
-            map{'duplicates': 'combine'}
-            )"/>
+            select="map:merge(($value('within-bracket'), map:entry($last-open, .)), map{'duplicates': 'combine'})"/>
           <xsl:sequence select="map:put($value, 'within-bracket', $new-within-bracket)"/>
         </xsl:when>
         <xsl:otherwise>
@@ -208,15 +208,18 @@
     </xsl:accumulator-rule>
     
     <!-- Turn text() nodes into sequences of <text> and <bracket> nodes, plus make metadata -->
-    <xsl:accumulator-rule match="text()[not(parent::ref)]">
+    <xsl:accumulator-rule match="text()[parent::emph or parent::para or parent::head or parent::caption or parent::subtitle or parent::th or parent::td]">
       <xsl:call-template name="process-brackets">
+        <xsl:with-param name="context-node" select="."/>
         <xsl:with-param name="input" select="local:process-brackets(.)"/>
-        <xsl:with-param name="open" as="xs:integer*" select="$value('open')" tunnel="yes"/>
-        <xsl:with-param name="last-opened" select="$value('last-opened')" tunnel="yes"/>
-        <xsl:with-param name="within-bracket" select="$value('within-bracket')" tunnel="yes"/>
-        <xsl:with-param name="preceding-bignore" tunnel="yes"
+        <xsl:with-param name="open" as="xs:integer*" select="$value('open')"/>
+        <xsl:with-param name="last-opened" select="$value('last-opened')"/>
+        <xsl:with-param name="all-opened" select="$value('all-opened')"/>
+        <xsl:with-param name="all-closed" select="$value('all-closed')"/>
+        <xsl:with-param name="within-bracket" select="$value('within-bracket')"/>
+        <xsl:with-param name="preceding-bignore"
           select="exists(preceding-sibling::node()[1]/self::processing-instruction('bignore'))"/>
-        <xsl:with-param name="following-bignore" tunnel="yes"
+        <xsl:with-param name="following-bignore"
           select="exists(following-sibling::node()[1]/self::processing-instruction('bignore'))"/>
       </xsl:call-template>
     </xsl:accumulator-rule>
@@ -224,6 +227,24 @@
 
   <!-- -/- TEMPLATES -/- -->
   <xsl:template match="/report">
+    <!-- Check all opening brackets are paired up with closing brackets.
+         We check the closing brackets inside the template rule for local:bracket[@type='close']. -->
+    <xsl:for-each select="map:keys($all-opened-brackets)">
+      <xsl:if test="not(. = map:keys($all-closed-brackets))">
+        <xsl:message terminate="yes">
+          <xsl:text>FATAL ERROR: </xsl:text>
+          <xsl:call-template name="errmsg">
+            <xsl:with-param name="failNode" select="$all-opened-brackets(.)"/>
+            <xsl:with-param name="message">
+              <xsl:text>opening bracket of pair </xsl:text>
+              <xsl:value-of select="."/>
+              <xsl:text> has no matching closing bracket</xsl:text>
+            </xsl:with-param>
+          </xsl:call-template>
+        </xsl:message>
+      </xsl:if>
+    </xsl:for-each>
+    
     <Legislation SchemaVersion="1.0"
       xsi:schemaLocation="http://www.legislation.gov.uk/namespaces/legislation https://www.legislation.gov.uk/schema/legislation.xsd"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -395,13 +416,13 @@
   <xsl:template match="para" mode="p1para">
     <xsl:apply-templates select="@*"/>
     <P1para>
-      <xsl:apply-templates select="node()[1]" mode="text-wrap"/>
+      <xsl:apply-templates select="." mode="text-wrap"/>
     </P1para>
   </xsl:template>
 
   <xsl:template match="para" mode="p">
     <xsl:apply-templates select="@*"/>
-    <xsl:apply-templates select="node()[1]" mode="text-wrap"/>
+    <xsl:apply-templates select="." mode="text-wrap"/>
     <!-- include tables and figures (but only those immediately adjacent to
       this para) in the P element, so they show up when viewing the P on its
       own on the website -->
@@ -416,36 +437,26 @@
   <xsl:template match="para/@id"/>
 
   <xsl:template match="note">
-    <xsl:variable name="noteContent">
+    <Commentary id="{local:make-id(@id, 'c')}" Type="X">
+      <xsl:apply-templates select="@* except @id"/>
       <Para>
         <xsl:choose>
           <xsl:when test="matches(., ' O\.\s*$')">
             <!-- when the footnote ends in "O.", add in an extra note to explain what that means -->
-            <xsl:apply-templates select="node()[1]" mode="text-wrap">
-              <xsl:with-param name="overrideStart">Variant reading of the text noted in <Emphasis>The Statutes of the Realm</Emphasis> as follows: </xsl:with-param>
-              <xsl:with-param name="overrideEnd"> [<Emphasis>O.</Emphasis> refers to a collection in the library of Trinity College, Cambridge]</xsl:with-param>
-            </xsl:apply-templates>
+            <Text>Variant reading of the text noted in <Emphasis>The Statutes of the Realm</Emphasis> as follows: <xsl:apply-templates mode="note"/> [<Emphasis>O.</Emphasis> refers to a collection in the library of Trinity College, Cambridge]</Text>
           </xsl:when>
           <xsl:otherwise>
             <!-- for other notes, pass text through as normal -->
-            <xsl:apply-templates select="node()[1]" mode="text-wrap"/>
+            <Text>
+              <xsl:apply-templates mode="note"/>
+            </Text>
           </xsl:otherwise>
         </xsl:choose>
       </Para>
-    </xsl:variable>
-    <Commentary id="{local:make-id(@id, 'c')}" Type="X">
-      <xsl:apply-templates select="@* except @id"/>
-      <xsl:sequence select="$noteContent"/>
     </Commentary>
   </xsl:template>
 
   <xsl:template match="note/@number"/>
-
-  <!--<xsl:template match="local:bracketed">
-    <Addition CommentaryRef="{local:make-id(@idref, 'c')}" ChangeId="{local:make-id(@idref, 'c')}-{generate-id()}">
-      <xsl:apply-templates mode="text"/>
-    </Addition>
-  </xsl:template>-->
 
   <xsl:template match="ref">
     <xsl:apply-templates select="@* except @idref"/>
@@ -453,6 +464,7 @@
   </xsl:template>
 
   <xsl:template match="emph" priority="+1">
+    <xsl:param name="process-text" as="xs:boolean" select="false()"/>
     <xsl:choose>
       <xsl:when test="node()">
         <xsl:variable name="outputNodeName" as="xs:string">
@@ -476,7 +488,14 @@
         </xsl:variable>
         <xsl:element name="{$outputNodeName}" namespace="http://www.legislation.gov.uk/namespaces/legislation">
           <xsl:apply-templates select="@* except @type"/>
-          <xsl:apply-templates select="node()[1]" mode="text"/>
+          <xsl:choose>
+            <xsl:when test="$process-text">
+              <xsl:apply-templates select="node()[1]" mode="text"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
@@ -491,13 +510,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
-  <!--<xsl:template match="emph[@type='p']" priority="+1">
-    <xsl:apply-templates select="@* except @type"/>
-    <Superior>
-      <xsl:apply-templates mode="text"/>
-    </Superior>
-  </xsl:template>-->
+  
+  <xsl:template match="emph/text()">
+    <xsl:sequence select="."/>
+  </xsl:template>
 
   <xsl:template match="table" mode="p1para">
     <xsl:apply-templates select="."/>
@@ -514,7 +530,7 @@
       <table xmlns="http://www.w3.org/1999/xhtml">
         <!-- no thead as some SotR tables have headers half way down -->
         <tbody>
-          <xsl:apply-templates select="node()"/>
+          <xsl:apply-templates/>
         </tbody>
       </table>
     </Tabular>
@@ -528,28 +544,21 @@
 
   <xsl:template match="(table|tr)/text()[not(normalize-space())]"/>
 
-  <xsl:template match="th">
-    <th xmlns="http://www.w3.org/1999/xhtml">
-      <xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="node()[1]" mode="text"/>
-    </th>
-  </xsl:template>
-
-  <xsl:template match="td">
-    <td xmlns="http://www.w3.org/1999/xhtml">
+  <xsl:template match="th|td">
+    <xsl:element name="{local-name()}" namespace="http://www.w3.org/1999/xhtml">
       <xsl:apply-templates select="@*"/>
       <xsl:if test="descendant::element() or text()[normalize-space()]">
         <xsl:choose>
           <xsl:when test="exists(br)">
             <!-- need to wrap in <Text> if contains <br> as it's our only way to create line breaks -->
-            <xsl:apply-templates select="node()[1]" mode="text-wrap"/>
+            <xsl:apply-templates select="." mode="text-wrap"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:apply-templates select="node()[1]" mode="text"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-    </td>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="(th|td)/@rows">
@@ -614,7 +623,7 @@
 
   <xsl:template match="caption">
     <Para>
-      <xsl:apply-templates select="node()[1]" mode="text-wrap"/>
+      <xsl:apply-templates select="." mode="text-wrap"/>
     </Para>
   </xsl:template>
 
@@ -698,7 +707,41 @@
     </xsl:analyze-string>
   </xsl:template>
   
-  <xsl:template match="text()|ref|leg:*" mode="text" priority="+1">
+  <xsl:template match="node()" mode="text-wrap">
+    <!--<xsl:param name="overrideStart" as="node()*" select="()"/>
+    <xsl:param name="overrideEnd" as="node()*" select="()"/>-->
+    
+    <!--<xsl:variable name="process-this-node" as="node()">
+      <local:node>
+        <xsl:copy-of select="$overrideStart"/>
+        <xsl:apply-templates select="." mode="text"/>
+        <xsl:copy-of select="$overrideEnd[1]"/>
+      </local:node>
+    </xsl:variable>-->
+    
+    <xsl:if test="node()">
+      <xsl:for-each-group
+        select="node()"
+        group-starting-with="self::br">
+        <Text>
+          <xsl:apply-templates select="current-group()[1]" mode="text"/>
+        </Text>
+      </xsl:for-each-group>
+    </xsl:if>
+  </xsl:template>
+  
+  <!-- stop processing text at a <br> -->
+  <xsl:template match="br" mode="text" priority="+1"/>
+  
+  <xsl:template match="emph" mode="text" priority="+1">
+    <!-- process emph within text as normal -->
+    <xsl:apply-templates select=".">
+      <xsl:with-param name="process-text" select="true()"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="following-sibling::node()[1]" mode="text"/>
+  </xsl:template>
+  
+  <xsl:template match="text()|ref|leg:*|processing-instruction('bignore')" mode="text" priority="+1">
     <xsl:param name="accumulated-node" as="node()?" select="()"/>
     <!-- Keep track of which brackets are open (by default those open just after descent into
          the preceding sibling, or just before descent into the parent if no preceding sibling -->
@@ -737,8 +780,8 @@
       <!-- we roll up all adjacent text node/<ref> siblings and process them at once, so that we can
         wrap brackets around entire runs of contiguous text nodes and refs, instead of having them
         break when a <ref> interrupts a text node - this means we can wrap <refs in brackets where needed -->
-      <xsl:when test="following-sibling::node()[1][self::text() or self::ref or self::leg:*]">
-        <xsl:apply-templates select="following-sibling::node()[1][self::text() or self::ref or self::leg:*]" mode="text">
+      <xsl:when test="following-sibling::node()[1][self::text() or self::ref or self::leg:* or self::processing-instruction('bignore')]">
+        <xsl:apply-templates select="following-sibling::node()[1][self::text() or self::ref or self::leg:* or self::processing-instruction('bignore')]" mode="text">
           <xsl:with-param name="accumulated-node" select="$new-accumulated-node"/>
           <xsl:with-param name="open" as="xs:integer*" select="$open"/>
         </xsl:apply-templates>
@@ -753,35 +796,8 @@
     </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="text()" mode="bracketize-inner">
-    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
-    <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
-    <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
-    <xsl:choose>
-      <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and following::node()[1]/self::ref = $bracket-info('refs')[last()]">
-        <xsl:value-of select="replace(., '\s+$', '')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:sequence select="."/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
-  <xsl:template match="ref" mode="bracketize-inner">
-    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
-    <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
-    <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
-    <xsl:choose>
-      <!-- filter out the last ref in this bracket -->
-      <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and . = $bracket-info('refs')[last()]"/>
-      <xsl:otherwise>
-        <xsl:apply-templates select="."/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  
-  <xsl:template match="leg:*" mode="bracketize-inner">
-    <xsl:copy-of select="." copy-namespaces="no"/>
+  <xsl:template match="processing-instruction('bignore')" mode="text">
+    
   </xsl:template>
   
   <xsl:template match="local:text|ref|leg:*" mode="bracketize">
@@ -883,83 +899,50 @@
   <xsl:template match="local:bracket[@type='close']" mode="bracketize">
     <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
     <xsl:param name="current-pair" as="xs:integer?" select="$open[last()]" tunnel="yes"/>
-    <xsl:if test="not($current-pair) or $current-pair = $open[last()]">
+    <xsl:if test="$current-pair = $open[last()]">
       <xsl:if test="local:get-bracket-info(@closes-pair)('kind') eq 'raw'">
         <xsl:value-of select="."/>
       </xsl:if>
     </xsl:if>
   </xsl:template>
-
-  <xsl:template match="@* | node()" mode="title">
-    <!-- fallback - helps us discover and deal with unexpected doc structure -->
-    <xsl:message terminate="yes">
-      <xsl:text>FATAL ERROR: </xsl:text>
-      <xsl:call-template name="errmsg">
-        <xsl:with-param name="failNode" select="."/>
-        <xsl:with-param name="message">unmatched node</xsl:with-param>
-      </xsl:call-template>
-    </xsl:message>
+  
+  <xsl:template match="text()" mode="bracketize-inner">
+    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
+    <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
+    <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
+    <xsl:choose>
+      <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and following::node()[1]/self::ref = $bracket-info('refs')[last()]">
+        <xsl:value-of select="replace(., '\s+$', '')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
-
-  <xsl:template match="node()" mode="text-wrap">
-    <xsl:param name="overrideStart" as="node()*" select="()"/>
-    <xsl:param name="overrideEnd" as="node()*" select="()"/>
-    
-    <xsl:variable name="process-this-node" as="node()">
-      <local:node>
-        <xsl:copy-of select="$overrideStart"/>
-        <xsl:apply-templates select="." mode="text"/>
-        <xsl:copy-of select="$overrideEnd[1]"/>
-      </local:node>
-    </xsl:variable>
-    <xsl:if test="$process-this-node/node()">
-      <xsl:for-each-group
-        select="$process-this-node"
-        group-starting-with="self::br">
-        <Text>
-          <xsl:apply-templates select="current-group()[1]" mode="text"/>
-        </Text>
-      </xsl:for-each-group>
-    </xsl:if>
-
-    <!--<xsl:apply-templates select="$overrideStart[1]" mode="text"/>
-    <xsl:apply-templates select="." mode="text"/>
-    <xsl:apply-templates select="$overrideEnd[1]" mode="text"/>-->
-
-    <!--<xsl:variable name="nodes" select="($overrideStart, (node()), $overrideEnd)"/>
-    <xsl:for-each-group
-      select="$nodes"
-      group-starting-with="self::br">
-      <Text>
-        <!-\- iterate through the nodes and apply templates separately to ensure we process them in the order we specified above -\->
-        <xsl:for-each select="current-group() except self::br">
-          <xsl:sort data-type="number">
-            <xsl:variable name="node" select="."/>
-            <!-\- sort the elements by whether they're in start, end or neither;
-          those in start should come first (-2) then those in neither (0)
-          i.e. those from the actual document, then those in end (+2)
-        -\->
-            <xsl:sequence
-              select="(if ($overrideStart[. = $node]) then -2 else 0) +
-              (if ($overrideEnd[. = $node]) then 2 else 0)"/>
-          </xsl:sort>
-          <xsl:apply-templates select="." mode="text"/>
-        </xsl:for-each>
-      </Text>
-    </xsl:for-each-group>-->
+  
+  <xsl:template match="ref" mode="bracketize-inner">
+    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
+    <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
+    <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
+    <xsl:choose>
+      <!-- filter out the last ref in this bracket -->
+      <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and . = $bracket-info('refs')[last()]"/>
+      <xsl:otherwise>
+        <xsl:apply-templates select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
-
-  <!--<xsl:template match="text()" mode="text" priority="+1">
-    <!-\- keep only non-empty text nodes -\->
-    <xsl:if test="normalize-space()">
-      <xsl:sequence select="."/>
-    </xsl:if>
-  </xsl:template>-->
-
-  <xsl:template match="emph" mode="text" priority="+1">
-    <!-- process emph within text as normal -->
+  
+  <xsl:template match="leg:*" mode="bracketize-inner">
+    <xsl:copy-of select="." copy-namespaces="no"/>
+  </xsl:template>
+  
+  <xsl:template match="text()" mode="note">
+    <xsl:sequence select="."/>
+  </xsl:template>
+  
+  <xsl:template match="emph" mode="note">
     <xsl:apply-templates select="."/>
-    <xsl:apply-templates select="following-sibling::node()[1]" mode="text"/>
   </xsl:template>
 
   <!-- -/-/-/- Fallback templates -/-/-/- -->
@@ -982,6 +965,17 @@
   </xsl:template>
 
   <!-- Final fallbacks - helps us discover and deal with unexpected doc structure -->
+  <xsl:template match="@* | node()" mode="title">
+    <!-- fallback - helps us discover and deal with unexpected doc structure -->
+    <xsl:message terminate="yes">
+      <xsl:text>FATAL ERROR: </xsl:text>
+      <xsl:call-template name="errmsg">
+        <xsl:with-param name="failNode" select="."/>
+        <xsl:with-param name="message">unmatched node</xsl:with-param>
+      </xsl:call-template>
+    </xsl:message>
+  </xsl:template>
+  
   <xsl:template match="@*">
     <xsl:message terminate="yes">
       <xsl:text>FATAL ERROR: </xsl:text>
@@ -1004,117 +998,123 @@
   
   <!-- -/-/- Utility templates -/-/- -->
   <xsl:template name="process-brackets" as="map(*)">
+    <xsl:param name="context-node" as="node()"/>
     <xsl:param name="input" as="node()*"/>
-    <xsl:param name="last-opened" as="xs:integer" tunnel="yes"/>
-    <xsl:param name="open" as="xs:integer*" select="()" tunnel="yes"/>
-    <xsl:param name="position" as="xs:integer" select="1"/>
-    <xsl:param name="last" as="xs:integer" select="count($input)"/>
-    <xsl:param name="accumulated-nodes" as="node()*" select="()" tunnel="yes"/>
-    <xsl:param name="within-bracket" as="map(*)" select="map{}" tunnel="yes"/>
-    <xsl:param name="preceding-bignore" as="xs:boolean" tunnel="yes"/>
-    <xsl:param name="following-bignore" as="xs:boolean" tunnel="yes"/>
+    <xsl:param name="open" as="xs:integer*" select="()"/>
+    <xsl:param name="last-opened" as="xs:integer?" select="()"/>
+    <xsl:param name="all-opened" as="map(*)" select="map{}"/>
+    <xsl:param name="all-closed" as="map(*)*" select="map{}"/>
+    <xsl:param name="within-bracket" as="map(*)" select="map{}"/>
+    <xsl:param name="preceding-bignore" as="xs:boolean"/>
+    <xsl:param name="following-bignore" as="xs:boolean"/>
     
-    <xsl:choose>
-      <!-- if input sequence exhausted, we've reached the end of the text() node -->
-      <xsl:when test="not($input)">
+    <xsl:iterate select="$input">
+      <xsl:param name="open" as="xs:integer*" select="$open"/>
+      <xsl:param name="last-opened" as="xs:integer?" select="$last-opened"/>
+      <xsl:param name="all-opened" as="map(*)" select="$all-opened"/>
+      <xsl:param name="all-closed" as="map(*)*" select="$all-closed"/>
+      <xsl:param name="accumulated-nodes" as="node()*" select="()"/>
+      <xsl:param name="within-bracket" as="map(*)" select="$within-bracket"/>
+      
+      <xsl:on-completion>
         <xsl:variable name="current-node" as="node()">
           <local:node>
             <xsl:sequence select="$accumulated-nodes"/>
           </local:node>
         </xsl:variable>
-        <xsl:sequence
-          select="map{'open': $open, 'last-opened': $last-opened, 'current-node': $current-node, 'within-bracket': $within-bracket}"/>
-      </xsl:when>
+        <xsl:map>
+          <xsl:map-entry key="'open'" select="$open"/>
+          <xsl:map-entry key="'last-opened'" select="$last-opened"/>
+          <xsl:map-entry key="'all-opened'" select="$all-opened"/>
+          <xsl:map-entry key="'all-closed'" select="$all-closed"/>
+          <xsl:map-entry key="'current-node'" select="$current-node"/>
+          <xsl:map-entry key="'within-bracket'" select="$within-bracket"/>
+        </xsl:map>
+      </xsl:on-completion>
       
-      <xsl:otherwise>
-        <xsl:for-each select="head($input)">
-          <xsl:choose>
-            <!-- if the bracket is at start/end of text node and has bignore next to it, just output it as text -->
-            <xsl:when
-              test="self::local:bracket and (
-              ($position eq 1 and $preceding-bignore) or
-              ($position eq $last and $following-bignore)
-              )">
-              <xsl:variable name="new-text-node" as="node()">
-                <local:text><xsl:value-of select="."/></local:text>
-              </xsl:variable>
-              <xsl:call-template name="process-brackets">
-                <xsl:with-param name="input" select="tail($input)"/>
-                <xsl:with-param name="accumulated-nodes" tunnel="yes" select="($accumulated-nodes, $new-text-node)"/>
-                <xsl:with-param name="position" as="xs:integer" select="$position + 1"/>
-                <xsl:with-param name="last" select="$last"/>
+      <xsl:choose>
+        <!-- if the bracket is at start/end of text node and has bignore next to it, just output it as text -->
+        <xsl:when
+          test="self::local:bracket and (
+          (position() eq 1 and $preceding-bignore) or
+          (position() eq last() and $following-bignore)
+          )">
+          <xsl:variable name="new-text-node" as="node()">
+            <local:text><xsl:value-of select="."/></local:text>
+          </xsl:variable>
+          <xsl:next-iteration>
+            <xsl:with-param name="accumulated-nodes" select="($accumulated-nodes, $new-text-node)"/>
+          </xsl:next-iteration>
+        </xsl:when>
+        
+        <xsl:when test="self::local:bracket[@type='open']">
+          <xsl:variable name="new-bracket-pair" as="xs:integer" select="$last-opened + 1"/>
+          <xsl:variable name="new-bracket" as="node()">
+            <local:bracket opens-pair="{$new-bracket-pair}">
+              <xsl:apply-templates select="@*"/>
+              <xsl:value-of select="."/>
+            </local:bracket>
+          </xsl:variable>
+          
+          <xsl:next-iteration>
+            <xsl:with-param name="open" as="xs:integer*" select="($open, $new-bracket-pair)"/>
+            <xsl:with-param name="last-opened" as="xs:integer" select="$new-bracket-pair"/>
+            <xsl:with-param name="all-opened" as="map(*)"
+              select="map:put($all-opened, $new-bracket-pair, $context-node)"/>
+            <xsl:with-param name="accumulated-nodes" as="node()*"
+              select="($accumulated-nodes, $new-bracket)"/>
+          </xsl:next-iteration>
+        </xsl:when>
+        
+        <xsl:when test="self::local:bracket[@type='close']">
+          <!--<xsl:if test="not(exists($open))">
+            <xsl:message terminate="yes">
+              <xsl:text>FATAL ERROR: </xsl:text>
+              <xsl:call-template name="errmsg">
+                <xsl:with-param name="failNode" select="$context-node"/>
+                <xsl:with-param name="message">
+                  <xsl:text>closing bracket has no matching opening bracket</xsl:text>
+                </xsl:with-param>
               </xsl:call-template>
-            </xsl:when>
-            
-            <xsl:when test="self::local:bracket[@type='open']">
-              <xsl:variable name="new-bracket-pair" as="xs:integer" select="$last-opened + 1"/>
-              <xsl:variable name="new-bracket" as="node()">
-                <local:bracket opens-pair="{$new-bracket-pair}">
-                  <xsl:apply-templates select="@*"/>
-                  <xsl:value-of select="."/>
-                </local:bracket>
-              </xsl:variable>
-              
-              <xsl:call-template name="process-brackets">
-                <xsl:with-param name="input" select="tail($input)"/>
-                <xsl:with-param name="open" as="xs:integer*" select="($open, $new-bracket-pair)" tunnel="yes"/>
-                <xsl:with-param name="last-opened" as="xs:integer" select="$new-bracket-pair" tunnel="yes"/>
-                <xsl:with-param name="accumulated-nodes" as="node()*" tunnel="yes"
-                  select="($accumulated-nodes, $new-bracket)"/>
-                <xsl:with-param name="position" as="xs:integer" select="$position + 1"/>
-                <xsl:with-param name="last" select="$last"/>
-              </xsl:call-template>
-            </xsl:when>
-            
-            <xsl:when test="self::local:bracket[@type='close']">
-              <xsl:if test="not(exists($open))">
-                <xsl:message expand-text="yes">with input {serialize($input, map{'method':'adaptive'})}, accum nodes {serialize($accumulated-nodes, map{'method':'adaptive'})} and current bracket node {serialize(., map{'method':'adaptive'})}, there are no open brackets</xsl:message>
-              </xsl:if>
-              <xsl:variable name="closing-bracket-pair" as="xs:integer" select="$open[last()]"/>
-              <xsl:variable name="new-bracket" as="node()">
-                <xsl:copy select=".">
-                  <xsl:apply-templates select="@*"/>
-                  <xsl:attribute name="closes-pair" select="$closing-bracket-pair"/>
-                  <xsl:value-of select="."/>
-                </xsl:copy>
-              </xsl:variable>
-              
-              <xsl:call-template name="process-brackets">
-                <xsl:with-param name="input" select="tail($input)"/>
-                <xsl:with-param name="open" as="xs:integer*"
-                  select="$open[position() lt last()]" tunnel="yes"/>
-                <xsl:with-param name="accumulated-nodes" as="node()*" tunnel="yes"
-                  select="($accumulated-nodes, $new-bracket)"/>
-                <xsl:with-param name="position" as="xs:integer" select="$position + 1"/>
-                <xsl:with-param name="last" select="$last"/>
-              </xsl:call-template>
-            </xsl:when>
-            
-            <xsl:when test="self::local:text">
-              <xsl:call-template name="process-brackets">
-                <xsl:with-param name="input" select="tail($input)"/>
-                <xsl:with-param name="within-bracket" select="if (count($open) gt 0 and normalize-space(.)) then map:merge(
-                  ($within-bracket, map:entry($open[last()], .)),
-                  map{'duplicates': 'combine'}
-                  ) else $within-bracket" tunnel="yes"/>
-                <xsl:with-param name="accumulated-nodes" as="node()*"
-                  select="($accumulated-nodes, .)" tunnel="yes"/>
-                <xsl:with-param name="position" as="xs:integer" select="$position + 1"/>
-                <xsl:with-param name="last" select="$last"/>
-              </xsl:call-template>
-            </xsl:when>
-            
-            <xsl:otherwise>
-              <xsl:call-template name="process-brackets">
-                <xsl:with-param name="input" select="tail($input)"/>
-                <xsl:with-param name="position" as="xs:integer" select="$position + 1"/>
-                <xsl:with-param name="last" select="$last"/>
-              </xsl:call-template>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:for-each>
-      </xsl:otherwise>
-    </xsl:choose>
+            </xsl:message>
+          </xsl:if>-->
+          <xsl:if test="exists($open)">
+          <xsl:variable name="closing-bracket-pair" as="xs:integer" select="$open[last()]"/>
+          <xsl:variable name="new-bracket" as="node()">
+            <xsl:copy select=".">
+              <xsl:apply-templates select="@*"/>
+              <xsl:attribute name="closes-pair" select="$closing-bracket-pair"/>
+              <xsl:value-of select="."/>
+            </xsl:copy>
+          </xsl:variable>
+          
+          <xsl:next-iteration>
+            <xsl:with-param name="open" as="xs:integer*"
+              select="$open[position() lt last()]"/>
+            <xsl:with-param name="all-closed" as="map(*)"
+              select="map:put($all-closed, $closing-bracket-pair, $context-node)"/>
+            <xsl:with-param name="accumulated-nodes" as="node()*"
+              select="($accumulated-nodes, $new-bracket)"/>
+          </xsl:next-iteration>
+          </xsl:if>
+        </xsl:when>
+        
+        <xsl:when test="self::local:text">
+          <xsl:next-iteration>
+            <xsl:with-param name="within-bracket" select="if (count($open) gt 0 and normalize-space(.)) then map:merge(
+              ($within-bracket, map:entry($open[last()], .)),
+              map{'duplicates': 'combine'}
+              ) else $within-bracket"/>
+            <xsl:with-param name="accumulated-nodes" as="node()*"
+              select="($accumulated-nodes, .)"/>
+          </xsl:next-iteration>
+        </xsl:when>
+        
+        <xsl:otherwise>
+          <xsl:next-iteration/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:iterate>
   </xsl:template>
   
   <xsl:template name="errmsg" visibility="public">
