@@ -314,7 +314,7 @@
         </Body>
       </Primary>
 
-      <xsl:if test="descendant::note">
+      <xsl:if test="descendant::note or $legtitlecomment">
         <Commentaries>
           <xsl:if test="$legtitlecomment">
             <Commentary id="c400001">
@@ -754,23 +754,22 @@
   <xsl:template match="node()" mode="text">
     <xsl:param name="wrap" as="xs:boolean" select="false()"/>
     <xsl:variable name="original-context-node" as="node()" select="."/>
-    <xsl:variable name="collected" as="element()">
-      <local:collected>
-        <xsl:iterate select="node()">
-          <xsl:choose>
-            <xsl:when test="self::text()">
-              <xsl:sequence select="accumulator-after('brackets-paired')('current-node')/node()"/>
-            </xsl:when>
-            <xsl:when test="self::processing-instruction('bignore')"/>
-            <xsl:otherwise>
-              <xsl:sequence select="."/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:iterate>
-      </local:collected>
+    <xsl:variable name="collected" as="node()*">
+      <xsl:iterate select="node()">
+        <xsl:choose>
+          <!-- ignore text nodes at the start of an element that are blank -->
+          <xsl:when test="self::text()">
+            <xsl:sequence select="accumulator-after('brackets-paired')('current-node')/node()"/>
+          </xsl:when>
+          <xsl:when test="self::processing-instruction('bignore')"/>
+          <xsl:otherwise>
+            <xsl:sequence select="."/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:iterate>
     </xsl:variable>
     
-    <xsl:iterate select="$collected/node()">
+    <xsl:iterate select="$collected">
       <xsl:param name="accumulated" as="element()?"/>
       <xsl:param name="to-accumulate" as="node()*"/>
       <xsl:param name="open" as="xs:integer*" select="(preceding-sibling::node()[1] ! accumulator-after('brackets-paired')('open'), parent::node() ! accumulator-before('brackets-paired')('open'))[1]"/>
@@ -1179,8 +1178,9 @@
               ($within-bracket, map:entry($open[last()], .)),
               map{'duplicates': 'combine'}
               ) else $within-bracket"/>
+            <!-- fix: exclude blank text nodes at start of el -->
             <xsl:with-param name="accumulated-nodes" as="node()*"
-              select="($accumulated-nodes, .)"/>
+              select="($accumulated-nodes, if (normalize-space() or position() gt 1) then . else ())"/>
           </xsl:next-iteration>
         </xsl:when>
         
