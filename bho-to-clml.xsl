@@ -45,7 +45,8 @@
   <xsl:variable name="legreg" as="xs:string" select="$report/@regnal"/>
   <xsl:variable name="legtitle" as="xs:string" select="$report/@title"/>
   <xsl:variable name="legtitlesource" as="xs:string" select="$report/@titleSource"/>
-  <xsl:variable name="legtitlecomment" as="xs:string" select="$report/@titleComment"/>
+  <xsl:variable name="legtitlecommentid" as="xs:string?" select="$report/@titleComment"/>
+  <xsl:variable name="legtitlecomment" as="node()*" select="$lookup//titleComment[@id = $legtitlecommentid]/node()"/>
 
   <xsl:variable name="legregregex"
     select="'^([A-Z][a-z]+)([1-9])?((and)(1)?([A-Z][a-z]+)([1-9])?)?/([1-9][0-9]?)(-([1-9][0-9]?))?(-([1-9][0-9]?))?(/([Ss][a-z]+)([1-9]))?$'"/>
@@ -101,22 +102,6 @@
 
   <xsl:variable name="legregalt"
     select="replace($legregaltprelim, '[^a-zA-Z0-9]+', '_')"/>
-
-  <!-- TODO - remove this as we're not going to use these titles any more -->
-  <xsl:variable name="legtitleFixed">
-    <xsl:choose>
-      <!-- don't use long title as title, make a regnal "The Act" title instead like SIF Acts -->
-      <xsl:when test="matches($legtitle, '^An Act')">
-        <xsl:text>The Act </xsl:text>
-        <xsl:value-of select="$legregaltprelim"/>
-        <xsl:text> c. </xsl:text>
-        <xsl:value-of select="$legnum"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$legtitle"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
   
   <xsl:variable name="within-bracket-map" as="map(*)">
     <xsl:sequence select="accumulator-after('brackets-paired')('within-bracket')"/>
@@ -283,7 +268,7 @@
       <xsl:apply-templates select="@*"/>
 
       <ukm:Metadata>
-        <dc:title><xsl:value-of select="$legtitleFixed"/></dc:title>
+        <dc:title><xsl:value-of select="$legtitle"/></dc:title>
         <dc:language>en</dc:language>
         <dc:publisher>British History Online</dc:publisher>
         <ukm:PrimaryMetadata>
@@ -300,7 +285,12 @@
 
       <Primary>
         <PrimaryPrelims>
-          <Title><xsl:value-of select="$legtitleFixed"/></Title>
+          <Title>
+            <xsl:value-of select="$legtitle"/>
+            <xsl:if test="$legtitlecomment">
+              <CommentaryRef Ref="c400001"/>
+            </xsl:if>
+          </Title>
           <Number>
             <xsl:value-of select="$legyr"/>
             <xsl:text> CHAPTER </xsl:text>
@@ -326,6 +316,19 @@
 
       <xsl:if test="descendant::note">
         <Commentaries>
+          <xsl:if test="$legtitlecomment">
+            <Commentary id="c400001">
+              <xsl:attribute name="Type">
+                <xsl:choose>
+                  <xsl:when test="$legtitlesource = 'conferred'">C</xsl:when>
+                  <xsl:otherwise>X</xsl:otherwise>
+                </xsl:choose>
+              </xsl:attribute>
+              <Para>
+                <Text><xsl:copy-of select="$legtitlecomment" copy-namespaces="no"/></Text>
+              </Para>
+            </Commentary>
+          </xsl:if>
           <xsl:apply-templates select="descendant::note"/>
         </Commentaries>
       </xsl:if>
@@ -361,8 +364,8 @@
                 <xsl:apply-templates mode="p"/>
               </xsl:when>
               <xsl:otherwise>
-                <!-- if no child paras, just output whatever is here -->
-                <xsl:apply-templates select="node() except head"/>
+                <!-- if no child paras, just output whatever is here (except the title or any sections) -->
+                <xsl:apply-templates select="node() except head | section"/>
                 <xsl:message>
                   <xsl:text>Warning: </xsl:text>
                   <xsl:call-template name="errmsg">
@@ -556,7 +559,7 @@
     <xsl:variable name="tableNumber" as="xs:integer">
       <xsl:number count="table" level="any"/>
     </xsl:variable>
-    <Tabular id="{format-number($tableNumber, 't00000')}">
+    <Tabular id="{format-number($tableNumber, 't00000')}" Orientation="portrait">
       <xsl:apply-templates select="@* except @id"/>
       <table xmlns="http://www.w3.org/1999/xhtml">
         <!-- no thead as some SotR tables have headers half way down -->
@@ -677,8 +680,12 @@
     <!-- turn the title contents into a "template" string that has non-text nodes
       replaced with placeholders, so we can do string ops on the template and then
       sub back in the non-text nodes later -->
+    <xsl:variable name="preprocessed" as="node()*">
+      <xsl:apply-templates select="." mode="text"/>
+    </xsl:variable>
+    
     <xsl:variable name="templated">
-      <xsl:iterate select="node()">
+      <xsl:iterate select="$preprocessed">
         <xsl:param name="currentTemplate" as="xs:string" select="''"/>
         <xsl:param name="currentNodes" as="node()*" select="()"/>
         <xsl:param name="nodeIndex" as="xs:integer" select="1"/>
@@ -746,6 +753,7 @@
   
   <xsl:template match="node()" mode="text">
     <xsl:param name="wrap" as="xs:boolean" select="false()"/>
+    <xsl:variable name="original-context-node" as="node()" select="."/>
     <xsl:variable name="collected" as="element()">
       <local:collected>
         <xsl:iterate select="node()">
@@ -765,7 +773,7 @@
     <xsl:iterate select="$collected/node()">
       <xsl:param name="accumulated" as="element()?"/>
       <xsl:param name="to-accumulate" as="node()*"/>
-      <xsl:param name="open" as="xs:integer*" select="(preceding-sibling::node()|parent::node())[1] ! accumulator-before('brackets-paired')('open')"/>
+      <xsl:param name="open" as="xs:integer*" select="(preceding-sibling::node()[1] ! accumulator-after('brackets-paired')('open'), parent::node() ! accumulator-before('brackets-paired')('open'))[1]"/>
       
       <xsl:on-completion>
         <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap)"/>
@@ -782,13 +790,13 @@
           <xsl:choose>
             <xsl:when test="$wrap">
               <xsl:next-iteration>
-                <xsl:with-param name="accumulated" select="local:add-into-accumulated($accumulated, ($to-accumulate, $emph), $open, true())"/>
+                <xsl:with-param name="accumulated" select="local:add-into-accumulated(local:add-into-accumulated($accumulated, $to-accumulate, $open, true()), $emph, (), true())"/>
                 <xsl:with-param name="to-accumulate" select="()"/>
                 <xsl:with-param name="open" select="$open"/>
               </xsl:next-iteration>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, ($to-accumulate, $emph), $open, false())"/>
+              <xsl:variable name="accumulated" select="local:add-into-accumulated(local:add-into-accumulated($accumulated, $to-accumulate, $open, false()), $emph, (), false())"/>
               <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
               <xsl:next-iteration>
                 <xsl:with-param name="accumulated" select="()"/>
@@ -850,7 +858,7 @@
                   <xsl:message terminate="yes">
                     <xsl:text>FATAL ERROR: </xsl:text>
                     <xsl:call-template name="errmsg">
-                      <xsl:with-param name="failNode" select="."/>
+                      <xsl:with-param name="failNode" select="$original-context-node"/>
                       <xsl:with-param name="message">closing bracket with no opening bracket</xsl:with-param>
                     </xsl:call-template>
                   </xsl:message>
