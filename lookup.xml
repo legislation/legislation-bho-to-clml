@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <reports>
   <titleComments>
-    <titleComment id="chron" xmlns="http://www.legislation.gov.uk/namespaces/legislation"
-      >Abbreviated title derived from <Emphasis>Chronological Table of the Statutes: Covering the Period from 1235 to the End of 1971</Emphasis> (London: Her Majesty's Stationery Office. 1972)</titleComment>
+    <titleComment id="chron"
+      >Abbreviated title derived from <Emphasis xmlns="http://www.legislation.gov.uk/namespaces/legislation">Chronological Table of the Statutes: Covering the Period from 1235 to the End of 1971</Emphasis> (London: Her Majesty's Stationery Office. 1972)</titleComment>
     
     <titleComment id="sta1896-sch1"
       >Short title given by <Citation xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="http://www.legislation.gov.uk/id/Vict/59-60/14" id="c500001" Class="UnitedKingdomPublicGeneralAct" Year="1896" Number="14" Title="Short Titles Act 1896">Short Titles Act 1896 (c. 14)</Citation>, <CitationSubRef xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="http://www.legislation.gov.uk/id/Vict/59-60/14/schedule/1" id="c500002" CitationRef="c500001" SectionRef="schedule-1" Operative="true">Sch. 1</CitationSubRef></titleComment>

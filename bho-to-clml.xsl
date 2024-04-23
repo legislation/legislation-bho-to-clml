@@ -45,7 +45,12 @@
   <xsl:variable name="legreg" as="xs:string" select="$report/@regnal"/>
   <xsl:variable name="legtitle" as="xs:string" select="$report/@title"/>
   <xsl:variable name="legtitlesource" as="xs:string" select="$report/@titleSource"/>
-  <xsl:variable name="legtitlecommentid" as="xs:string?" select="$report/@titleComment"/>
+  <xsl:variable name="legtitlecommentid" as="xs:string?">
+    <xsl:choose>
+      <xsl:when test="$legtitlesource eq 'chron'">chron</xsl:when>
+      <xsl:otherwise><xsl:value-of select="$report/@titleComment"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="legtitlecomment" as="node()*" select="$lookup//titleComment[@id = $legtitlecommentid]/node()"/>
 
   <xsl:variable name="legregregex"
@@ -365,7 +370,7 @@
               </xsl:when>
               <xsl:otherwise>
                 <!-- if no child paras, just output whatever is here (except the title or any sections) -->
-                <xsl:apply-templates select="node() except head | section"/>
+                <xsl:apply-templates select="node() except (head | section)"/>
                 <xsl:message>
                   <xsl:text>Warning: </xsl:text>
                   <xsl:call-template name="errmsg">
