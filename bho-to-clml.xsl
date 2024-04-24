@@ -11,7 +11,7 @@
   version="3.0">
 
   <!-- -/- PARAMETERS -/- -->
-  <xsl:param name="lookupFile" select="'lookup.xml'" static="yes"/>
+  <xsl:param name="lookupFile" select="'lookup.xml'" static="yes"/> <!-- contains metadata to add to the output files -->
   
   <!-- -/- MODES -/- -->
   <xsl:mode use-accumulators="brackets-paired"/>
@@ -108,10 +108,13 @@
   <xsl:variable name="legregalt"
     select="replace($legregaltprelim, '[^a-zA-Z0-9]+', '_')"/>
   
+  <!-- A map of all nodes contained within each bracket, which we use for finding
+       the ref to use as the CommentaryRef id for the output <Addition> elements -->
   <xsl:variable name="within-bracket-map" as="map(*)">
     <xsl:sequence select="accumulator-after('brackets-paired')('within-bracket')"/>
   </xsl:variable>
   
+  <!-- Used to check if there are any brackets we opened but didn't close -->
   <xsl:variable name="all-opened-brackets" as="map(*)" select="accumulator-after('brackets-paired')('all-opened')"/>
   <xsl:variable name="all-closed-brackets" as="map(*)" select="accumulator-after('brackets-paired')('all-closed')"/>
 
@@ -143,6 +146,14 @@
     </xsl:analyze-string>
   </xsl:function>
   
+  <!-- local:process-brackets turns a text node into a "brackets" version where 
+       brackets are represented by nodes, so we can query and transform them
+
+       e.g. this is [real] ->
+         <local:text>this is </local:text>
+         <local:bracket type="open" shape="square">[</local:bracket>
+         <local:text>real</local:text>
+         <local:bracket type="close" shape="square">]</local:bracket> -->
   <xsl:function name="local:process-brackets" as="node()*">
     <xsl:param name="input" as="xs:string"/>
     <xsl:analyze-string select="$input" regex="[\[\]\(\)]">
@@ -164,18 +175,33 @@
     <xsl:variable name="refs" select="$within-bracket-map($bracket-pair)[self::ref]"/>
     <xsl:variable name="not-refs" select="$within-bracket-map($bracket-pair)[not(self::ref)]"/>
     
-    <!-- bracketed = wrap in bracketed els ; shuck = remove brackets from text ; raw = output brackets in text -->
+    <!--
+      "kind" is used to tell the transform how to handle the brackets later:
+       * bracketed = wrap in <local:bracketed> els (for <Addition> in output) ;
+       * shuck = remove brackets from text (used for (<ref idref="n2"/>), because
+           we don't want to output brackets around <CommentaryRef> els
+       * raw = output brackets as-is in text (useful for e.g. "Su[m]me")
+
+      "refs" collects all the <ref> elements so the transform can check if any
+      given <ref> is the last in a bracketed pair (so as to use its id as the Ref id)
+      or not (in which case just output it as a CommentaryRef). Useful in case a bracket
+      contains multiple <ref>s for some reason.
+    -->
     <xsl:sequence select="map{
       'kind': if ($refs) then if ($not-refs) then 'bracketed' else 'shuck' else 'raw',
       'refs': $refs
       }"/>
   </xsl:function>
   
+  <!-- local:add-into-accumulated helps accumulate nodes into a nested, bracketed
+    form, and optionally wrap them in <Text> nodes. For more information see the
+    add-into-accumulated template -->
   <xsl:function name="local:add-into-accumulated" as="node()*">
     <xsl:param name="accumulated" as="element()?"/>
     <xsl:param name="output" as="node()*"/>
     <xsl:param name="bracket" as="xs:integer*"/>
     <xsl:param name="wrap" as="xs:boolean"/>
+    <xsl:param name="original-context-node" as="node()"/>
     
     <xsl:choose>
       <xsl:when test="not(exists($output))">
@@ -200,16 +226,27 @@
           <xsl:with-param name="bracket" select="$bracket"/>
           <xsl:with-param name="output" select="$output" tunnel="yes"/>
           <xsl:with-param name="text-wrap" select="$wrap"/>
+          <xsl:with-param name="original-context-node" select="$original-context-node" tunnel="yes"/>
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
   
   <!-- -/- ACCUMULATORS -/- -->
+  <!-- brackets-paired tracks which brackets are open at every node in the document,
+    as well as which nodes appear within which brackets, and what the "bracket" nodes
+    are for each text node (see local:process-brackets for explanation) -->
   <xsl:accumulator name="brackets-paired" as="map(*)"
-    initial-value="map{'open': (), 'last-opened': 0, 'all-opened': map{}, 'all-closed': map{}, 'current-node': (), 'within-bracket': map{}}">
+    initial-value="map{
+      'open': (),
+      'last-opened': 0,
+      'all-opened': map{},
+      'all-closed': map{},
+      'current-node': (),
+      'within-bracket': map{}}
+      ">
     
-    <!-- Record any <emph>/<ref>/<br> nodes against the bracket they're within (if they are) -->
+    <!-- Record <emph>/<ref>/<br> nodes against any bracket they're within -->
     <xsl:accumulator-rule match="emph|ref|br" phase="start">
       <xsl:variable name="last-open" select="$value('open')[last()]"/>
       <xsl:choose>
@@ -219,7 +256,7 @@
           <xsl:sequence select="map:put($value, 'within-bracket', $new-within-bracket)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:sequence select="$value"/>
+          <xsl:sequence select="$value"/> <!-- pass through the previous accumulator value -->
         </xsl:otherwise>
       </xsl:choose>
     </xsl:accumulator-rule>
@@ -245,7 +282,7 @@
   <!-- -/- TEMPLATES -/- -->
   <xsl:template match="/report">
     <!-- Check all opening brackets are paired up with closing brackets.
-         We check the closing brackets inside the template rule for local:bracket[@type='close']. -->
+      We check the closing brackets inside the template rule for local:bracket[@type='close']. -->
     <xsl:for-each select="map:keys($all-opened-brackets)">
       <xsl:if test="not(. = map:keys($all-closed-brackets))">
         <xsl:message terminate="yes">
@@ -550,6 +587,7 @@
     </xsl:choose>
   </xsl:template>
   
+  <!-- used only in footnotes, where we don't process brackets -->
   <xsl:template match="emph/text()">
     <xsl:sequence select="."/>
   </xsl:template>
@@ -756,17 +794,26 @@
     </xsl:apply-templates>
   </xsl:template>
   
+  <!-- This template iterates over the child nodes of the element and wraps them in
+    <local:bracketed> elements, which become <Addition> elements ("square brackets" on the
+    legislation.gov.uk website), if any brackets are open around or within the element.
+
+    This is necessary because BHO represents brackets in the text as [], whereas 
+    legislation.gov.uk wraps them in <Addition>/<Substitution>/<Repeal> elements.
+    Converting one to the other is awkward, hence this long template. -->
   <xsl:template match="node()" mode="text">
     <xsl:param name="wrap" as="xs:boolean" select="false()"/>
+
     <xsl:variable name="original-context-node" as="node()" select="."/>
     <xsl:variable name="collected" as="node()*">
       <xsl:iterate select="node()">
         <xsl:choose>
-          <!-- ignore text nodes at the start of an element that are blank -->
           <xsl:when test="self::text()">
+            <!-- use the collected output of process-brackets for this node instead
+              of the original text -->
             <xsl:sequence select="accumulator-after('brackets-paired')('current-node')/node()"/>
           </xsl:when>
-          <xsl:when test="self::processing-instruction('bignore')"/>
+          <xsl:when test="self::processing-instruction('bignore')"/> <!-- see process-brackets -->
           <xsl:otherwise>
             <xsl:sequence select="."/>
           </xsl:otherwise>
@@ -777,15 +824,27 @@
     <xsl:iterate select="$collected">
       <xsl:param name="accumulated" as="element()?"/>
       <xsl:param name="to-accumulate" as="node()*"/>
-      <xsl:param name="open" as="xs:integer*" select="(preceding-sibling::node()[1] ! accumulator-after('brackets-paired')('open'), parent::node() ! accumulator-before('brackets-paired')('open'))[1]"/>
+      <!--
+        If we have a preceding node, take the open brackets to be those *after* it, in
+          case some brackets were opened within it;
+        If we're the first node, take the open brackets to be the ones *before* our parent
+          (rather than after it, which would count brackets opened/closed within it
+        This could potentially be replaced with preceding::node ! accumulator-after(...) -->
+      <xsl:param name="open" as="xs:integer*" select="(
+        preceding-sibling::node()[1] ! accumulator-after('brackets-paired')('open'),
+        parent::node() ! accumulator-before('brackets-paired')('open')
+      )[1]"/>
       
       <xsl:on-completion>
-        <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap)"/>
+        <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap, $original-context-node)"/>
         <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
       </xsl:on-completion>
       
       <xsl:choose>
         <xsl:when test="self::emph">
+          <!-- in CLML <Emphasis> can't go inside <Addition> so we have to output what we've
+            accumulated so far and then process the <emph> separately (i.e. close all the open
+            brackets and reopen them all inside the resulting <Emphasis>) before continuing -->
           <xsl:variable name="emph" as="element()">
             <xsl:apply-templates select=".">
               <xsl:with-param name="process-text" select="true()"/>
@@ -793,14 +852,18 @@
           </xsl:variable>
           <xsl:choose>
             <xsl:when test="$wrap">
+              <!-- if we're wrapping in <Text>, should keep accumulating in the same <Text>, but
+                not in any existing brackets (as <Emphasis> will contain its own tree of brackets) -->
               <xsl:next-iteration>
-                <xsl:with-param name="accumulated" select="local:add-into-accumulated(local:add-into-accumulated($accumulated, $to-accumulate, $open, true()), $emph, (), true())"/>
+                <xsl:with-param name="accumulated" select="local:add-into-accumulated(local:add-into-accumulated($accumulated, $to-accumulate, $open, true(), $original-context-node), $emph, (), true(), $original-context-node)"/>
                 <xsl:with-param name="to-accumulate" select="()"/>
                 <xsl:with-param name="open" select="$open"/>
               </xsl:next-iteration>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:variable name="accumulated" select="local:add-into-accumulated(local:add-into-accumulated($accumulated, $to-accumulate, $open, false()), $emph, (), false())"/>
+              <!-- if we're not wrapping, just output the <Emphasis> and anything else ready to
+                accumulated, then continue afresh -->
+              <xsl:variable name="accumulated" select="local:add-into-accumulated(local:add-into-accumulated($accumulated, $to-accumulate, $open, false(), $original-context-node), $emph, (), false(), $original-context-node)"/>
               <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
               <xsl:next-iteration>
                 <xsl:with-param name="accumulated" select="()"/>
@@ -813,9 +876,24 @@
         
         <xsl:when test="self::br">
           <xsl:if test="not($wrap)">
-            <!-- fatal error: br should not be present if we're not wrapping -->
+            <!-- fatal error: <br> should not be present if we're not wrapping (whenever <br>
+              appears in text, we should always be wrapping the text either side in  separate
+              <Text> elements, as that's the only way to represent line breaks in CLML -->
+              <xsl:message terminate="yes">
+                <xsl:text>FATAL ERROR: </xsl:text>
+                <xsl:call-template name="errmsg">
+                  <xsl:with-param name="failNode" select="$original-context-node"/>
+                  <xsl:with-param name="message">
+                    <xsl:text>if &lt;br&gt; appears in a node we must process its </xsl:text>
+                    <xsl:text>text with "text-wrap" mode to create CLML line breaks</xsl:text>
+                  </xsl:with-param>
+                </xsl:call-template>
+              </xsl:message>
           </xsl:if>
-          <xsl:variable name="accumulated" select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap)"/>
+
+          <!-- output what we've accumulated, then start a new <Text> node -->
+          <xsl:variable name="accumulated"
+            select="local:add-into-accumulated($accumulated, $to-accumulate, $open, $wrap, $original-context-node)"/>
           <xsl:apply-templates select="$accumulated/node()" mode="unbracketize"/>
           <xsl:next-iteration>
             <xsl:with-param name="accumulated" as="element()">
@@ -833,27 +911,28 @@
             <xsl:when test="@type eq 'open'">
               <xsl:variable name="btext" as="node()?">
                 <xsl:if test="local:get-bracket-info(@opens-pair)('kind') eq 'raw'">
-                  <xsl:value-of select="."/>
+                  <xsl:value-of select="."/> <!-- if "raw" brackets, output the bracket as text -->
                 </xsl:if>
               </xsl:variable>
               <xsl:next-iteration>
                 <xsl:with-param name="accumulated"
-                  select="local:add-into-accumulated($accumulated, ($to-accumulate, $btext), $open, $wrap)"/>
+                  select="local:add-into-accumulated($accumulated, ($to-accumulate, $btext), $open, $wrap, $original-context-node)"/>
                 <xsl:with-param name="open" select="($open, @opens-pair)"/>
                 <xsl:with-param name="to-accumulate" select="()"/>
               </xsl:next-iteration>
             </xsl:when>
+            
             <xsl:when test="@type = 'close'">
               <xsl:variable name="btext" as="node()?">
                 <xsl:if test="local:get-bracket-info(@closes-pair)('kind') eq 'raw'">
-                  <xsl:value-of select="."/>
+                  <xsl:value-of select="."/> <!-- if "raw" brackets, output the bracket as text -->
                 </xsl:if>
               </xsl:variable>
               <xsl:choose>
                 <xsl:when test="@closes-pair = $open[last()]">
                   <xsl:next-iteration>
                     <xsl:with-param name="accumulated"
-                      select=" local:add-into-accumulated($accumulated, ($to-accumulate, $btext), $open, $wrap)"/>
+                      select="local:add-into-accumulated($accumulated, ($to-accumulate, $btext), $open, $wrap, $original-context-node)"/>
                     <xsl:with-param name="open" select="$open[position() lt last()]"/>
                     <xsl:with-param name="to-accumulate" select="()"/>
                   </xsl:next-iteration>
@@ -871,15 +950,17 @@
             </xsl:when>
           </xsl:choose>
         </xsl:when>
-        
+
         <xsl:otherwise>
+          <!-- for other nodes, just process them and collect them ready to
+            accumulate whenever this tree of brackets ends at an <Emphasis> or 
+            element boundary (this is faster than "accumulating" every single node) -->
           <xsl:variable name="output" as="node()?">
             <xsl:apply-templates select="." mode="bracketize-inner">
               <xsl:with-param name="open" select="$open" tunnel="yes"/>
             </xsl:apply-templates>
           </xsl:variable>
           <xsl:next-iteration>
-<!--            <xsl:with-param name="accumulated" select="local:add-into-accumulated($accumulated, $output, $open, $wrap)"/>-->
             <xsl:with-param name="to-accumulate" select="($to-accumulate, $output)"/>
             <xsl:with-param name="open" select="$open"/>
           </xsl:next-iteration>
@@ -888,6 +969,9 @@
     </xsl:iterate>
   </xsl:template>
   
+  <!-- turn <local:bracketed> into <Addition>, or just output the contents
+    if these brackets are raw (i.e. not footnoted) or shucked (i.e. only
+    contain a single footnote ref) -->
   <xsl:template match="local:bracketed" mode="unbracketize" priority="+1">
     <xsl:choose>
       <xsl:when test="xs:boolean(@retain)">
@@ -903,10 +987,11 @@
           </xsl:message>
         </xsl:if>
         <Addition CommentaryRef="{local:make-id(@idref, 'c')}"
-          ChangeId="{local:make-id(@idref, 'c')}-{generate-id()}">
+          ChangeId="{local:make-id(@idref, 'c')}-d{format-number(@pair, '000000')}">
           <xsl:apply-templates mode="unbracketize"/>
         </Addition>
       </xsl:when>
+
       <xsl:otherwise>
         <xsl:apply-templates mode="unbracketize"/>
       </xsl:otherwise>
@@ -920,11 +1005,15 @@
     </xsl:copy>
   </xsl:template>
   
+  <!-- add-into-accumulated takes one or more nodes and inserts them appropriately
+    into a tree of <local:bracketed> elements that represent one or more layers of
+    brackets, creating any missing <local:bracketed> elements as needed. -->
   <xsl:template name="add-into-accumulated">
     <xsl:param name="scope" as="element()?"/>
     <xsl:param name="bracket" as="xs:integer*" select="()"/>
     <xsl:param name="output" as="node()+" tunnel="yes"/>
     <xsl:param name="text-wrap" as="xs:boolean" select="false()"/>
+    <xsl:param name="original-context-node" as="node()" tunnel="yes"/>
     
     <xsl:variable name="last-node-in-scope" select="$scope/node()[last()]"/>
     <xsl:variable name="nodes" as="node()+">
@@ -932,7 +1021,17 @@
       <xsl:choose>
         <xsl:when test="$text-wrap">
           <xsl:if test="$last-node-in-scope/not(self::leg:Text)">
-            <!-- fatal error: must be text -->
+            <!-- fatal error: if wrapping in <Text>, last node in top level accumulated
+              must always be a <Text> node -->
+            <xsl:message terminate="yes">
+              <xsl:text>FATAL ERROR: </xsl:text>
+              <xsl:call-template name="errmsg">
+                <xsl:with-param name="failNode" select="$original-context-node"/>
+                <xsl:with-param name="message">
+                  <xsl:text>unexpected failure in text wrapping (this is a bug in the code)</xsl:text>
+                </xsl:with-param>
+              </xsl:call-template>
+            </xsl:message>
           </xsl:if>
           <xsl:call-template name="add-into-accumulated">
             <xsl:with-param name="scope" select="$last-node-in-scope"/>
@@ -947,7 +1046,8 @@
               <xsl:sequence select="$output"/>
             </xsl:when>
             <xsl:otherwise>
-              <!-- There are brackets left; either wrap in them or add to existing wrapping -->
+              <!-- There are brackets left; either wrap in them if not yet present, or add to
+                existing wrapping if they are present -->
               <xsl:choose>
                 <xsl:when test="$last-node-in-scope/self::local:bracketed[@pair = head($bracket)]">
                   <xsl:call-template name="add-into-accumulated">
@@ -957,7 +1057,11 @@
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:sequence select="$last-node-in-scope"/>
-                  <local:bracketed pair="{head($bracket)}" idref="{local:get-bracket-info(head($bracket))('refs')[last()]/@idref}" retain="{local:get-bracket-info(head($bracket))('kind') eq 'bracketed'}">
+                  <local:bracketed
+                    pair="{head($bracket)}"
+                    idref="{local:get-bracket-info(head($bracket))('refs')[last()]/@idref}"
+                    retain="{local:get-bracket-info(head($bracket))('kind') eq 'bracketed'}"
+                    >
                     <xsl:call-template name="add-into-accumulated">
                       <xsl:with-param name="scope" select="()"/>
                       <xsl:with-param name="bracket" select="tail($bracket)"/>
@@ -989,7 +1093,11 @@
     <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
     <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
     <xsl:choose>
-      <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and following::node()[1]/self::ref = $bracket-info('refs')[last()]">
+      <xsl:when
+        test="$current-bracket and $bracket-info('kind') eq 'bracketed' and following::node()[1]/self::ref = $bracket-info('refs')[last()]">
+        <!-- remove trailing whitespace at the end of this text node if the
+          next node is the last <ref> of the bracket, as we'll remove that
+          node and don't want useless whitespace left inside the bracket -->
         <xsl:value-of select="replace(., '\s+$', '')"/>
       </xsl:when>
       <xsl:otherwise>
@@ -1003,7 +1111,8 @@
     <xsl:variable name="current-bracket" as="xs:integer?" select="$open[last()]"/>
     <xsl:variable name="bracket-info" select="if ($current-bracket) then local:get-bracket-info($current-bracket) else map{}"/>
     <xsl:choose>
-      <!-- filter out the last ref in this bracket -->
+      <!-- Don't output the last ref in this bracket - we'll use its id in the
+        CommentaryRef attribute of the <Addition> tag instead -->
       <xsl:when test="$current-bracket and $bracket-info('kind') eq 'bracketed' and . = $bracket-info('refs')[last()]"/>
       <xsl:otherwise>
         <xsl:apply-templates select="."/>
