@@ -18,6 +18,18 @@
   
   <!-- -/- VARIABLES -/- -->
   <xsl:variable name="reportId" as="xs:string?" select="/report/@id"/>
+  <xsl:variable name="pubId" as="xs:string">
+    <xsl:if test="not(matches(/report/@pubid, '^[0-9]{3}$'))">
+      <xsl:message terminate="yes">
+        <xsl:text>FATAL ERROR: </xsl:text>
+        <xsl:call-template name="errmsg">
+          <xsl:with-param name="failNode" select="root()"/>
+          <xsl:with-param name="message">XML file must have /report root element with @pubid attribute in format pubid-000 corresponding to the original BHO pub id</xsl:with-param>
+        </xsl:call-template>
+      </xsl:message>
+    </xsl:if>
+    <xsl:value-of select="/report/@pubid"/>
+  </xsl:variable>
   <xsl:variable name="docUri" as="xs:string" select="document-uri()"/>
 
   <xsl:variable name="lookup" select="doc($lookupFile)"/>
@@ -313,6 +325,9 @@
         <dc:title><xsl:value-of select="$legtitle"/></dc:title>
         <dc:language>en</dc:language>
         <dc:publisher>British History Online</dc:publisher>
+        <dc:source>
+          <xsl:text expand-text="yes">bho/pubid-{$pubId}/{$reportId}.xml</xsl:text>
+        </dc:source>
         <ukm:PrimaryMetadata>
           <ukm:DocumentClassification>
             <ukm:DocumentCategory Value="primary"/>
@@ -362,8 +377,8 @@
             <Commentary id="c400001">
               <xsl:attribute name="Type">
                 <xsl:choose>
-                  <xsl:when test="$legtitlesource = 'conferred'">C</xsl:when>
-                  <xsl:otherwise>X</xsl:otherwise>
+                  <xsl:when test="$legtitlesource = 'chron'">X</xsl:when>
+                  <xsl:otherwise>C</xsl:otherwise>
                 </xsl:choose>
               </xsl:attribute>
               <Para>
