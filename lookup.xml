@@ -9,8 +9,12 @@
     
     <titleComment id="slra1948-sch2"
       >Short title given by <Citation xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="http://www.legislation.gov.uk/id/Geo6/11-12/62" id="c500001" Class="UnitedKingdomPublicGeneralAct" Year="1948" Number="62" Title="Statute Law Revision Act 1948">Statute Law Revision Act 1948 (c. 62)</Citation>, <CitationSubRef xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="http://www.legislation.gov.uk/id/Geo6/11-12/62/schedule/2" id="c500002" CitationRef="c500001" SectionRef="schedule-2" Operative="true">Sch. 2</CitationSubRef></titleComment>
+    
+    <titleComment id="sta1896-sch1-billofrights"
+      >Short title given by <Citation xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="http://www.legislation.gov.uk/id/Vict/59-60/14" id="c500001" Class="UnitedKingdomPublicGeneralAct" Year="1896" Number="14" Title="Short Titles Act 1896">Short Titles Act 1896 (c. 14)</Citation>, <CitationSubRef xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="http://www.legislation.gov.uk/id/Vict/59-60/14/schedule/1" id="c500002" CitationRef="c500001" SectionRef="schedule-1" Operative="true">Sch. 1</CitationSubRef>. This Act was given royal assent on 16th December 1689. The Chronological List in Statutes of the Realm, Vol. VI, attaches the Acts in this session to the year 1688. The 1st Parliament of William and Mary (the Convention Parliament) convened on 23rd February 1689 and the first session began on 20th March 1689 (still 1688 under the old method of reckoning). It appears that all the Acts of that Parliament (both sessions) are deemed to be Acts of 1688. The text of the Crown and Parliament Recognition Act 1689 (2 Will. and Mar.) gives 1688 as the year for all Acts of the Convention Parliament. The Short Titles Act 1896 did not attach either “1688” or “1689” to the title The Bill of Rights (chapter 2 of 1 Will. and Mar. Sess. 2). In the Republic of Ireland, chapter 2 is specifically given the title “Bill of Rights 1688” by an amendment to the Short Titles Act 1896 c. 14 (see <ExternalLink xmlns="http://www.legislation.gov.uk/namespaces/legislation" URI="https://www.irishstatutebook.ie/eli/2007/act/28/enacted/en/html">Statute Law Revision Act 2007 Act</ExternalLink> of the Oireachtas No 28 of 2007, s 5(a))</titleComment>
   </titleComments>
   
+  <!-- pubid-351 / Volume 5 -->
   <report id="47205" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/2" year="1627" regnal="Cha1/3" chapter="2" title="Sunday Observance Act 1627" titleSource="chron"/>
   <report id="47206" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/3" year="1627" regnal="Cha1/3" chapter="3" title="Popery Act 1627" titleSource="chron"/>
   <report id="47207" leg="http://www.legislation.gov.uk/id/aep/Cha1/3/4" year="1627" regnal="Cha1/3" chapter="4" title="Alehouse Act 1627" titleSource="chron"/>
@@ -302,4 +306,372 @@
   <report id="47471" leg="http://www.legislation.gov.uk/id/aep/Cha2/29-30/1" year="1677" regnal="Cha2/29-30" chapter="1" title="Taxation, etc. Act 1677" />
   <report id="47472" leg="http://www.legislation.gov.uk/id/aep/Cha2/29-30/2" year="1677" regnal="Cha2/29-30" chapter="2" title="Moss Troopers Act 1677" />
   <report id="47474" leg="http://www.legislation.gov.uk/id/aep/Cha2/30/st1/2" year="1678" regnal="Cha2/30/st1" chapter="2" title="Taxation Act 1678" />
+  
+  <!-- pubid-352 / Volume 6 -->
+  <report id="46268" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/1" year="1685" regnal="Ja2/1" chapter="1" title="Revenue Act 1685" titleSource="conferred"/>
+  <report id="46269" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/2" year="1685" regnal="Ja2/1" chapter="2" title="Attainder, Duke of Monmouth Act 1685" titleSource="conferred"/>
+  <report id="46270" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/3" year="1685" regnal="Ja2/1" chapter="3" title="Taxation (Wine and Vinegar) Act 1685" titleSource="conferred"/>
+  <report id="46271" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/4" year="1685" regnal="Ja2/1" chapter="4" title="Taxation (Tobacco and Sugar) Act 1685" titleSource="conferred"/>
+  <report id="46272" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/5" year="1685" regnal="Ja2/1" chapter="5" title="Taxation Act 1685" titleSource="conferred"/>
+  <report id="46273" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/6" year="1685" regnal="Ja2/1" chapter="6" title="Importation Act 1685" titleSource="conferred"/>
+  <report id="46274" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/7" year="1685" regnal="Ja2/1" chapter="7" title="Coinage Act 1685" titleSource="conferred"/>
+  <report id="46275" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/8" year="1685" regnal="Ja2/1" chapter="8" title="Importing, etc., of Gunpowder, etc. Act 1685" titleSource="conferred"/>
+  <report id="46276" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/9" year="1685" regnal="Ja2/1" chapter="9" title="Duchy of Cornwall Act 1685" titleSource="conferred"/>
+  <report id="46277" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/10" year="1685" regnal="Ja2/1" chapter="10" title="Providing of Carriages for the King Act 1685" titleSource="conferred"/>
+  <report id="46278" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/11" year="1685" regnal="Ja2/1" chapter="11" title="Navy and Ordnance Act 1685" titleSource="conferred"/>
+  <report id="46279" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/12" year="1685" regnal="Ja2/1" chapter="12" title="Post Office, etc., Revenues Act 1685" titleSource="conferred"/>
+  <report id="46280" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/13" year="1685" regnal="Ja2/1" chapter="13" title="Trade Act 1685" titleSource="conferred"/>
+  <report id="46281" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/14" year="1685" regnal="Ja2/1" chapter="14" title="Moss Troopers Act 1685" titleSource="conferred"/>
+  <report id="46282" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/15" year="1685" regnal="Ja2/1" chapter="15" title="Coal Duties for Rebuilding Saint Paul's Act 1685" titleSource="conferred"/>
+  <report id="46283" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/16" year="1685" regnal="Ja2/1" chapter="16" title="Great Yarmouth Haven and Pier Repairs (Duties) Act 1685" titleSource="conferred"/>
+  <report id="46284" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/17" year="1685" regnal="Ja2/1" chapter="17" title="Administration of Intestates' Estate Act 1685" titleSource="conferred"/>
+  <report id="46285" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/18" year="1685" regnal="Ja2/1" chapter="18" title="Ships Act 1685" titleSource="conferred"/>
+  <report id="46286" leg="http://www.legislation.gov.uk/id/aep/Ja2/1/19" year="1685" regnal="Ja2/1" chapter="19" title="Tillage Act 1685" titleSource="conferred"/>
+  <report id="46287" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/1" year="1688" regnal="WillandMar/1" chapter="1" title="Parliament Act 1688" titleSource="conferred"/>
+  <report id="46288" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/2" year="1688" regnal="WillandMar/1" chapter="2" title="Habeas Corpus Suspension Act 1688" titleSource="conferred"/>
+  <report id="46289" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/3" year="1688" regnal="WillandMar/1" chapter="3" title="Taxation Act 1688" titleSource="conferred"/>
+  <report id="46290" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/4" year="1688" regnal="WillandMar/1" chapter="4" title="Legal Proceedings Act 1688" titleSource="conferred"/>
+  <report id="46291" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/5" year="1688" regnal="WillandMar/1" chapter="5" title="Mutiny Act 1688" titleSource="conferred"/>
+  <report id="46292" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/6" year="1688" regnal="WillandMar/1" chapter="6" title="Coronation Oath Act 1688" titleSource="slra1948-sch2"/>
+  <report id="46293" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/7" year="1688" regnal="WillandMar/1" chapter="7" title="Habeas Corpus Suspension (No. 2) Act 1688" titleSource="conferred"/>
+  <report id="46294" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/8" year="1688" regnal="WillandMar/1" chapter="8" title="Oaths of Allegiance and Supremacy Act 1688" titleSource="conferred"/>
+  <report id="46295" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/9" year="1688" regnal="WillandMar/1" chapter="9" title="Papists Act 1688" titleSource="conferred"/>
+  <report id="46296" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/10" year="1688" regnal="WillandMar/1" chapter="10" title="Hearth Money Act 1688" titleSource="conferred"/>
+  <report id="46297" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/11" year="1688" regnal="WillandMar/1" chapter="11" title="Great Yarmouth Haven and Pier Repairs Act 1688" titleSource="conferred"/>
+  <report id="46298" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/12" year="1688" regnal="WillandMar/1" chapter="12" title="Exportation (Corn) Act 1688" titleSource="conferred"/>
+  <report id="46299" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/13" year="1688" regnal="WillandMar/1" chapter="13" title="Poll Tax Act 1688" titleSource="conferred"/>
+  <report id="46300" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/14" year="1688" regnal="WillandMar/1" chapter="14" title="Revenue Act 1688" titleSource="conferred"/>
+  <report id="46301" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/15" year="1688" regnal="WillandMar/1" chapter="15" title="Papists (No. 2) Act 1688" titleSource="conferred"/>
+  <report id="46302" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/16" year="1688" regnal="WillandMar/1" chapter="16" title="Simony Act 1688" titleSource="slra1948-sch2"/>
+  <report id="46303" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/17" year="1688" regnal="WillandMar/1" chapter="17" title="Papists (Amendment) Act 1688" titleSource="conferred"/>
+  <report id="46304" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/18" year="1688" regnal="WillandMar/1" chapter="18" title="Toleration Act 1688" titleSource="slra1948-sch2"/>
+  <report id="46305" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/19" year="1688" regnal="WillandMar/1" chapter="19" title="Habeas Corpus Suspension (No. 3) Act 1688" titleSource="conferred"/>
+  <report id="46306" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/20" year="1688" regnal="WillandMar/1" chapter="20" title="Land Tax Act 1688" titleSource="conferred"/>
+  <report id="46307" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/21" year="1688" regnal="WillandMar/1" chapter="21" title="Great Seal Act 1688" titleSource="slra1948-sch2"/>
+  <report id="46308" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/22" year="1688" regnal="WillandMar/1" chapter="22" title="Exportation (Beer and Cider) Act 1688" titleSource="conferred"/>
+  <report id="46309" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/23" year="1688" regnal="WillandMar/1" chapter="23" title="Exportation (Leather) Act 1688" titleSource="conferred"/>
+  <report id="46310" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/24" year="1688" regnal="WillandMar/1" chapter="24" title="Excise Act 1688" titleSource="conferred"/>
+  <report id="46311" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/25" year="1688" regnal="WillandMar/1" chapter="25" title="Oaths Act 1688" titleSource="conferred"/>
+  <report id="46312" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/26" year="1688" regnal="WillandMar/1" chapter="26" title="Presentation of Benefices Act 1688" titleSource="slra1948-sch2"/>
+  <report id="46313" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/27" year="1688" regnal="WillandMar/1" chapter="27" title="Court of Marches of Wales Act 1688" titleSource="conferred"/>
+  <report id="46314" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/28" year="1688" regnal="WillandMar/1" chapter="28" title="Appropriation of Revenue Act 1688" titleSource="conferred"/>
+  <report id="46315" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/29" year="1688" regnal="WillandMar/1" chapter="29" title="Clergy (Ireland) Act 1688" titleSource="conferred"/>
+  <report id="46316" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/30" year="1688" regnal="WillandMar/1" chapter="30" title="Royal Mines Act 1688" titleSource="slra1948-sch2"/>
+  <report id="46317" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/31" year="1688" regnal="WillandMar/1" chapter="31" title="Land Tax (Commissioners) Act 1688" titleSource="conferred"/>
+  <report id="46318" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/32" year="1688" regnal="WillandMar/1" chapter="32" title="Woollen Manufactures Act 1688" titleSource="conferred"/>
+  <report id="46319" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/33" year="1688" regnal="WillandMar/1" chapter="33" title="Leather Act 1688" titleSource="conferred"/>
+  <report id="46320" leg="http://www.legislation.gov.uk/id/aep/WillandMar/1/34" year="1688" regnal="WillandMar/1" chapter="34" title="Trade with France Act 1688" titleSource="conferred"/>
+  <report id="46321" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/1" year="1688" regnal="WillandMarSess2/1" chapter="1" title="Taxation (No. 3) Act 1688" titleSource="conferred"/>
+  <report id="46322" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/2" year="1688" regnal="WillandMarSess2/1" chapter="2" title="The Bill of Rights 1688" titleSource="sta1896-sch1-billofrights"/>
+  <report id="46323" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/3" year="1688" regnal="WillandMarSess2/1" chapter="3" title="Revenue Act 1688" titleSource="conferred"/>
+  <report id="46324" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/4" year="1688" regnal="WillandMarSess2/1" chapter="4" title="Mutiny (No. 2) Act 1688" titleSource="conferred"/>
+  <report id="46325" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/5" year="1688" regnal="WillandMarSess2/1" chapter="5" title="Taxation (No. 4) Act 1688" titleSource="conferred"/>
+  <report id="46326" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/6" year="1688" regnal="WillandMarSess2/1" chapter="6" title="Taxation (No. 5) Act 1688" titleSource="conferred"/>
+  <report id="46327" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/7" year="1688" regnal="WillandMarSess2/1" chapter="7" title="Taxation (No. 6) Act 1688" titleSource="conferred"/>
+  <report id="46328" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/8" year="1688" regnal="WillandMarSess2/1" chapter="8" title="Indemnity Act 1688" titleSource="conferred"/>
+  <report id="46329" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/1/9" year="1688" regnal="WillandMarSess2/1" chapter="9" title="Relief of Irish Protestants Act 1688" titleSource="conferred"/>
+  <report id="46330" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/1" year="1689" regnal="WillandMar/2" chapter="1" title="Crown and Parliament Recognition Act 1689" titleSource="slra1948-sch2"/>
+  <report id="46331" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/2" year="1689" regnal="WillandMar/2" chapter="2" title="Poll Tax Act 1689" titleSource="conferred"/>
+  <report id="46332" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/3" year="1689" regnal="WillandMar/2" chapter="3" title="Taxation (Liquor) Act 1689" titleSource="conferred"/>
+  <report id="46333" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/4" year="1689" regnal="WillandMar/2" chapter="4" title="Taxation (Tonnage and Poundage) Act 1689" titleSource="conferred"/>
+  <report id="46334" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/5" year="1689" regnal="WillandMar/2" chapter="5" title="Distress for Rent Act 1689" titleSource="slra1948-sch2"/>
+  <report id="46335" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/6" year="1689" regnal="WillandMar/2" chapter="6" title="Absence of King William Act 1689" titleSource="conferred"/>
+  <report id="46336" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/7" year="1689" regnal="WillandMar/2" chapter="7" title="Parliamentary Elections Act 1689" titleSource="conferred"/>
+  <report id="46337" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/8" year="1689" regnal="WillandMar/2" chapter="8" title="London, Quo Warranto Judgment Reversed Act 1689" titleSource="conferred"/>
+  <report id="46338" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/9" year="1689" regnal="WillandMar/2" chapter="9" title="Importation Act 1689" titleSource="conferred"/>
+  <report id="46339" leg="http://www.legislation.gov.uk/id/aep/WillandMar/2/10" year="1689" regnal="WillandMar/2" chapter="10" title="General Pardon Act 1689" titleSource="conferred"/>
+  <report id="46340" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/1" year="1690" regnal="WillandMarSess2/2" chapter="1" title="Taxation Act 1690" titleSource="conferred"/>
+  <report id="46341" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/2" year="1690" regnal="WillandMarSess2/2" chapter="2" title="Admiralty Act 1690" titleSource="sta1896-sch1"/>
+  <report id="46342" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/3" year="1690" regnal="WillandMarSess2/2" chapter="3" title="Taxation (Beer) Act 1690" titleSource="conferred"/>
+  <report id="46343" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/4" year="1690" regnal="WillandMarSess2/2" chapter="4" title="Taxation (No. 3) Act 1690" titleSource="conferred"/>
+  <report id="46344" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/5" year="1690" regnal="WillandMarSess2/2" chapter="5" title="Taxation (No. 4) Act 1690" titleSource="conferred"/>
+  <report id="46345" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/6" year="1690" regnal="WillandMarSess2/2" chapter="6" title="Mutiny Act 1690" titleSource="conferred"/>
+  <report id="46346" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/7" year="1690" regnal="WillandMarSess2/2" chapter="7" title="Coals Act 1690" titleSource="conferred"/>
+  <report id="46347" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/8" year="1690" regnal="WillandMarSess2/2" chapter="8" title="London Streets, etc. Act 1690" titleSource="conferred"/>
+  <report id="46348" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/9" year="1690" regnal="WillandMarSess2/2" chapter="9" title="Taxation (No. 5) Act 1690" titleSource="conferred"/>
+  <report id="46349" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/10" year="1690" regnal="WillandMarSess2/2" chapter="10" title="Taxation (No. 6) Act 1690" titleSource="conferred"/>
+  <report id="46350" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/11" year="1690" regnal="WillandMarSess2/2" chapter="11" title="Public Accounts Act 1690" titleSource="conferred"/>
+  <report id="46351" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/12" year="1690" regnal="WillandMarSess2/2" chapter="12" title="Militia Act 1690" titleSource="conferred"/>
+  <report id="46352" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/13" year="1690" regnal="WillandMarSess2/2" chapter="13" title="Indemnity Act 1690" titleSource="conferred"/>
+  <report id="46353" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/14" year="1690" regnal="WillandMarSess2/2" chapter="14" title="Trade with France Act 1690" titleSource="conferred"/>
+  <report id="46354" leg="http://www.legislation.gov.uk/id/aep/WillandMarSess2/2/15" year="1690" regnal="WillandMarSess2/2" chapter="15" title="Insolvent Debtors Relief Act 1690" titleSource="conferred"/>
+  <report id="46355" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/1" year="1691" regnal="WillandMar/3" chapter="1" title="Taxation Act 1691" titleSource="conferred"/>
+  <report id="46356" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/2" year="1691" regnal="WillandMar/3" chapter="2" title="Oaths of Supremacy, etc., Ireland Act 1691" titleSource="conferred"/>
+  <report id="46357" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/3" year="1691" regnal="WillandMar/3" chapter="3" title="Tithes Act 1691" titleSource="conferred"/>
+  <report id="46358" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/4" year="1691" regnal="WillandMar/3" chapter="4" title="Prize Act 1691" titleSource="conferred"/>
+  <report id="46359" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/5" year="1691" regnal="WillandMar/3" chapter="5" title="Land Tax Act 1691" titleSource="conferred"/>
+  <report id="46360" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/6" year="1691" regnal="WillandMar/3" chapter="6" title="Poll Tax Act 1691" titleSource="conferred"/>
+  <report id="46361" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/7" year="1691" regnal="WillandMar/3" chapter="7" title="Militia Act 1691" titleSource="conferred"/>
+  <report id="46362" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/8" year="1691" regnal="WillandMar/3" chapter="8" title="Cattle Act 1691" titleSource="conferred"/>
+  <report id="46363" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/9" year="1691" regnal="WillandMar/3" chapter="9" title="Benefit of Clergy, etc. Act 1691" titleSource="conferred"/>
+  <report id="46364" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/10" year="1691" regnal="WillandMar/3" chapter="10" title="Deer Stealers Act 1691" titleSource="conferred"/>
+  <report id="46365" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/11" year="1691" regnal="WillandMar/3" chapter="11" title="Poor Relief Act 1691" titleSource="sta1896-sch1"/>
+  <report id="46366" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/12" year="1691" regnal="WillandMar/3" chapter="12" title="Highways, etc. Act 1691" titleSource="conferred"/>
+  <report id="46367" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/13" year="1691" regnal="WillandMar/3" chapter="13" title="Correspondence with Enemies Act 1691" titleSource="conferred"/>
+  <report id="46368" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/14" year="1691" regnal="WillandMar/3" chapter="14" title="Fraudulent Devises Act 1691" titleSource="conferred"/>
+  <report id="46369" leg="http://www.legislation.gov.uk/id/aep/WillandMar/3/15" year="1691" regnal="WillandMar/3" chapter="15" title="Taxation (Wine and Spirits) Act 1691" titleSource="conferred"/>
+  <report id="46370" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/1" year="1692" regnal="WillandMar/4" chapter="1" title="Land Tax Act 1692" titleSource="conferred"/>
+  <report id="46371" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/2" year="1692" regnal="WillandMar/4" chapter="2" title="Wills Act 1692" titleSource="conferred"/>
+  <report id="46372" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/3" year="1692" regnal="WillandMar/4" chapter="3" title="Taxation, etc. Act 1692" titleSource="conferred"/>
+  <report id="46373" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/4" year="1692" regnal="WillandMar/4" chapter="4" title="Special Bail Act 1692" titleSource="conferred"/>
+  <report id="46374" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/5" year="1692" regnal="WillandMar/4" chapter="5" title="Taxation Act 1692" titleSource="conferred"/>
+  <report id="46375" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/6" year="1692" regnal="WillandMar/4" chapter="6" title="Militia Act 1692" titleSource="conferred"/>
+  <report id="46376" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/7" year="1692" regnal="WillandMar/4" chapter="7" title="Cheese and Butter Trade Act 1692" titleSource="conferred"/>
+  <report id="46377" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/8" year="1692" regnal="WillandMar/4" chapter="8" title="Apprehension of Highwaymen Act 1692" titleSource="conferred"/>
+  <report id="46378" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/9" year="1692" regnal="WillandMar/4" chapter="9" title="Highways, Hertfordshire Act 1692" titleSource="conferred"/>
+  <report id="46379" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/10" year="1692" regnal="WillandMar/4" chapter="10" title="Importation Act 1692" titleSource="conferred"/>
+  <report id="46380" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/11" year="1692" regnal="WillandMar/4" chapter="11" title="Public Accounts Act 1692" titleSource="conferred"/>
+  <report id="46381" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/12" year="1692" regnal="WillandMar/4" chapter="12" title="Repairs of Church Act 1692" titleSource="conferred"/>
+  <report id="46382" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/13" year="1692" regnal="WillandMar/4" chapter="13" title="Mutiny Act 1692" titleSource="conferred"/>
+  <report id="46383" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/14" year="1692" regnal="WillandMar/4" chapter="14" title="Taxation (No. 2) Act 1692" titleSource="conferred"/>
+  <report id="46384" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/15" year="1692" regnal="WillandMar/4" chapter="15" title="Taxation (No. 3) Act 1692" titleSource="conferred"/>
+  <report id="46385" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/16" year="1692" regnal="WillandMar/4" chapter="16" title="Clandestine Mortgages Act 1692" titleSource="conferred"/>
+  <report id="46386" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/17" year="1692" regnal="WillandMar/4" chapter="17" title="Greenland Trade Act 1692" titleSource="conferred"/>
+  <report id="46387" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/18" year="1692" regnal="WillandMar/4" chapter="18" title="Malicious Information in Court of King's Bench Act 1692" titleSource="conferred"/>
+  <report id="46388" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/19" year="1692" regnal="WillandMar/4" chapter="19" title="Indemnity Act 1692" titleSource="conferred"/>
+  <report id="46389" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/20" year="1692" regnal="WillandMar/4" chapter="20" title="Judgment Act 1692" titleSource="conferred"/>
+  <report id="46390" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/21" year="1692" regnal="WillandMar/4" chapter="21" title="Pleadings in Actions Act 1692" titleSource="conferred"/>
+  <report id="46391" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/22" year="1692" regnal="WillandMar/4" chapter="22" title="Crown Office Procedure Act 1692" titleSource="conferred"/>
+  <report id="46392" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/23" year="1692" regnal="WillandMar/4" chapter="23" title="Game Act 1692" titleSource="conferred"/>
+  <report id="46393" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/24" year="1692" regnal="WillandMar/4" chapter="24" title="Estreats (Personal Representatives) Act 1692" titleSource="conferred"/>
+  <report id="46394" leg="http://www.legislation.gov.uk/id/aep/WillandMar/4/25" year="1692" regnal="WillandMar/4" chapter="25" title="Trade with France Act 1692" titleSource="conferred"/>
+  <report id="46395" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/1" year="1693" regnal="WillandMar/5" chapter="1" title="Land Tax Act 1693" titleSource="conferred"/>
+  <report id="46396" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/2" year="1693" regnal="WillandMar/5" chapter="2" title="Importation Act 1693" titleSource="conferred"/>
+  <report id="46397" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/3" year="1693" regnal="WillandMar/5" chapter="3" title="Importation (No. 2) Act 1693" titleSource="conferred"/>
+  <report id="46398" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/4" year="1693" regnal="WillandMar/5" chapter="4" title="Justice of the Peace in Wales Act 1693" titleSource="conferred"/>
+  <report id="46399" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/5" year="1693" regnal="WillandMar/5" chapter="5" title="Government Life Annuities Act 1693" titleSource="conferred"/>
+  <report id="46400" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/6" year="1693" regnal="WillandMar/5" chapter="6" title="Royal Mines Act 1693" titleSource="slra1948-sch2"/>
+  <report id="46401" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5/7" year="1693" regnal="WillandMar/5" chapter="7" title="House of Commons (Disqualification) Act 1693" titleSource="slra1948-sch2"/>
+  <report id="46402" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/8" year="1694" regnal="WillandMar/5-6" chapter="8" title="Insolvent Debtors Relief Act 1694" titleSource="conferred"/>
+  <report id="46403" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/9" year="1694" regnal="WillandMar/5-6" chapter="9" title="Cloth Weavers Act 1694" titleSource="conferred"/>
+  <report id="46404" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/10" year="1694" regnal="WillandMar/5-6" chapter="10" title="Orphans, London Act 1694" titleSource="conferred"/>
+  <report id="46405" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/11" year="1694" regnal="WillandMar/5-6" chapter="11" title="Quarter Sessions Delays Act 1694" titleSource="conferred"/>
+  <report id="46406" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/12" year="1694" regnal="WillandMar/5-6" chapter="12" title="Capiatur Fine Act 1694" titleSource="conferred"/>
+  <report id="46407" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/13" year="1694" regnal="WillandMar/5-6" chapter="13" title="Pardon of Felony Act 1694" titleSource="conferred"/>
+  <report id="46408" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/14" year="1694" regnal="WillandMar/5-6" chapter="14" title="Poll Tax Act 1694" titleSource="conferred"/>
+  <report id="46409" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/15" year="1694" regnal="WillandMar/5-6" chapter="15" title="Mutiny Act 1694" titleSource="conferred"/>
+  <report id="46410" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/16" year="1694" regnal="WillandMar/5-6" chapter="16" title="Importation Act 1694" titleSource="conferred"/>
+  <report id="46411" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/17" year="1694" regnal="WillandMar/5-6" chapter="17" title="Exportation Act 1694" titleSource="conferred"/>
+  <report id="46412" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/18" year="1694" regnal="WillandMar/5-6" chapter="18" title="Duchy of Cornwall Act 1694" titleSource="conferred"/>
+  <report id="46413" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/19" year="1694" regnal="WillandMar/5-6" chapter="19" title="Militia Act 1694" titleSource="conferred"/>
+  <report id="46414" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/20" year="1694" regnal="WillandMar/5-6" chapter="20" title="Bank of England Act 1694" titleSource="sta1896-sch1"/>
+  <report id="46415" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/21" year="1694" regnal="WillandMar/5-6" chapter="21" title="Stamps Act 1694" titleSource="conferred"/>
+  <report id="46416" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/22" year="1694" regnal="WillandMar/5-6" chapter="22" title="Hackney Coaches, etc. Act 1694" titleSource="conferred"/>
+  <report id="46417" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/23" year="1694" regnal="WillandMar/5-6" chapter="23" title="Public Accounts Act 1694" titleSource="conferred"/>
+  <report id="46418" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/24" year="1694" regnal="WillandMar/5-6" chapter="24" title="Ships Act 1694" titleSource="conferred"/>
+  <report id="46419" leg="http://www.legislation.gov.uk/id/aep/WillandMar/5-6/25" year="1694" regnal="WillandMar/5-6" chapter="25" title="Navy Act 1694" titleSource="conferred"/>
+  <report id="46420" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/1" year="1694" regnal="WillandMar/6-7" chapter="1" title="Taxation (No. 2) Act 1694" titleSource="conferred"/>
+  <report id="46421" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/2" year="1694" regnal="WillandMar/6-7" chapter="2" title="Meeting of Parliament Act 1694" titleSource="slra1948-sch2"/>
+  <report id="46422" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/3" year="1694" regnal="WillandMar/6-7" chapter="3" title="Taxation (No. 3) Act 1694" titleSource="conferred"/>
+  <report id="46423" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/4" year="1694" regnal="WillandMar/6-7" chapter="4" title="Exemptions of Apothecaries Act 1694" titleSource="conferred"/>
+  <report id="46424" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/5" year="1694" regnal="WillandMar/6-7" chapter="5" title="Government Life Annuities Act 1694" titleSource="conferred"/>
+  <report id="46425" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/6" year="1694" regnal="WillandMar/6-7" chapter="6" title="Marriage Duty Act 1694" titleSource="conferred"/>
+  <report id="46426" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/7" year="1694" regnal="WillandMar/6-7" chapter="7" title="Taxation (No. 4) Act 1694" titleSource="conferred"/>
+  <report id="46427" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/8" year="1694" regnal="WillandMar/6-7" chapter="8" title="Mutiny (No. 2) Act 1694" titleSource="conferred"/>
+  <report id="46428" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/9" year="1694" regnal="WillandMar/6-7" chapter="9" title="Public Accounts Act 1694" titleSource="conferred"/>
+  <report id="46429" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/10" year="1694" regnal="WillandMar/6-7" chapter="10" title="Newcastle (Sale of Coal by Measured Keel) Act 1694" titleSource="conferred"/>
+  <report id="46430" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/11" year="1694" regnal="WillandMar/6-7" chapter="11" title="Profane Swearing Act 1694" titleSource="conferred"/>
+  <report id="46431" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/12" year="1694" regnal="WillandMar/6-7" chapter="12" title="Stamps (Amendment) Act 1694" titleSource="conferred"/>
+  <report id="46432" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/13" year="1694" regnal="WillandMar/6-7" chapter="13" title="Militia, etc. Act 1694" titleSource="conferred"/>
+  <report id="46433" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/14" year="1694" regnal="WillandMar/6-7" chapter="14" title="Continuance of Laws Act 1694" titleSource="conferred"/>
+  <report id="46434" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/15" year="1694" regnal="WillandMar/6-7" chapter="15" title="Sir Thomas Cooke's Indemnity Act 1694" titleSource="conferred"/>
+  <report id="46435" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/16" year="1694" regnal="WillandMar/6-7" chapter="16" title="Thames Navigation Act 1694" titleSource="conferred"/>
+  <report id="46436" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/17" year="1694" regnal="WillandMar/6-7" chapter="17" title="Coin Act 1694" titleSource="conferred"/>
+  <report id="46437" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/18" year="1694" regnal="WillandMar/6-7" chapter="18" title="Taxation (No. 5) Act 1694" titleSource="conferred"/>
+  <report id="46438" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/19" year="1694" regnal="WillandMar/6-7" chapter="19" title="Sir Thomas Cooke, etc. (East India Company Transactions) Act 1694" titleSource="conferred"/>
+  <report id="46439" leg="http://www.legislation.gov.uk/id/aep/WillandMar/6-7/20" year="1694" regnal="WillandMar/6-7" chapter="20" title="General Pardon Act 1694" titleSource="conferred"/>
+  
+  <!-- pubid-353 / Volume 7 -->
+  <report id="46808" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/1" year="1695" regnal="Will3/7-8" chapter="1" title="Coin Act 1695" titleSource="conferred"/>
+  <report id="46809" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/2" year="1695" regnal="Will3/7-8" chapter="2" title="Annuities, etc. Act 1695" titleSource="conferred"/>
+  <report id="46810" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/3" year="1695" regnal="Will3/7-8" chapter="3" title="Treason Act 1695" titleSource="sta1896-sch1"/>
+  <report id="46811" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/4" year="1695" regnal="Will3/7-8" chapter="4" title="Corrupt Practices Act 1695" titleSource="conferred"/>
+  <report id="46812" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/5" year="1695" regnal="Will3/7-8" chapter="5" title="Taxation Act 1695" titleSource="conferred"/>
+  <report id="46813" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/6" year="1695" regnal="Will3/7-8" chapter="6" title="Recovery of Small Tithes Act 1695" titleSource="conferred"/>
+  <report id="46814" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/7" year="1695" regnal="Will3/7-8" chapter="7" title="Parliamentary Elections (Returns) Act 1695" titleSource="slra1948-sch2"/>
+  <report id="46815" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/8" year="1695" regnal="Will3/7-8" chapter="8" title="Public Accounts Act 1695" titleSource="conferred"/>
+  <report id="46816" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/9" year="1695" regnal="Will3/7-8" chapter="9" title="London to Harwich Roads Act 1695" titleSource="conferred"/>
+  <report id="46817" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/10" year="1695" regnal="Will3/7-8" chapter="10" title="Taxation (No. 2) Act 1695" titleSource="conferred"/>
+  <report id="46818" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/11" year="1695" regnal="Will3/7-8" chapter="11" title="Habeas Corpus Suspension Act 1695" titleSource="conferred"/>
+  <report id="46819" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/12" year="1695" regnal="Will3/7-8" chapter="12" title="Insolvent Debtors Relief Act 1695" titleSource="conferred"/>
+  <report id="46820" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/13" year="1695" regnal="Will3/7-8" chapter="13" title="Coining Act 1695" titleSource="conferred"/>
+  <report id="46821" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/14" year="1695" regnal="Will3/7-8" chapter="14" title="Rivers Wye and Lugg Act 1695" titleSource="conferred"/>
+  <report id="46822" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/15" year="1695" regnal="Will3/7-8" chapter="15" title="Parliament Act 1695" titleSource="conferred"/>
+  <report id="46823" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/16" year="1695" regnal="Will3/7-8" chapter="16" title="Militia Act 1695" titleSource="conferred"/>
+  <report id="46824" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/17" year="1695" regnal="Will3/7-8" chapter="17" title="Moss Troopers Act 1695" titleSource="conferred"/>
+  <report id="46825" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/18" year="1695" regnal="Will3/7-8" chapter="18" title="Taxation (No. 3) Act 1695" titleSource="conferred"/>
+  <report id="46826" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/19" year="1695" regnal="Will3/7-8" chapter="19" title="Coinage Act 1695" titleSource="conferred"/>
+  <report id="46827" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/20" year="1695" regnal="Will3/7-8" chapter="20" title="Taxation (No. 4) Act 1695" titleSource="conferred"/>
+  <report id="46828" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/21" year="1695" regnal="Will3/7-8" chapter="21" title="Greenwich Hospital, etc. Act 1695" titleSource="conferred"/>
+  <report id="46829" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/22" year="1695" regnal="Will3/7-8" chapter="22" title="Plantation Trade Act 1695" titleSource="conferred"/>
+  <report id="46830" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/23" year="1695" regnal="Will3/7-8" chapter="23" title="Mutiny Act 1695" titleSource="conferred"/>
+  <report id="46831" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/24" year="1695" regnal="Will3/7-8" chapter="24" title="Oaths, etc. Act 1695" titleSource="conferred"/>
+  <report id="46832" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/25" year="1695" regnal="Will3/7-8" chapter="25" title="Parliamentary Elections Act 1695" titleSource="slra1948-sch2"/>
+  <report id="46833" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/26" year="1695" regnal="Will3/7-8" chapter="26" title="Roads (Norfolk) Act 1695" titleSource="conferred"/>
+  <report id="46834" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/27" year="1695" regnal="Will3/7-8" chapter="27" title="Security of King and Government Act 1695" titleSource="conferred"/>
+  <report id="46835" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/28" year="1695" regnal="Will3/7-8" chapter="28" title="Wool Act 1695" titleSource="conferred"/>
+  <report id="46836" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/29" year="1695" regnal="Will3/7-8" chapter="29" title="Highways Act 1695" titleSource="conferred"/>
+  <report id="46837" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/30" year="1695" regnal="Will3/7-8" chapter="30" title="Taxation, etc. Act 1695" titleSource="conferred"/>
+  <report id="46838" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/31" year="1695" regnal="Will3/7-8" chapter="31" title="Taxation, etc. (No. 2) Act 1695" titleSource="conferred"/>
+  <report id="46839" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/32" year="1695" regnal="Will3/7-8" chapter="32" title="Juries Act 1695" titleSource="conferred"/>
+  <report id="46840" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/33" year="1695" regnal="Will3/7-8" chapter="33" title="Greenland Trade Act 1695" titleSource="conferred"/>
+  <report id="46841" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/34" year="1695" regnal="Will3/7-8" chapter="34" title="Quakers Act 1695" titleSource="conferred"/>
+  <report id="46842" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/35" year="1695" regnal="Will3/7-8" chapter="35" title="Marriage Duty Act 1695" titleSource="conferred"/>
+  <report id="46843" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/36" year="1695" regnal="Will3/7-8" chapter="36" title="Continuance of Laws Act 1695" titleSource="conferred"/>
+  <report id="46844" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/37" year="1695" regnal="Will3/7-8" chapter="37" title="Mortmain Act 1695" titleSource="conferred"/>
+  <report id="46845" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/38" year="1695" regnal="Will3/7-8" chapter="38" title="Wills Act 1695" titleSource="conferred"/>
+  <report id="46846" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/39" year="1695" regnal="Will3/7-8" chapter="39" title="Linen Manufacture Act 1695" titleSource="conferred"/>
+  <report id="46847" leg="http://www.legislation.gov.uk/id/aep/Will3/7-8/11" year="1695" regnal="Will3/7-8" chapter="11" title="Habeas Corpus Suspension Act 1695" titleSource="conferred"/>
+  <report id="46849" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/1" year="1696" regnal="Will3/8-9" chapter="1" title="Coinage Act 1696" titleSource="conferred"/>
+  <report id="46850" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/2" year="1696" regnal="Will3/8-9" chapter="2" title="Coinage (No. 2) Act 1696" titleSource="conferred"/>
+  <report id="46851" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/3" year="1696" regnal="Will3/8-9" chapter="3" title="Tallies for Certain Loans Act 1696" titleSource="conferred"/>
+  <report id="46852" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/4" year="1696" regnal="Will3/8-9" chapter="4" title="Attainder of Sir John Fenwick Act 1696" titleSource="conferred"/>
+  <report id="46853" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/5" year="1696" regnal="Will3/8-9" chapter="5" title="Attainder of Conspirators Act 1696" titleSource="conferred"/>
+  <report id="46854" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/6" year="1696" regnal="Will3/8-9" chapter="6" title="Land Tax Act 1696" titleSource="conferred"/>
+  <report id="46855" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/7" year="1696" regnal="Will3/8-9" chapter="7" title="Taxation Act 1696" titleSource="conferred"/>
+  <report id="46856" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/8" year="1696" regnal="Will3/8-9" chapter="8" title="Standard of Silver Plate, etc. Act 1696" titleSource="conferred"/>
+  <report id="46857" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/9" year="1696" regnal="Will3/8-9" chapter="9" title="Blackwell Hall Act 1696" titleSource="conferred"/>
+  <report id="46858" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/10" year="1696" regnal="Will3/8-9" chapter="10" title="Juries Act 1696" titleSource="conferred"/>
+  <report id="46859" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/11" year="1696" regnal="Will3/8-9" chapter="11" title="Administration of Justice Act 1696" titleSource="slra1948-sch2"/>
+  <report id="46860" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/12" year="1696" regnal="Will3/8-9" chapter="12" title="Taxation (No. 2) Act 1696" titleSource="conferred"/>
+  <report id="46861" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/13" year="1696" regnal="Will3/8-9" chapter="13" title="Mutiny Act 1696" titleSource="conferred"/>
+  <report id="46862" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/14" year="1696" regnal="Will3/8-9" chapter="14" title="Rebuilding of Saint Paul's and Westminster Abbey Act 1696" titleSource="conferred"/>
+  <report id="46863" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/15" year="1696" regnal="Will3/8-9" chapter="15" title="Highways Surrey and Sussex Act 1696" titleSource="conferred"/>
+  <report id="46864" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/16" year="1696" regnal="Will3/8-9" chapter="16" title="Highways Act 1696" titleSource="conferred"/>
+  <report id="46865" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/17" year="1696" regnal="Will3/8-9" chapter="17" title="Paving the Haymarket Act 1696" titleSource="conferred"/>
+  <report id="46866" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/18" year="1696" regnal="Will3/8-9" chapter="18" title="Compositions by Debtors Act 1696" titleSource="conferred"/>
+  <report id="46867" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/19" year="1696" regnal="Will3/8-9" chapter="19" title="Excise Act 1696" titleSource="conferred"/>
+  <report id="46868" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/20" year="1696" regnal="Will3/8-9" chapter="20" title="Bank of England Act 1696" titleSource="sta1896-sch1"/>
+  <report id="46869" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/21" year="1696" regnal="Will3/8-9" chapter="21" title="Taxation (No. 3) Act 1696" titleSource="conferred"/>
+  <report id="46870" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/22" year="1696" regnal="Will3/8-9" chapter="22" title="Taxation (No. 4) Act 1696" titleSource="conferred"/>
+  <report id="46871" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/23" year="1696" regnal="Will3/8-9" chapter="23" title="Greenwich Hospital, etc. Act 1696" titleSource="conferred"/>
+  <report id="46872" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/24" year="1696" regnal="Will3/8-9" chapter="24" title="Taxation (No. 4) Act 1696" titleSource="conferred"/>
+  <report id="46873" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/25" year="1696" regnal="Will3/8-9" chapter="25" title="Taxation (No. 6) Act 1696" titleSource="conferred"/>
+  <report id="46874" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/26" year="1696" regnal="Will3/8-9" chapter="26" title="Coin Act 1696" titleSource="conferred"/>
+  <report id="46875" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/27" year="1696" regnal="Will3/8-9" chapter="27" title="Escape of Debtors, etc. Act 1696" titleSource="conferred"/>
+  <report id="46876" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/28" year="1696" regnal="Will3/8-9" chapter="28" title="Receipt of Exchequer Act 1696" titleSource="conferred"/>
+  <report id="46877" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/29" year="1696" regnal="Will3/8-9" chapter="29" title="Bridlington Piers Act 1696" titleSource="conferred"/>
+  <report id="46878" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/30" year="1696" regnal="Will3/8-9" chapter="30" title="Relief of the Poor Act 1696" titleSource="conferred"/>
+  <report id="46879" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/31" year="1696" regnal="Will3/8-9" chapter="31" title="Partition Act 1696" titleSource="conferred"/>
+  <report id="46880" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/32" year="1696" regnal="Will3/8-9" chapter="32" title="Brokers Act 1696" titleSource="conferred"/>
+  <report id="46881" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/33" year="1696" regnal="Will3/8-9" chapter="33" title="Quarter Sessions Act 1696" titleSource="conferred"/>
+  <report id="46882" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/34" year="1696" regnal="Will3/8-9" chapter="34" title="Duty on Tin Act 1696" titleSource="conferred"/>
+  <report id="46883" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/35" year="1696" regnal="Will3/8-9" chapter="35" title="Militia Act 1696" titleSource="conferred"/>
+  <report id="46884" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/36" year="1696" regnal="Will3/8-9" chapter="36" title="Lustrings Act 1696" titleSource="conferred"/>
+  <report id="46885" leg="http://www.legislation.gov.uk/id/aep/Will3/8-9/37" year="1696" regnal="Will3/8-9" chapter="37" title="Streets (London) Act 1696" titleSource="conferred"/>
+  <report id="46887" leg="http://www.legislation.gov.uk/id/aep/Will3/9/1" year="1697" regnal="Will3/9" chapter="1" title="Correspondence with the Pretender Act 1697" titleSource="conferred"/>
+  <report id="46888" leg="http://www.legislation.gov.uk/id/aep/Will3/9/2" year="1697" regnal="Will3/9" chapter="2" title="Coin Act 1697" titleSource="conferred"/>
+  <report id="46889" leg="http://www.legislation.gov.uk/id/aep/Will3/9/3" year="1697" regnal="Will3/9" chapter="3" title="Bank of England Act 1697" titleSource="conferred"/>
+  <report id="46890" leg="http://www.legislation.gov.uk/id/aep/Will3/9/4" year="1697" regnal="Will3/9" chapter="4" title="Imprisonment of Certain Traitors Act 1697" titleSource="conferred"/>
+  <report id="46891" leg="http://www.legislation.gov.uk/id/aep/Will3/9/5" year="1697" regnal="Will3/9" chapter="5" title="Annuities Act 1697" titleSource="conferred"/>
+  <report id="46892" leg="http://www.legislation.gov.uk/id/aep/Will3/9/6" year="1697" regnal="Will3/9" chapter="6" title="Sale of Salt Act 1697" titleSource="conferred"/>
+  <report id="46893" leg="http://www.legislation.gov.uk/id/aep/Will3/9/7" year="1697" regnal="Will3/9" chapter="7" title="Fireworks Act 1697" titleSource="conferred"/>
+  <report id="46894" leg="http://www.legislation.gov.uk/id/aep/Will3/9/8" year="1697" regnal="Will3/9" chapter="8" title="Taxation Act 1697" titleSource="conferred"/>
+  <report id="46895" leg="http://www.legislation.gov.uk/id/aep/Will3/9/9" year="1697" regnal="Will3/9" chapter="9" title="Lace Act 1697" titleSource="conferred"/>
+  <report id="46896" leg="http://www.legislation.gov.uk/id/aep/Will3/9/10" year="1697" regnal="Will3/9" chapter="10" title="Taxation (No. 2) Act 1697" titleSource="conferred"/>
+  <report id="46897" leg="http://www.legislation.gov.uk/id/aep/Will3/9/11" year="1697" regnal="Will3/9" chapter="11" title="Poor Act 1697" titleSource="conferred"/>
+  <report id="46898" leg="http://www.legislation.gov.uk/id/aep/Will3/9/12" year="1697" regnal="Will3/9" chapter="12" title="Bridgwater, Somerset (Repair of Bridge and Quay) Act 1697" titleSource="conferred"/>
+  <report id="46899" leg="http://www.legislation.gov.uk/id/aep/Will3/9/13" year="1697" regnal="Will3/9" chapter="13" title="Taxation (Coals and Culm) Act 1697" titleSource="conferred"/>
+  <report id="46900" leg="http://www.legislation.gov.uk/id/aep/Will3/9/14" year="1697" regnal="Will3/9" chapter="14" title="Taxation (Coffee, Tea, Chocolate and Spices) Act 1697" titleSource="conferred"/>
+  <report id="46901" leg="http://www.legislation.gov.uk/id/aep/Will3/9/15" year="1697" regnal="Will3/9" chapter="15" title="Arbitration Act 1697" titleSource="conferred"/>
+  <report id="46902" leg="http://www.legislation.gov.uk/id/aep/Will3/9/16" year="1697" regnal="Will3/9" chapter="16" title="Court of Marches of Wales Act 1697" titleSource="conferred"/>
+  <report id="46903" leg="http://www.legislation.gov.uk/id/aep/Will3/9/17" year="1697" regnal="Will3/9" chapter="17" title="Bills of Exchange Act 1697" titleSource="conferred"/>
+  <report id="46904" leg="http://www.legislation.gov.uk/id/aep/Will3/9/18" year="1697" regnal="Will3/9" chapter="18" title="Gloucestershire Roads Act 1697" titleSource="conferred"/>
+  <report id="46905" leg="http://www.legislation.gov.uk/id/aep/Will3/9/19" year="1697" regnal="Will3/9" chapter="19" title="Navigation (Colchester to Wivenhoe) Act 1697" titleSource="conferred"/>
+  <report id="46906" leg="http://www.legislation.gov.uk/id/aep/Will3/9/20" year="1697" regnal="Will3/9" chapter="20" title="Naturalization (Persons Born Abroad During the War) Act 1697" titleSource="conferred"/>
+  <report id="46907" leg="http://www.legislation.gov.uk/id/aep/Will3/9/21" year="1697" regnal="Will3/9" chapter="21" title="Coin (No. 2) Act 1697" titleSource="conferred"/>
+  <report id="46908" leg="http://www.legislation.gov.uk/id/aep/Will3/9/22" year="1697" regnal="Will3/9" chapter="22" title="Malt Act 1697" titleSource="conferred"/>
+  <report id="46909" leg="http://www.legislation.gov.uk/id/aep/Will3/9/23" year="1697" regnal="Will3/9" chapter="23" title="Civil List Act 1697" titleSource="conferred"/>
+  <report id="46910" leg="http://www.legislation.gov.uk/id/aep/Will3/9/24" year="1697" regnal="Will3/9" chapter="24" title="Annuities Act 1697" titleSource="conferred"/>
+  <report id="46911" leg="http://www.legislation.gov.uk/id/aep/Will3/9/25" year="1697" regnal="Will3/9" chapter="25" title="Stamps Act 1697" titleSource="conferred"/>
+  <report id="46912" leg="http://www.legislation.gov.uk/id/aep/Will3/9/26" year="1697" regnal="Will3/9" chapter="26" title="Trade with Africa Act 1697" titleSource="conferred"/>
+  <report id="46913" leg="http://www.legislation.gov.uk/id/aep/Will3/9/27" year="1697" regnal="Will3/9" chapter="27" title="Hawkers Act 1697" titleSource="conferred"/>
+  <report id="46914" leg="http://www.legislation.gov.uk/id/aep/Will3/9/28" year="1697" regnal="Will3/9" chapter="28" title="Exportation (Silver) Act 1697" titleSource="conferred"/>
+  <report id="46915" leg="http://www.legislation.gov.uk/id/aep/Will3/9/29" year="1697" regnal="Will3/9" chapter="29" title="Composition by Debtors (Repeal) Act 1697" titleSource="conferred"/>
+  <report id="46916" leg="http://www.legislation.gov.uk/id/aep/Will3/9/30" year="1697" regnal="Will3/9" chapter="30" title="Taxation (Lustrings and Alamodes) Act 1697" titleSource="conferred"/>
+  <report id="46917" leg="http://www.legislation.gov.uk/id/aep/Will3/9/31" year="1697" regnal="Will3/9" chapter="31" title="Militia Act 1697" titleSource="conferred"/>
+  <report id="46918" leg="http://www.legislation.gov.uk/id/aep/Will3/9/32" year="1697" regnal="Will3/9" chapter="32" title="Duties on Marriages etc. Act 1697" titleSource="conferred"/>
+  <report id="46919" leg="http://www.legislation.gov.uk/id/aep/Will3/9/33" year="1697" regnal="Will3/9" chapter="33" title="New Forest Act 1697" titleSource="sta1896-sch1"/>
+  <report id="46920" leg="http://www.legislation.gov.uk/id/aep/Will3/9/34" year="1697" regnal="Will3/9" chapter="34" title="Appropriation of Certain Moneys Act 1697" titleSource="conferred"/>
+  <report id="46921" leg="http://www.legislation.gov.uk/id/aep/Will3/9/35" year="1697" regnal="Will3/9" chapter="35" title="Blasphemy Act 1697" titleSource="slra1948-sch2"/>
+  <report id="46922" leg="http://www.legislation.gov.uk/id/aep/Will3/9/36" year="1697" regnal="Will3/9" chapter="36" title="Coinage Act 1697" titleSource="conferred"/>
+  <report id="46923" leg="http://www.legislation.gov.uk/id/aep/Will3/9/37" year="1697" regnal="Will3/9" chapter="37" title="Payment of Lottery Tickets Act 1697" titleSource="conferred"/>
+  <report id="46924" leg="http://www.legislation.gov.uk/id/aep/Will3/9/38" year="1697" regnal="Will3/9" chapter="38" title="Poll Tax Act 1697" titleSource="conferred"/>
+  <report id="46925" leg="http://www.legislation.gov.uk/id/aep/Will3/9/39" year="1697" regnal="Will3/9" chapter="39" title="Silver and Gold Thread Act 1697" titleSource="conferred"/>
+  <report id="46926" leg="http://www.legislation.gov.uk/id/aep/Will3/9/40" year="1697" regnal="Will3/9" chapter="40" title="Exportation Act 1697" titleSource="conferred"/>
+  <report id="46927" leg="http://www.legislation.gov.uk/id/aep/Will3/9/41" year="1697" regnal="Will3/9" chapter="41" title="Embezzlement of Public Stores Act 1697" titleSource="conferred"/>
+  <report id="46928" leg="http://www.legislation.gov.uk/id/aep/Will3/9/42" year="1697" regnal="Will3/9" chapter="42" title="Registering of Ships Act 1697" titleSource="conferred"/>
+  <report id="46929" leg="http://www.legislation.gov.uk/id/aep/Will3/9/43" year="1697" regnal="Will3/9" chapter="43" title="Lustrings Act 1697" titleSource="conferred"/>
+  <report id="46930" leg="http://www.legislation.gov.uk/id/aep/Will3/9/44" year="1697" regnal="Will3/9" chapter="44" title="East India Company Act 1697" titleSource="conferred"/>
+  <report id="46931" leg="http://www.legislation.gov.uk/id/aep/Will3/9/45" year="1697" regnal="Will3/9" chapter="45" title="Taxation (Whale Fins and Scotch Linen) Act 1697" titleSource="conferred"/>
+  <report id="46933" leg="http://www.legislation.gov.uk/id/aep/Will3/10/1" year="1698" regnal="Will3/10" chapter="1" title="Disbanding the Army Act 1698" titleSource="conferred"/>
+  <report id="46934" leg="http://www.legislation.gov.uk/id/aep/Will3/10/2" year="1698" regnal="Will3/10" chapter="2" title="Buttons Act 1698" titleSource="conferred"/>
+  <report id="46935" leg="http://www.legislation.gov.uk/id/aep/Will3/10/3" year="1698" regnal="Will3/10" chapter="3" title="Exportation Act 1698" titleSource="conferred"/>
+  <report id="46936" leg="http://www.legislation.gov.uk/id/aep/Will3/10/4" year="1698" regnal="Will3/10" chapter="4" title="Distillation Act 1698" titleSource="conferred"/>
+  <report id="46937" leg="http://www.legislation.gov.uk/id/aep/Will3/10/5" year="1698" regnal="Will3/10" chapter="5" title="Great Yarmouth Haven and Pier Duties Act 1698" titleSource="conferred"/>
+  <report id="46938" leg="http://www.legislation.gov.uk/id/aep/Will3/10/6" year="1698" regnal="Will3/10" chapter="6" title="Russia Company (Membership) Act 1698" titleSource="conferred"/>
+  <report id="46939" leg="http://www.legislation.gov.uk/id/aep/Will3/10/7" year="1698" regnal="Will3/10" chapter="7" title="Parliamentary Elections Act 1698" titleSource="conferred"/>
+  <report id="46940" leg="http://www.legislation.gov.uk/id/aep/Will3/10/8" year="1698" regnal="Will3/10" chapter="8" title="River Tone Navigation Act 1698" titleSource="conferred"/>
+  <report id="46941" leg="http://www.legislation.gov.uk/id/aep/Will3/10/9" year="1698" regnal="Will3/10" chapter="9" title="Land Tax Act 1698" titleSource="conferred"/>
+  <report id="46942" leg="http://www.legislation.gov.uk/id/aep/Will3/10/10" year="1698" regnal="Will3/10" chapter="10" title="Taxation Act 1698" titleSource="conferred"/>
+  <report id="46943" leg="http://www.legislation.gov.uk/id/aep/Will3/10/11" year="1698" regnal="Will3/10" chapter="11" title="Taxation (Rock Salt) Act 1698" titleSource="conferred"/>
+  <report id="46944" leg="http://www.legislation.gov.uk/id/aep/Will3/10/12" year="1698" regnal="Will3/10" chapter="12" title="Clerks of Assize (Fees) Act 1698" titleSource="conferred"/>
+  <report id="46945" leg="http://www.legislation.gov.uk/id/aep/Will3/10/13" year="1698" regnal="Will3/10" chapter="13" title="Billingsgate, etc. Act 1698" titleSource="conferred"/>
+  <report id="46946" leg="http://www.legislation.gov.uk/id/aep/Will3/10/14" year="1698" regnal="Will3/10" chapter="14" title="Trade to Newfoundland Act 1698" titleSource="conferred"/>
+  <report id="46947" leg="http://www.legislation.gov.uk/id/aep/Will3/10/15" year="1698" regnal="Will3/10" chapter="15" title="Sedgmoor Drainage Act 1698" titleSource="conferred"/>
+  <report id="46949" leg="http://www.legislation.gov.uk/id/aep/Will3/10/16" year="1698" regnal="Will3/10" chapter="16" title="Wool Act 1698" titleSource="conferred"/>
+  <report id="46950" leg="http://www.legislation.gov.uk/id/aep/Will3/10/17" year="1698" regnal="Will3/10" chapter="17" title="Exercise of Trades Act 1698" titleSource="conferred"/>
+  <report id="46951" leg="http://www.legislation.gov.uk/id/aep/Will3/10/18" year="1698" regnal="Will3/10" chapter="18" title="Militia Act 1698" titleSource="conferred"/>
+  <report id="46952" leg="http://www.legislation.gov.uk/id/aep/Will3/10/19" year="1698" regnal="Will3/10" chapter="19" title="Imprisonment of Certain Traitors Act 1698" titleSource="conferred"/>
+  <report id="46953" leg="http://www.legislation.gov.uk/id/aep/Will3/10/20" year="1698" regnal="Will3/10" chapter="20" title="Reversal of Fines and Recoveries, etc. Act 1698" titleSource="conferred"/>
+  <report id="46954" leg="http://www.legislation.gov.uk/id/aep/Will3/10/21" year="1698" regnal="Will3/10" chapter="21" title="Recovery of Tithes Act 1698" titleSource="conferred"/>
+  <report id="46955" leg="http://www.legislation.gov.uk/id/aep/Will3/10/22" year="1698" regnal="Will3/10" chapter="22" title="Posthumous Children Act 1698" titleSource="conferred"/>
+  <report id="46956" leg="http://www.legislation.gov.uk/id/aep/Will3/10/23" year="1698" regnal="Will3/10" chapter="23" title="Suppression of Lotteries Act 1698" titleSource="conferred"/>
+  <report id="46957" leg="http://www.legislation.gov.uk/id/aep/Will3/10/24" year="1698" regnal="Will3/10" chapter="24" title="Duties on Glass (Repeal) Act 1698" titleSource="conferred"/>
+  <report id="46958" leg="http://www.legislation.gov.uk/id/aep/Will3/10/25" year="1698" regnal="Will3/10" chapter="25" title="Aire and Calder Navigation Act 1698" titleSource="conferred"/>
+  <report id="46959" leg="http://www.legislation.gov.uk/id/aep/Will3/10/26" year="1698" regnal="Will3/10" chapter="26" title="River Trent Navigation Act 1698" titleSource="conferred"/>
+  <report id="46960" leg="http://www.legislation.gov.uk/id/aep/Will3/11/1" year="1698" regnal="Will3/11" chapter="1" title="Bounty on Exportation Act 1698" titleSource="conferred"/>
+  <report id="46961" leg="http://www.legislation.gov.uk/id/aep/Will3/11/2" year="1698" regnal="Will3/11" chapter="2" title="Crown Lands (Forfeited Estates) Act 1698" titleSource="conferred"/>
+  <report id="46962" leg="http://www.legislation.gov.uk/id/aep/Will3/11/3" year="1698" regnal="Will3/11" chapter="3" title="Taxation Act 1698" titleSource="conferred"/>
+  <report id="46963" leg="http://www.legislation.gov.uk/id/aep/Will3/11/4" year="1698" regnal="Will3/11" chapter="4" title="Popery Act 1698" titleSource="conferred"/>
+  <report id="46964" leg="http://www.legislation.gov.uk/id/aep/Will3/11/5" year="1698" regnal="Will3/11" chapter="5" title="Dover Harbour Act 1698" titleSource="conferred"/>
+  <report id="46965" leg="http://www.legislation.gov.uk/id/aep/Will3/11/6" year="1698" regnal="Will3/11" chapter="6" title="Aliens Act 1698" titleSource="conferred"/>
+  <report id="46966" leg="http://www.legislation.gov.uk/id/aep/Will3/11/7" year="1698" regnal="Will3/11" chapter="7" title="Piracy Act 1698" titleSource="slra1948-sch2"/>
+  <report id="46967" leg="http://www.legislation.gov.uk/id/aep/Will3/11/8" year="1698" regnal="Will3/11" chapter="8" title="Debts Due to the Army, etc. Act 1698" titleSource="conferred"/>
+  <report id="46968" leg="http://www.legislation.gov.uk/id/aep/Will3/11/9" year="1698" regnal="Will3/11" chapter="9" title="Frivolous Suits Act 1698" titleSource="conferred"/>
+  <report id="46969" leg="http://www.legislation.gov.uk/id/aep/Will3/11/10" year="1698" regnal="Will3/11" chapter="10" title="Encouragement of Manufactures Act 1698" titleSource="conferred"/>
+  <report id="46970" leg="http://www.legislation.gov.uk/id/aep/Will3/11/11" year="1698" regnal="Will3/11" chapter="11" title="Repeal of 9 Will. 3. c. 9 Act 1698" titleSource="conferred"/>
+  <report id="46971" leg="http://www.legislation.gov.uk/id/aep/Will3/11/12" year="1698" regnal="Will3/11" chapter="12" title="Governors of Plantations Act 1698" titleSource="conferred"/>
+  <report id="46972" leg="http://www.legislation.gov.uk/id/aep/Will3/11/13" year="1698" regnal="Will3/11" chapter="13" title="Exportation (No. 2) Act 1698" titleSource="conferred"/>
+  <report id="46973" leg="http://www.legislation.gov.uk/id/aep/Will3/11/14" year="1698" regnal="Will3/11" chapter="14" title="Militia (No. 2) Act 1698" titleSource="conferred"/>
+  <report id="46974" leg="http://www.legislation.gov.uk/id/aep/Will3/11/15" year="1698" regnal="Will3/11" chapter="15" title="Ale Measures Act 1698" titleSource="conferred"/>
+  <report id="46975" leg="http://www.legislation.gov.uk/id/aep/Will3/11/16" year="1698" regnal="Will3/11" chapter="16" title="Tithes of Hemp and Flax Act 1698" titleSource="conferred"/>
+  <report id="46976" leg="http://www.legislation.gov.uk/id/aep/Will3/11/17" year="1698" regnal="Will3/11" chapter="17" title="Signing the Association, etc. Act 1698" titleSource="conferred"/>
+  <report id="46977" leg="http://www.legislation.gov.uk/id/aep/Will3/11/18" year="1698" regnal="Will3/11" chapter="18" title="Vagrancy Act 1698" titleSource="conferred"/>
+  <report id="46978" leg="http://www.legislation.gov.uk/id/aep/Will3/11/19" year="1698" regnal="Will3/11" chapter="19" title="Gaols Act 1698" titleSource="conferred"/>
+  <report id="46979" leg="http://www.legislation.gov.uk/id/aep/Will3/11/20" year="1698" regnal="Will3/11" chapter="20" title="Taxation Act 1698" titleSource="conferred"/>
+  <report id="46980" leg="http://www.legislation.gov.uk/id/aep/Will3/11/21" year="1698" regnal="Will3/11" chapter="21" title="Thames Watermen Act 1698" titleSource="conferred"/>
+  <report id="46981" leg="http://www.legislation.gov.uk/id/aep/Will3/11/22" year="1698" regnal="Will3/11" chapter="22" title="River Lark Act 1698" titleSource="conferred"/>
+  <report id="46982" leg="http://www.legislation.gov.uk/id/aep/Will3/11/23" year="1698" regnal="Will3/11" chapter="23" title="Bristol Roads and Avon and Frome Navigation Act 1698" titleSource="conferred"/>
+  <report id="46983" leg="http://www.legislation.gov.uk/id/aep/Will3/11/24" year="1698" regnal="Will3/11" chapter="24" title="River Dee, Chester Act 1698" titleSource="conferred"/>
+  <report id="46985" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/1" year="1700" regnal="Will3/12-13" chapter="1" title="Exchequer Bills Act 1700" titleSource="conferred"/>
+  <report id="46986" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/2" year="1700" regnal="Will3/12-13" chapter="2" title="Act of Settlement" titleSource="sta1896-sch1"/>
+  <report id="46987" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/3" year="1700" regnal="Will3/12-13" chapter="3" title="Privilege of Parliament Act 1700" titleSource="conferred"/>
+  <report id="46988" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/4" year="1700" regnal="Will3/12-13" chapter="4" title="Plate Assay Act 1700" titleSource="slra1948-sch2"/>
+  <report id="46989" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/5" year="1700" regnal="Will3/12-13" chapter="5" title="Returns to Parliament Act 1700" titleSource="conferred"/>
+  <report id="46990" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/6" year="1700" regnal="Will3/12-13" chapter="6" title="Moss Troopers Act 1700" titleSource="conferred"/>
+  <report id="46991" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/7" year="1700" regnal="Will3/12-13" chapter="7" title="British Museum Act 1700" titleSource="conferred"/>
+  <report id="46992" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/8" year="1700" regnal="Will3/12-13" chapter="8" title="Militia Act 1700" titleSource="conferred"/>
+  <report id="46993" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/9" year="1700" regnal="Will3/12-13" chapter="9" title="Minehead Harbour Act 1700" titleSource="conferred"/>
+  <report id="46994" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/10" year="1700" regnal="Will3/12-13" chapter="10" title="Taxation: Members of Parliament Act 1700" titleSource="conferred"/>
+  <report id="46995" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/11" year="1700" regnal="Will3/12-13" chapter="11" title="Taxation Act 1700" titleSource="conferred"/>
+  <report id="46996" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/12" year="1700" regnal="Will3/12-13" chapter="12" title="Appropriation of Revenue Act 1700" titleSource="conferred"/>
+  <report id="46997" leg="http://www.legislation.gov.uk/id/aep/Will3/12-13/13" year="1700" regnal="Will3/12-13" chapter="13" title="Duchy of Cornwall Act 1700" titleSource="conferred"/>
+  <report id="46999" leg="http://www.legislation.gov.uk/id/aep/Will3/13-14/1" year="1701" regnal="Will3/13-14" chapter="1" title="Debts Due to the Army, etc. Act 1701" titleSource="conferred"/>
+  <report id="47000" leg="http://www.legislation.gov.uk/id/aep/Will3/13-14/2" year="1701" regnal="Will3/13-14" chapter="2" title="Mutiny Act 1701" titleSource="conferred"/>
+  <report id="47001" leg="http://www.legislation.gov.uk/id/aep/Will3/13-14/3" year="1701" regnal="Will3/13-14" chapter="3" title="Correspondence with James the Pretender (High Treason) Act 1701" titleSource="conferred"/>
+  <report id="47002" leg="http://www.legislation.gov.uk/id/aep/Will3/13-14/4" year="1701" regnal="Will3/13-14" chapter="4" title="Affirmation by Quakers Act 1701" titleSource="conferred"/>
+  <report id="47003" leg="http://www.legislation.gov.uk/id/aep/Will3/13-14/5" year="1701" regnal="Will3/13-14" chapter="5" title="Taxation Act 1701" titleSource="conferred"/>
+  <report id="47004" leg="http://www.legislation.gov.uk/id/aep/Will3/13-14/6" year="1701" regnal="Will3/13-14" chapter="6" title="Security of the Succession, etc. Act 1701" titleSource="conferred"/>
+
 </reports>
