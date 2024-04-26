@@ -52,50 +52,51 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="legtitlecomment" as="node()*" select="$lookup//titleComment[@id = $legtitlecommentid]/node()"/>
-
+<!-- 7 -->
   <xsl:variable name="legregregex"
-    select="'^([A-Z][a-z]+)([1-9])?((and)(1)?([A-Z][a-z]+)([1-9])?)?/([1-9][0-9]?)(-([1-9][0-9]?))?(-([1-9][0-9]?))?(/([Ss][a-z]+)([1-9]))?$'"/>
+    select="'^([A-Z][a-z]+)([1-9])?((and)(1)?([A-Z][a-z]+)([1-9])?)?(([Ss]t|[Ss]ess)([1-9]))?/([1-9][0-9]?)(-([1-9][0-9]?))?(-([1-9][0-9]?))?(/([Ss][a-z]+)([1-9]))?$'"/>
 
   <xsl:variable name="legregaltfn">
     <!-- & => and, any seq of non-alphanum chars to _ (underscore) -->
     <xsl:value-of select="replace(replace($legreg, '&#38;', 'and'), '[^a-zA-Z0-9]+', '_')"/>
   </xsl:variable>
 
-  <xsl:variable name="legregaltprelim">
+  <!-- e.g. 7_8_and_9_King_2_Sess_2 -->
+  <!-- 7_8_and_9 :
+    (11, 13, 15) ->
+      if (count(_) gt 1) then (_[position() lt last(), 'and') else (),
+      _[last()] -->
+  <!-- King_2_and_King_3_Sess_2 : (1, 2, 4, 5, 6, 7, 9, 10) -->
+  <xsl:variable name="legregalt">
+    <xsl:variable name="l0"
+      as="function(xs:string) as xs:boolean"
+      select="function($s) as xs:boolean { string-length($s) gt 0 }"/>
     <xsl:analyze-string select="$legreg" regex="{$legregregex}">
       <xsl:matching-substring>
-        <xsl:variable name="regyrs" select="replace(
-          replace(
-          string-join(
-          (
-          regex-group(8),
-          regex-group(10),
-          regex-group(12)
-          ),
-          ' '
-          ), '([1-9][0-9]?) ([1-9][0-9]?)$', '$1 and $2'
-          ), '^([1-9][0-9]?) ([1-9][0-9]?)( |$)', '$1, $2$3'
+        <xsl:variable name="year-components" as="xs:string+"
+          select="filter((11, 13, 15) ! regex-group(.), $l0)"/>
+        <xsl:value-of
+          select="string-join(
+            (
+              if (count($year-components) gt 1)
+                then (subsequence($year-components, 1, count($year-components) - 1), 'and')
+                else (),
+              $year-components[count($year-components)], '' (: '' puts a _ at the end as sep :)
+            ),
+            '_'
           )"/>
-        <xsl:value-of select="normalize-space(string-join(
-          (
-          $regyrs,
-          regex-group(1),
-          regex-group(2),
-          regex-group(4),
-          regex-group(5),
-          regex-group(6),
-          regex-group(7),
-          if (regex-group(13))
-          then (concat(regex-group(14), '.'), regex-group(15))
-          else ()
-          ), ' '))"/>
+        <xsl:value-of
+          select="string-join(
+            filter((1, 2, 4, 5, 6, 7, 9, 10, 17, 18) ! regex-group(.), $l0),
+            '_'
+          )"/>
       </xsl:matching-substring>
       <xsl:non-matching-substring>
         <xsl:message terminate="yes">
           <xsl:text>FATAL ERROR: </xsl:text>
           <xsl:call-template name="errmsg">
             <xsl:with-param name="message">
-              <xsl:text>couldn't make prelims regnal year because I </xsl:text>
+              <xsl:text>couldn't make metadata regnal year because I </xsl:text>
               <xsl:text>don't know how to parse </xsl:text>
               <xsl:value-of select="$legreg"/>
             </xsl:with-param>
@@ -105,15 +106,14 @@
     </xsl:analyze-string>
   </xsl:variable>
 
-  <xsl:variable name="legregalt"
-    select="replace($legregaltprelim, '[^a-zA-Z0-9]+', '_')"/>
-  
+  <xsl:variable name="legregaltprelim" select="replace($legregalt, '_', ' ')"/>
+
   <!-- A map of all nodes contained within each bracket, which we use for finding
        the ref to use as the CommentaryRef id for the output <Addition> elements -->
   <xsl:variable name="within-bracket-map" as="map(*)">
     <xsl:sequence select="accumulator-after('brackets-paired')('within-bracket')"/>
   </xsl:variable>
-  
+
   <!-- Used to check if there are any brackets we opened but didn't close -->
   <xsl:variable name="all-opened-brackets" as="map(*)" select="accumulator-after('brackets-paired')('all-opened')"/>
   <xsl:variable name="all-closed-brackets" as="map(*)" select="accumulator-after('brackets-paired')('all-closed')"/>
@@ -1137,6 +1137,9 @@
     want to handle, or catch anything we didn't expect and haven't handled - this
     makes the stylesheet's behaviour much more predictable by explicitly flagging
     any situation we haven't handled -->
+  <xsl:template match="comment()" priority="+1"/>
+  <xsl:template match="comment()" mode="p p1para" priority="+1"/>
+ 
   <xsl:template match="/report/(self::*|section|section/section)/text()[not(normalize-space())]"/>
   <xsl:template match="/report/(section|section/section)/table/(self::*|tr)/text()[not(normalize-space())]"/>
   <xsl:template match="/report/(section|section/section)/figure/text()[not(normalize-space())]"/>
